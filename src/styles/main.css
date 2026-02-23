@@ -1,0 +1,298 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --primary-active: 240 5.9% 5%;
+
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 10% 3.9%;
+
+    --radius: 0.75rem;
+
+    --forest-green: 94 100% 30%;
+    --orange-web: 39 97% 54%;
+    --grey: 0 0% 14%;
+    --lighter-grey: 0 0% 23%;
+
+    --neon-green: 117 85% 69%;
+    --dark-green: 131 100% 11%;
+    --ninja-black: 120 2% 8%;
+    --wise-white: 0 0% 98%;
+    --wise-gray: 120 1% 17%;
+    --mint-cream: 109 44% 95%;
+    --turtle-yellow: 54 100% 50%;
+    --turtle-red: 353 100% 51%;
+    --white-transparent: 0, 0%, 98%, 0.02;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    --primary-active: 217 91% 65%;
+
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+
+    --radius: 0.75rem;
+
+    --forest-green: 94 100% 30%;
+    --orange-web: 39 97% 54%;
+    --grey: 0 0% 14%;
+    --lighter-grey: 0 0% 23%;
+
+    --neon-green: 117 85% 69%;
+    --dark-green: 131 100% 11%;
+    --ninja-black: 120 2% 8%;
+    --wise-white: 0 0% 98%;
+    --wise-gray: 120 1% 17%;
+    --mint-cream: 109 44% 95%;
+    --turtle-yellow: 54 100% 50%;
+    --turtle-red: 353 100% 51%;
+    --white-transparent: 0, 0%, 98%, 0.02;
+
+    * {
+      @apply border-border;
+    }
+    body {
+      @apply bg-ninja-black text-wise-white;
+    }
+  }
+
+  @media screen and (max-width: 480px) and (-webkit-min-device-pixel-ratio: 2) {
+    input,
+    textarea,
+    select {
+      font-size: 16px !important;
+    }
+  }
+}
+
+@layer components {
+  /* Managed Table */
+  .managed-table {
+    @apply border-separate border-spacing-0 border-spacing-y-2.5;
+  }
+
+  .managed-table tr {
+    @apply text-sm hover:bg-transparent;
+  }
+
+  .managed-table thead tr th {
+    @apply text-xs py-1 px-3 text-wise-white/70 h-6 font-normal;
+  }
+
+  .managed-table tbody tr > td {
+    @apply font-normal h-[38px] lg:py-1;
+    background: rgba(249, 249, 249, 0.02);
+  }
+
+  .managed-table tbody tr > td:first-child {
+    @apply rounded-bl-full rounded-tl-full border-l lg:pl-[15px];
+  }
+
+  .managed-table tbody tr > td:last-child {
+    @apply rounded-br-full rounded-tr-full border-r lg:pr-[15px];
+  }
+
+  .managed-table tbody tr:hover > td {
+    @apply bg-grey;
+  }
+
+  .managed-table .height-limited {
+    @apply flex justify-end lg:h-9 lg:items-center lg:justify-start;
+  }
+
+  /* Adaptive Table */
+  @screen mobile {
+    .adaptive-table,
+    .adaptive-table thead,
+    .adaptive-table tbody,
+    .adaptive-table th,
+    .adaptive-table td,
+    .adaptive-table tr {
+      @apply block w-full;
+    }
+
+    .adaptive-table thead tr {
+      @apply absolute -left-full -top-full;
+    }
+
+    .adaptive-table tr {
+      @apply py-2;
+    }
+
+    .adaptive-table tbody tr > td {
+      @apply relative min-h-6 border-x border-y-0 px-3 pl-[45%] text-right;
+    }
+
+    .adaptive-table td::before {
+      content: attr(data-name);
+      @apply absolute left-3 top-1/2 w-auto max-w-[40%] -translate-y-1/2 pr-2 text-left font-normal text-foreground;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .adaptive-table td > div {
+      @apply relative z-10;
+    }
+
+    .managed-table tbody tr {
+      @apply border-none;
+    }
+
+    .managed-table.adaptive-table tbody tr > td:first-child {
+      @apply rounded-bl-none rounded-tl-20 rounded-tr-20 border-t;
+    }
+
+    .managed-table.adaptive-table tbody tr > td:last-child {
+      @apply rounded-bl-20 rounded-br-20 rounded-tr-none border-b;
+    }
+  }
+
+  /* Pagination */
+  .pagination {
+    @apply mx-auto flex w-full flex-row items-center justify-center gap-1;
+  }
+
+  .pagination li.active a {
+    @apply border border-accent outline-none;
+  }
+
+  .pagination li.disabled {
+    @apply pointer-events-none opacity-50;
+  }
+
+  .pagination li a {
+    @apply inline-flex h-10 w-10 items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground;
+  }
+  
+  /* Animation for green lines */
+  .animated-base {
+    @apply grid place-content-center;
+    
+    --border-angle: 0turn;
+    --main-bg: hsl(var(--ninja-black));
+    background:
+        linear-gradient(var(--main-bg), var(--main-bg)) padding-box,
+        conic-gradient(
+            from var(--border-angle),
+            hsla(var(--wise-white) / 0.1) 20%,
+            hsl(117 85% 69%) 40%,
+            hsla(var(--wise-white) / 0.1) 60%
+        ) border-box;
+    border: 2px solid transparent;
+    animation: bg-spin 3s linear infinite;
+  }
+  
+  .animatedRectangle {
+    @apply animated-base shadow-[0px_0px_35px_-20px_rgba(115,243,108,0.20)];
+    border-radius: 20px;
+  }
+  
+  @keyframes bg-spin {
+    to {
+      --border-angle: 1turn;
+    }
+  }
+  
+  @property --border-angle {
+    syntax: "<angle>";
+    inherits: true;
+    initial-value: 0turn;
+  }
+  
+  .future-swiper.swiper-3d .swiper-slide-shadow {
+    @apply hidden;
+  }
+
+  /* Light white content wrapper */
+  .content-wrapper {
+    @apply flex flex-col gap-5 rounded-[20px] bg-transparent p-0 shadow-none sm:p-[25px] sm:shadow-[0px_0px_40px_0px_rgba(0,0,0,0.60)] sm:bg-[rgba(249,249,249,0.03)];
+  }
+  
+  /* Uncomment if you remove the banner */
+  /*.full-height-minus-header-and-footer {*/
+  /*  @apply min-h-[calc(100vh-160px-40px)]; */
+  /*}*/
+  /* And remove this */
+  .full-height-minus-header-and-footer {
+    @apply min-h-[calc(100vh-160px-60px-42px)]; /* 42px is banner height with gap */;
+  }
+  
+  .timeline-row {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  .timeline-row::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+  
+  .scroll-container {
+    @apply lg:max-h-[600px] lg:overflow-y-scroll;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+  }
+  
+  .scroll-container::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .scroll-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .scroll-container::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+  }
+}

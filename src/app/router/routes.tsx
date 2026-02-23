@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Landing } from "@/pages/Landing/Landing"
+import { Listings } from "@/pages/Listings/Listings";
 
 export interface AppRoute {
   name: string;
@@ -21,6 +22,11 @@ export const routes: AppRoute[] = [
     name: "Home",
     path: "/",
     element: <Landing />,
+  },
+  {
+    name: "Listings",
+    path: "/listings",
+    element: <Listings />,
   },
   // {
   //   name: "Partners",
