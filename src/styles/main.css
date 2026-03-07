@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 39 60% 90%;
     --foreground: 240 10% 3.9%;
 
     --card: 0 0% 100%;
@@ -52,7 +52,7 @@
   }
 
   .dark {
-    --background: 240 10% 3.9%;
+    --background: 39 60% 90%;
     --foreground: 0 0% 98%;
 
     --card: 240 10% 3.9%;
@@ -102,7 +102,7 @@
       @apply border-border;
     }
     body {
-      @apply bg-ninja-black text-wise-white;
+      @apply bg-background text-wise-white;
     }
   }
 

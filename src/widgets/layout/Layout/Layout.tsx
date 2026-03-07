@@ -24,7 +24,7 @@ export function Layout({ children }: PropsWithChildren) {
         </video>
       )}
 
-      <div className="fixed inset-0 -z-10 bg-black/70" />
+      {/* <div className="fixed inset-0 -z-10 bg-black/70" /> */}
 
       <div className="mx-auto">
         <div className="relative flex min-h-screen flex-col gap-5 p-6 lg:p-10 lg:pt-6">
