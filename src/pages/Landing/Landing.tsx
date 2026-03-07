@@ -10,7 +10,7 @@ export function Landing() {
 
   return (
     <section className="flex min-h-[80vh] flex-col items-center justify-center text-center">
-      <div className="fixed inset-0 -z-10 bg-black/70" />
+      <div className="fixed inset-0 -z-10 bg-black/40" />
       <div className="max-w-3xl">
         <h1 className="whitespace-pre-line text-5xl font-semibold leading-[1.05] text-wise-white sm:text-6xl lg:text-7xl">
           {"Student to student\nsubleasing\nmade simple"}
