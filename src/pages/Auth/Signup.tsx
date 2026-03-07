@@ -1,16 +1,21 @@
-import { loginUser } from "@/shared/api/backendGO/endpoints";
+import { createUser } from "@/shared/api/backendGO/endpoints";
 import { SignupForm } from "../../widgets/widget/SignupForm";
 
 export function Signup() {
-  const handleLogin = async (identifier: string, password: string) => {
-    const res = await loginUser({ identifier, password });
-    // Store token for subsequent API calls
-    localStorage.setItem("access_token", res.access_token);
+  const handleSignup = async (data: {
+    first_name: string;
+    last_name: string;
+    username: string;
+    email: string;
+    password: string;
+  }) => {
+    await createUser(data);
+    // Signup doesn't return a token — navigate to login after
   };
-
+  
   return (
       <div className="flex flex-1 items-center justify-center px-4 py-12">
-        <SignupForm onSubmit={handleLogin} />
+        <SignupForm onSubmit={handleSignup} />
       </div>
   );
 }
