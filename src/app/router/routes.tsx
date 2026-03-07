@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Landing } from "@/pages/Landing/Landing"
 import { Listings } from "@/pages/Listings/Listings";
 import { Login, Signup } from "@/pages/Auth";
+import { ProtectedRoute } from "@/app/router/protectedRoutes";
 
 export interface AppRoute {
   name: string;

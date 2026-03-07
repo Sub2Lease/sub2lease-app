@@ -73,7 +73,8 @@ export const fetchBackend = {
       }
     }
 
-    const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
+    const raw = localStorage.getItem("auth");
+    const token = raw ? (JSON.parse(raw) as { state?: { token?: string } })?.state?.token ?? null : null;
     if (token) {
       init.headers = {
         ...((init.headers as Record<string, string>) ?? {}),
