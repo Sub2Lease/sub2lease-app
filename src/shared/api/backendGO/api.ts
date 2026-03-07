@@ -18,6 +18,7 @@ import {
   listPostsByUserInputSchema,
   favoriteInputSchema,
   listFavoritesInputSchema,
+//   addPhotoInputSchema,
 } from "./z";
 
 const isClient = typeof window !== "undefined";
@@ -113,14 +114,24 @@ export const backendApi = buildApi(
 
     // Photos
 
-    uploadPostPhoto: item({
+    // uploadPostPhoto: item({
+    //   input: z.object({
+    //     id: z.number(),
+    //     image: z.instanceof(File),
+    //   }),
+    //   key: ({ id }: { id: number; image: File }) => `/posts/${id}/photos`,
+    //   result: photoSchema,
+    //   options: [methodOptions.post],
+    // }),
+
+    addPhotoToPost: item({
       input: z.object({
-        id: z.number(),
-        image: z.instanceof(File),
+        post_id: z.number(),
+        photo_url: z.string().url(),
       }),
-      key: ({ id }: { id: number; image: File }) => `/posts/${id}/photos`,
+      key: ({ post_id }: { post_id: number; photo_url: string }) => `/posts/${post_id}/photos`,
       result: photoSchema,
-      options: [methodOptions.post],
+      options: [methodOptions.post, simpleJson],
     }),
 
     // Favorites

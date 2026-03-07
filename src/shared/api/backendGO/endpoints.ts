@@ -50,8 +50,8 @@ export const createPost = (input: z.infer<typeof createPostInputSchema>) =>
 export const updatePostDetails = (id: number, body: z.infer<typeof updatePostDetailsInputSchema>) =>
   backendApi.updatePostDetails({ id, body });
 
-export const uploadPostPhoto = (id: number, image: File) =>
-  backendApi.uploadPostPhoto({ id, image });
+export const addPhotoToPost = (post_id: number, photo_url: string) =>
+  backendApi.addPhotoToPost({ post_id, photo_url });
 
 // Favorites
 

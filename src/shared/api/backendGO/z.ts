@@ -149,3 +149,10 @@ export const listFavoritesInputSchema = z.object({
   page_id: z.number().min(1),
   page_size: z.number().min(5).max(100),
 });
+
+// Supabase
+
+export const addPhotoInputSchema = z.object({
+    post_id: z.number(),
+    photo_url: z.string().url(),
+});
