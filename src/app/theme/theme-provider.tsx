@@ -66,7 +66,7 @@ export function ThemeProvider() {
     //   return;
     // }
 
-    root.classList.add("dark");
+    // root.classList.add("dark");
   }, []);
 
   return null;

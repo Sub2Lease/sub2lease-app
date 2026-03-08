@@ -119,38 +119,35 @@ export function CreateListing() {
               onClick={() => i < stepIndex && setStep(s.id)}
               className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold transition-colors ${
                 s.id === step
-                  ? "bg-wise-white text-ninja-black"
+                  ? "bg-foreground text-background"
                   : i < stepIndex
-                  ? "bg-wise-white/30 text-wise-white cursor-pointer"
-                  : "bg-wise-white/10 text-wise-white/40"
+                  ? "bg-foreground/30 text-foreground cursor-pointer"
+                  : "bg-foreground/10 text-foreground/40"
               }`}
             >
               {i + 1}
             </button>
-            <span className={`text-sm ${s.id === step ? "text-wise-white" : "text-wise-white/40"}`}>
+            <span className={`text-sm ${s.id === step ? "text-foreground" : "text-foreground/40"}`}>
               {s.label}
             </span>
-            {i < STEPS.length - 1 && <div className="mx-2 h-px w-6 bg-wise-white/20" />}
+            {i < STEPS.length - 1 && <div className="mx-2 h-px w-6 bg-foreground/20" />}
           </div>
         ))}
       </div>
 
       {/* Card */}
-      <div className="rounded-2xl border border-wise-white/10 bg-white/5 backdrop-blur-sm p-8">
+      <div className="rounded-2xl border border-foreground/10 bg-foreground/5 backdrop-blur-sm p-8">
 
         {/* ── Basics ─────────────────────────────────────────────────── */}
         {step === "basics" && (
           <div className="flex flex-col gap-5">
-            <h2 className="text-xl font-semibold text-wise-white">About the place</h2>
-
+            <h2 className="text-xl font-semibold text-foreground">About the place</h2>
             <Field label="Listing title">
               <input placeholder="e.g. Cozy studio near Langdon St" value={form.title} onChange={set("title")} />
             </Field>
-
             <Field label="Address">
               <input placeholder="Street address" value={form.address} onChange={set("address")} />
             </Field>
-
             <div className="grid grid-cols-2 gap-3">
               <Field label="City">
                 <input placeholder="Madison" value={form.city} onChange={set("city")} />
@@ -159,7 +156,6 @@ export function CreateListing() {
                 <input placeholder="WI" value={form.state} onChange={set("state")} />
               </Field>
             </div>
-
             <div className="grid grid-cols-2 gap-3">
               <Field label="Zipcode">
                 <input placeholder="53703" value={form.zipcode} onChange={set("zipcode")} />
@@ -168,7 +164,6 @@ export function CreateListing() {
                 <input placeholder="US" value={form.country} onChange={set("country")} />
               </Field>
             </div>
-
             <Field label="Description">
               <textarea
                 rows={4}
@@ -183,8 +178,7 @@ export function CreateListing() {
         {/* ── Details ────────────────────────────────────────────────── */}
         {step === "details" && (
           <div className="flex flex-col gap-5">
-            <h2 className="text-xl font-semibold text-wise-white">Property details</h2>
-
+            <h2 className="text-xl font-semibold text-foreground">Property details</h2>
             <div className="grid grid-cols-3 gap-3">
               <Field label="Property type">
                 <select value={form.property_type} onChange={set("property_type")}>
@@ -202,7 +196,6 @@ export function CreateListing() {
                 </select>
               </Field>
             </div>
-
             <div className="grid grid-cols-3 gap-3">
               <Field label="Total bedrooms">
                 <input type="number" min={0} value={form.total_bedroom_count} onChange={setNum("total_bedroom_count")} />
@@ -214,15 +207,14 @@ export function CreateListing() {
                 <input type="number" min={1} step={0.5} value={form.bathrooms} onChange={setNum("bathrooms")} />
               </Field>
             </div>
-
             <label className="flex items-center gap-3 cursor-pointer">
               <div
                 onClick={() => setForm((p) => ({ ...p, furnished: !p.furnished }))}
-                className={`h-6 w-11 rounded-full transition-colors ${form.furnished ? "bg-wise-white" : "bg-wise-white/20"} relative`}
+                className={`h-6 w-11 rounded-full transition-colors relative ${form.furnished ? "bg-foreground" : "bg-foreground/20"}`}
               >
-                <div className={`absolute top-0.5 h-5 w-5 rounded-full bg-ninja-black transition-all ${form.furnished ? "left-5" : "left-0.5"}`} />
+                <div className={`absolute top-0.5 h-5 w-5 rounded-full bg-background transition-all ${form.furnished ? "left-5" : "left-0.5"}`} />
               </div>
-              <span className="text-sm text-wise-white">Furnished</span>
+              <span className="text-sm text-foreground">Furnished</span>
             </label>
           </div>
         )}
@@ -230,8 +222,7 @@ export function CreateListing() {
         {/* ── Dates & Price ───────────────────────────────────────────── */}
         {step === "dates" && (
           <div className="flex flex-col gap-5">
-            <h2 className="text-xl font-semibold text-wise-white">Dates & pricing</h2>
-
+            <h2 className="text-xl font-semibold text-foreground">Dates & pricing</h2>
             <div className="grid grid-cols-2 gap-3">
               <Field label="Start date">
                 <input type="date" value={form.start_date} onChange={set("start_date")} />
@@ -240,7 +231,6 @@ export function CreateListing() {
                 <input type="date" value={form.end_date} onChange={set("end_date")} />
               </Field>
             </div>
-
             <div className="grid grid-cols-2 gap-3">
               <Field label="Monthly rent ($)">
                 <input type="number" placeholder="1200" value={form.monthly_rent} onChange={set("monthly_rent")} />
@@ -255,21 +245,17 @@ export function CreateListing() {
         {/* ── Extras ─────────────────────────────────────────────────── */}
         {step === "extras" && (
           <div className="flex flex-col gap-5">
-            <h2 className="text-xl font-semibold text-wise-white">Extra info</h2>
-
+            <h2 className="text-xl font-semibold text-foreground">Extra info</h2>
             <Field label="Property website — optional">
               <input placeholder="https://..." value={form.property_website} onChange={set("property_website")} />
             </Field>
-
             <Field label="Amenities — optional">
               <textarea rows={3} placeholder="Gym, parking, rooftop, in-unit laundry..." value={form.amenities} onChange={set("amenities")} />
             </Field>
-
             <Field label="House rules — optional">
               <textarea rows={3} placeholder="No smoking, no pets, quiet hours after 10pm..." value={form.house_rules} onChange={set("house_rules")} />
             </Field>
-
-            {error && <p className="text-sm text-red-400">{error}</p>}
+            {error && <p className="text-sm text-red-500">{error}</p>}
           </div>
         )}
 
@@ -278,7 +264,7 @@ export function CreateListing() {
           <button
             onClick={back}
             disabled={stepIndex === 0}
-            className="rounded-full border border-wise-white/30 px-6 py-2.5 text-sm text-wise-white transition-colors hover:bg-wise-white/10 disabled:opacity-0"
+            className="rounded-full border border-foreground/30 px-6 py-2.5 text-sm text-foreground transition-colors hover:bg-foreground/10 disabled:opacity-0"
           >
             Back
           </button>
@@ -287,14 +273,14 @@ export function CreateListing() {
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="rounded-full bg-wise-white px-8 py-2.5 text-sm font-semibold text-ninja-black transition-opacity hover:opacity-80 disabled:opacity-40"
+              className="rounded-full bg-foreground px-8 py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-80 disabled:opacity-40"
             >
               {loading ? "Publishing…" : "Publish listing"}
             </button>
           ) : (
             <button
               onClick={next}
-              className="rounded-full bg-wise-white px-8 py-2.5 text-sm font-semibold text-ninja-black transition-opacity hover:opacity-80"
+              className="rounded-full bg-foreground px-8 py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-80"
             >
               Continue
             </button>
@@ -309,10 +295,10 @@ export function CreateListing() {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-xs font-medium uppercase tracking-wide text-wise-white/50">
+      <label className="text-xs font-medium uppercase tracking-wide text-foreground/50">
         {label}
       </label>
-      <div className="[&>input]:w-full [&>input]:rounded-xl [&>input]:border [&>input]:border-wise-white/15 [&>input]:bg-white/5 [&>input]:px-4 [&>input]:py-2.5 [&>input]:text-sm [&>input]:text-wise-white [&>input]:outline-none [&>input]:placeholder:text-wise-white/30 [&>input]:focus:border-wise-white/40 [&>input]:transition-colors [&>select]:w-full [&>select]:rounded-xl [&>select]:border [&>select]:border-wise-white/15 [&>select]:bg-black/40 [&>select]:px-4 [&>select]:py-2.5 [&>select]:text-sm [&>select]:text-wise-white [&>select]:outline-none [&>select]:focus:border-wise-white/40 [&>textarea]:w-full [&>textarea]:rounded-xl [&>textarea]:border [&>textarea]:border-wise-white/15 [&>textarea]:bg-white/5 [&>textarea]:px-4 [&>textarea]:py-2.5 [&>textarea]:text-sm [&>textarea]:text-wise-white [&>textarea]:outline-none [&>textarea]:placeholder:text-wise-white/30 [&>textarea]:focus:border-wise-white/40 [&>textarea]:transition-colors [&>textarea]:resize-none">
+      <div className="[&>input]:w-full [&>input]:rounded-xl [&>input]:border [&>input]:border-foreground/15 [&>input]:bg-background [&>input]:px-4 [&>input]:py-2.5 [&>input]:text-sm [&>input]:text-foreground [&>input]:outline-none [&>input]:placeholder:text-foreground/30 [&>input]:focus:border-foreground/40 [&>input]:transition-colors [&>select]:w-full [&>select]:rounded-xl [&>select]:border [&>select]:border-foreground/15 [&>select]:bg-background [&>select]:px-4 [&>select]:py-2.5 [&>select]:text-sm [&>select]:text-foreground [&>select]:outline-none [&>select]:focus:border-foreground/40 [&>textarea]:w-full [&>textarea]:rounded-xl [&>textarea]:border [&>textarea]:border-foreground/15 [&>textarea]:bg-background [&>textarea]:px-4 [&>textarea]:py-2.5 [&>textarea]:text-sm [&>textarea]:text-foreground [&>textarea]:outline-none [&>textarea]:placeholder:text-foreground/30 [&>textarea]:focus:border-foreground/40 [&>textarea]:transition-colors [&>textarea]:resize-none">
         {children}
       </div>
     </div>

@@ -51,59 +51,12 @@
     --white-transparent: 0, 0%, 98%, 0.02;
   }
 
-  .dark {
-    --background: 39 60% 90%;
-    --foreground: 0 0% 98%;
+  * {
+    @apply border-border;
+  }
 
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-
-    --primary: 217 91% 60%;
-    --primary-foreground: 0 0% 100%;
-    --primary-active: 217 91% 65%;
-
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
-
-    --radius: 0.75rem;
-
-    --forest-green: 94 100% 30%;
-    --orange-web: 39 97% 54%;
-    --grey: 0 0% 14%;
-    --lighter-grey: 0 0% 23%;
-
-    --neon-green: 117 85% 69%;
-    --dark-green: 131 100% 11%;
-    --ninja-black: 120 2% 8%;
-    --wise-white: 0 0% 98%;
-    --wise-gray: 120 1% 17%;
-    --mint-cream: 109 44% 95%;
-    --turtle-yellow: 54 100% 50%;
-    --turtle-red: 353 100% 51%;
-    --white-transparent: 0, 0%, 98%, 0.02;
-
-    * {
-      @apply border-border;
-    }
-    body {
-      @apply bg-background;
-    }
+  body {
+    @apply bg-background text-foreground;
   }
 
   @media screen and (max-width: 480px) and (-webkit-min-device-pixel-ratio: 2) {
@@ -214,11 +167,11 @@
   .pagination li a {
     @apply inline-flex h-10 w-10 items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground;
   }
-  
+
   /* Animation for green lines */
   .animated-base {
     @apply grid place-content-center;
-    
+
     --border-angle: 0turn;
     --main-bg: hsl(var(--ninja-black));
     background:
@@ -232,24 +185,24 @@
     border: 2px solid transparent;
     animation: bg-spin 3s linear infinite;
   }
-  
+
   .animatedRectangle {
     @apply animated-base shadow-[0px_0px_35px_-20px_rgba(115,243,108,0.20)];
     border-radius: 20px;
   }
-  
+
   @keyframes bg-spin {
     to {
       --border-angle: 1turn;
     }
   }
-  
+
   @property --border-angle {
     syntax: "<angle>";
     inherits: true;
     initial-value: 0turn;
   }
-  
+
   .future-swiper.swiper-3d .swiper-slide-shadow {
     @apply hidden;
   }
@@ -258,39 +211,34 @@
   .content-wrapper {
     @apply flex flex-col gap-5 rounded-[20px] bg-transparent p-0 shadow-none sm:p-[25px] sm:shadow-[0px_0px_40px_0px_rgba(0,0,0,0.60)] sm:bg-[rgba(249,249,249,0.03)];
   }
-  
-  /* Uncomment if you remove the banner */
-  /*.full-height-minus-header-and-footer {*/
-  /*  @apply min-h-[calc(100vh-160px-40px)]; */
-  /*}*/
-  /* And remove this */
+
   .full-height-minus-header-and-footer {
-    @apply min-h-[calc(100vh-160px-60px-42px)]; /* 42px is banner height with gap */;
+    @apply min-h-[calc(100vh-160px-60px-42px)];
   }
-  
+
   .timeline-row {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
-  
+
   .timeline-row::-webkit-scrollbar {
-    display: none; /* Chrome, Safari and Opera */
+    display: none;
   }
-  
+
   .scroll-container {
     @apply lg:max-h-[600px] lg:overflow-y-scroll;
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
   }
-  
+
   .scroll-container::-webkit-scrollbar {
     width: 6px;
   }
-  
+
   .scroll-container::-webkit-scrollbar-track {
     background: transparent;
   }
-  
+
   .scroll-container::-webkit-scrollbar-thumb {
     background-color: rgba(255, 255, 255, 0.3);
     border-radius: 20px;

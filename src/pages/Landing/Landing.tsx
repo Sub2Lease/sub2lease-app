@@ -25,7 +25,7 @@ export function Landing() {
             Find your home →
           </button>
 
-          <button className="rounded-full border border-wise-white/60 bg-transparent px-6 py-3 text-sm font-medium text-wise-white hover:bg-wise-white/10">
+          <button onClick={() => navigate("/listings/create")} className="rounded-full border border-wise-white/60 bg-transparent px-6 py-3 text-sm font-medium text-wise-white hover:bg-wise-white/10">
             List your place
           </button>
         </div>

@@ -2,7 +2,8 @@ import type { ReactNode } from "react";
 import { Landing } from "@/pages/Landing/Landing"
 import { Listings } from "@/pages/Listings/Listings";
 import { Login, Signup } from "@/pages/Auth";
-// import { ProtectedRoute } from "@/app/router/protectedRoutes";
+import { ProtectedRoutes } from "@/app/router/protectedRoutes";
+import { CreateListing } from "@/pages/Create/CreateListing";
 
 export interface AppRoute {
   name: string;
@@ -34,6 +35,16 @@ export const routes: AppRoute[] = [
     name: "Sign Up",
     path: "/signup",
     element: <Signup />,
+  },
+  {
+    name: "Create Listing",
+    path: "/listings/create",
+    authenticatedOnly: true,
+    element: (
+      <ProtectedRoutes>
+        <CreateListing />
+      </ProtectedRoutes>
+    ),
   },
   {
     name: "Listings",
