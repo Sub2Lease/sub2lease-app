@@ -3,7 +3,16 @@ import { useState } from "react";
 import { useLocation, matchPath } from "react-router";
 import hero from "@/assets/video/Hero.mp4";
 import { SideMenu } from "./SideMenu";
-import { Header } from "../../widget/Header";
+import { LandingHeader } from "../../widget/LandingHeader";
+import { Logo } from "@/widgets/widget/Logo";
+
+function Header() {
+  return <div className="flex">
+    <div className="mr-auto"><Logo /></div>
+    <button className="p-2 rounded-full">☰</button>
+    <button className="p-2 rounded-full bg-white shadow">👤</button>
+  </div>
+}
 
 export function Layout({ children }: PropsWithChildren) {
   const [isOpen, setIsOpen] = useState(false);
@@ -26,7 +35,7 @@ export function Layout({ children }: PropsWithChildren) {
 
       <div className="mx-auto">
         <div className="relative flex min-h-screen flex-col gap-5 p-6 lg:p-10 lg:pt-6">
-          <Header />
+          {isLanding ? <LandingHeader /> : <Header />}
 
           <main className="full-height-minus-header-and-footer flex flex-col gap-5">
             {children}

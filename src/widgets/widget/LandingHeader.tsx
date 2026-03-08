@@ -1,7 +1,8 @@
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { clearToken, useIsAuthenticated } from "@/app/stores/authStore";
+import { Logo } from "./Logo";
 
-export function Header() {
+export function LandingHeader() {
   const navigate = useNavigate();
   const isAuthenticated = useIsAuthenticated();
 
@@ -15,13 +16,7 @@ export function Header() {
       <header className="bg-transparent">
         <div className="flex items-center justify-between gap-2 px-8 py-5">
           {/* Logo */}
-          <button
-            onClick={() => navigate("/")}
-            className="text-wise-white text-2xl font-bold tracking-tight"
-            style={{ fontFamily: "'Caveat', cursive" }}
-          >
-            Memento
-          </button>
+          <Logo isLink={false} color="white" />
 
           {/* Auth buttons */}
           <div className="flex items-center gap-2.5">
