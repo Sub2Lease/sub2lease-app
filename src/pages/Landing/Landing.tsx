@@ -16,7 +16,7 @@ export function Landing() {
           {"Student to student\nsubleasing\nmade simple"}
         </h1>
 
-        <p className="mt-6 mx-auto max-w-xl text-base text-wise-white/80 sm:text-lg">
+        <p className="mt-6 mx-auto max-w-xl text-base text-wise-white/95 sm:text-lg">
           Subleasing for the Badger community
         </p>
 
