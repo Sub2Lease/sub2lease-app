@@ -5,7 +5,7 @@ export function PropertyCard({ property }: { property: Listing }) {
     <div className="box-border flex bg-white rounded-xl overflow-hidden shadow mb-4 md:h-28 lg:h-36">
       <div className="flex-1 size-full">
         <img
-          src={property.photos[0]?.photo_url ?? ""}
+          src={property.photos[0] ?? ""}
           alt={property.title}
           className="size-full object-[50%_70%] object-cover"
         />

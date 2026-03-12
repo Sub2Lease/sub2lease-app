@@ -20,27 +20,30 @@ function FilterButtons() {
 
 const DUMMY_PROPERTIES: Listing[] = [
   {
-    title: "Property #1",
-    monthly_rent: "12345",
-    address: "339 West Gorham Street, Madison Wisconsin",
-    photos: [{ order: 0, photo_url: "https://images.pexels.com/photos/35282517/pexels-photo-35282517.jpeg" }],
+    title: "4 x 1BR/1BA Simplistic Homes",
+    monthly_rent: "6,800",
+    address: "Kinshasa, Congo",
+    photos: ["https://images.pexels.com/photos/35282517/pexels-photo-35282517.jpeg"],
   },
   {
-    title: "Property #2",
-    monthly_rent: "12345",
-    address: "339 West Gorham Street, Madison Wisconsin",
-    photos: [{ order: 0, photo_url: "https://images.pexels.com/photos/36176552/pexels-photo-36176552.jpeg" }],
+    title: "Oceanview old Athens homes",
+    monthly_rent: "265,500",
+    address: "Athens, Greece",
+    photos: ["https://images.pexels.com/photos/36176552/pexels-photo-36176552.jpeg"],
   },
   {
-    title: "Property #3",
-    monthly_rent: "12345",
-    address: "339 West Gorham Street, Madison Wisconsin",
-    photos: [{ order: 0, photo_url: "https://images.pexels.com/photos/36333018/pexels-photo-36333018.jpeg" }],
+    title: "Brick by Brick Apartments",
+    monthly_rent: "1,200",
+    address: "Cairo, Egypt",
+    photos: ["https://images.pexels.com/photos/36333018/pexels-photo-36333018.jpeg"],
   },
 ];
 
 export function Listings() {
   const fetchedListings = useListings();
+
+  // DUMMY IF BACKEND OFF / NO LISTINGS
+  const usedListings = fetchedListings.length ? fetchedListings : DUMMY_PROPERTIES;
 
   return (
     <div className="bg-background">
@@ -50,7 +53,7 @@ export function Listings() {
       <div className="flex flex-col md:flex-row gap-4">
         <div className="flex-1">
           <FilterButtons />
-          <PropertyList listings={fetchedListings} />
+          <PropertyList listings={usedListings} />
         </div>
         <div className="flex-1">
           <MapSection lat={43.07305} lng={-89.40325} />
