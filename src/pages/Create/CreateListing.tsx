@@ -70,7 +70,7 @@ export function CreateListing() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const set = (field: keyof FormState) =>
+  const   set = (field: keyof FormState) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
       const value = e.target.type === "checkbox"
         ? (e.target as HTMLInputElement).checked
@@ -88,7 +88,7 @@ export function CreateListing() {
   const next = () => !isLast && setStep(STEPS[stepIndex + 1].id);
   const back = () => stepIndex > 0 && setStep(STEPS[stepIndex - 1].id);
 
-  const handleSubmit = async () => {
+  const handleComplete = async () => {
     setError(null);
     setLoading(true);
     try {
@@ -136,157 +136,162 @@ export function CreateListing() {
       </div>
 
       {/* Card */}
-      <div className="rounded-2xl border border-foreground/10 bg-foreground/5 backdrop-blur-sm p-8">
+      <form onSubmit={(e) => {
+        e.preventDefault();
+        next();
+      }}>
+        <div className="rounded-2xl border border-foreground/10 bg-foreground/5 backdrop-blur-sm p-8">
 
-        {/* ── Basics ─────────────────────────────────────────────────── */}
-        {step === "basics" && (
-          <div className="flex flex-col gap-5">
-            <h2 className="text-xl font-semibold text-foreground">About the place</h2>
-            <Field label="Listing title">
-              <input placeholder="e.g. Cozy studio near Langdon St" value={form.title} onChange={set("title")} />
-            </Field>
-            <Field label="Address">
-              <input placeholder="Street address" value={form.address} onChange={set("address")} />
-            </Field>
-            <div className="grid grid-cols-2 gap-3">
-              <Field label="City">
-                <input placeholder="Madison" value={form.city} onChange={set("city")} />
+          {/* ── Basics ─────────────────────────────────────────────────── */}
+          {step === "basics" && (
+            <div className="flex flex-col gap-5">
+              <h2 className="text-xl font-semibold text-foreground">About the place</h2>
+              <Field label="Listing title">
+                <input required placeholder="e.g. Cozy studio near Langdon St" value={form.title} onChange={set("title")} />
               </Field>
-              <Field label="State">
-                <input placeholder="WI" value={form.state} onChange={set("state")} />
+              <Field label="Address">
+                <input required placeholder="Street address" value={form.address} onChange={set("address")} />
               </Field>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <Field label="Zipcode">
-                <input placeholder="53703" value={form.zipcode} onChange={set("zipcode")} />
-              </Field>
-              <Field label="Country">
-                <input placeholder="US" value={form.country} onChange={set("country")} />
-              </Field>
-            </div>
-            <Field label="Description">
-              <textarea
-                rows={4}
-                placeholder="Describe the space, neighborhood, vibe..."
-                value={form.description}
-                onChange={set("description")}
-              />
-            </Field>
-          </div>
-        )}
-
-        {/* ── Details ────────────────────────────────────────────────── */}
-        {step === "details" && (
-          <div className="flex flex-col gap-5">
-            <h2 className="text-xl font-semibold text-foreground">Property details</h2>
-            <div className="grid grid-cols-3 gap-3">
-              <Field label="Property type">
-                <select value={form.property_type} onChange={set("property_type")}>
-                  {PROPERTY_TYPES.map((t) => <option key={t}>{t}</option>)}
-                </select>
-              </Field>
-              <Field label="Listing type">
-                <select value={form.listing_type} onChange={set("listing_type")}>
-                  {LISTING_TYPES.map((t) => <option key={t}>{t}</option>)}
-                </select>
-              </Field>
-              <Field label="Your role">
-                <select value={form.poster_role} onChange={set("poster_role")}>
-                  {POSTER_ROLES.map((t) => <option key={t}>{t}</option>)}
-                </select>
-              </Field>
-            </div>
-            <div className="grid grid-cols-3 gap-3">
-              <Field label="Total bedrooms">
-                <input type="number" min={0} value={form.total_bedroom_count} onChange={setNum("total_bedroom_count")} />
-              </Field>
-              <Field label="Rooms available">
-                <input type="number" min={1} value={form.rooms_available} onChange={setNum("rooms_available")} />
-              </Field>
-              <Field label="Bathrooms">
-                <input type="number" min={1} step={0.5} value={form.bathrooms} onChange={setNum("bathrooms")} />
-              </Field>
-            </div>
-            <label className="flex items-center gap-3 cursor-pointer">
-              <div
-                onClick={() => setForm((p) => ({ ...p, furnished: !p.furnished }))}
-                className={`h-6 w-11 rounded-full transition-colors relative ${form.furnished ? "bg-foreground" : "bg-foreground/20"}`}
-              >
-                <div className={`absolute top-0.5 h-5 w-5 rounded-full bg-background transition-all ${form.furnished ? "left-5" : "left-0.5"}`} />
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="City">
+                  <input required placeholder="Madison" value={form.city} onChange={set("city")} />
+                </Field>
+                <Field label="State">
+                  <input required placeholder="WI" value={form.state} onChange={set("state")} />
+                </Field>
               </div>
-              <span className="text-sm text-foreground">Furnished</span>
-            </label>
-          </div>
-        )}
-
-        {/* ── Dates & Price ───────────────────────────────────────────── */}
-        {step === "dates" && (
-          <div className="flex flex-col gap-5">
-            <h2 className="text-xl font-semibold text-foreground">Dates & pricing</h2>
-            <div className="grid grid-cols-2 gap-3">
-              <Field label="Start date">
-                <input type="date" value={form.start_date} onChange={set("start_date")} />
-              </Field>
-              <Field label="End date">
-                <input type="date" value={form.end_date} onChange={set("end_date")} />
-              </Field>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <Field label="Monthly rent ($)">
-                <input type="number" placeholder="1200" value={form.monthly_rent} onChange={set("monthly_rent")} />
-              </Field>
-              <Field label="Security deposit ($) — optional">
-                <input type="number" placeholder="500" value={form.security_deposit} onChange={set("security_deposit")} />
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="Zipcode">
+                  <input required placeholder="53703" value={form.zipcode} onChange={set("zipcode")} />
+                </Field>
+                <Field label="Country">
+                  <input required placeholder="US" value={form.country} onChange={set("country")} />
+                </Field>
+              </div>
+              <Field label="Description">
+                <textarea
+                  rows={4}
+                  placeholder="Describe the space, neighborhood, vibe..."
+                  value={form.description}
+                  onChange={set("description")}
+                />
               </Field>
             </div>
-          </div>
-        )}
-
-        {/* ── Extras ─────────────────────────────────────────────────── */}
-        {step === "extras" && (
-          <div className="flex flex-col gap-5">
-            <h2 className="text-xl font-semibold text-foreground">Extra info</h2>
-            <Field label="Property website — optional">
-              <input placeholder="https://..." value={form.property_website} onChange={set("property_website")} />
-            </Field>
-            <Field label="Amenities — optional">
-              <textarea rows={3} placeholder="Gym, parking, rooftop, in-unit laundry..." value={form.amenities} onChange={set("amenities")} />
-            </Field>
-            <Field label="House rules — optional">
-              <textarea rows={3} placeholder="No smoking, no pets, quiet hours after 10pm..." value={form.house_rules} onChange={set("house_rules")} />
-            </Field>
-            {error && <p className="text-sm text-red-500">{error}</p>}
-          </div>
-        )}
-
-        {/* ── Navigation ─────────────────────────────────────────────── */}
-        <div className="mt-8 flex justify-between">
-          <button
-            onClick={back}
-            disabled={stepIndex === 0}
-            className="rounded-full border border-foreground/30 px-6 py-2.5 text-sm text-foreground transition-colors hover:bg-foreground/10 disabled:opacity-0"
-          >
-            Back
-          </button>
-
-          {isLast ? (
-            <button
-              onClick={handleSubmit}
-              disabled={loading}
-              className="rounded-full bg-foreground px-8 py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-80 disabled:opacity-40"
-            >
-              {loading ? "Publishing…" : "Publish listing"}
-            </button>
-          ) : (
-            <button
-              onClick={next}
-              className="rounded-full bg-foreground px-8 py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-80"
-            >
-              Continue
-            </button>
           )}
+
+          {/* ── Details ────────────────────────────────────────────────── */}
+          {step === "details" && (
+            <div className="flex flex-col gap-5">
+              <h2 className="text-xl font-semibold text-foreground">Property details</h2>
+              <div className="grid grid-cols-3 gap-3">
+                <Field label="Property type">
+                  <select value={form.property_type} onChange={set("property_type")}>
+                    {PROPERTY_TYPES.map((t) => <option key={t}>{t}</option>)}
+                  </select>
+                </Field>
+                <Field label="Listing type">
+                  <select value={form.listing_type} onChange={set("listing_type")}>
+                    {LISTING_TYPES.map((t) => <option key={t}>{t}</option>)}
+                  </select>
+                </Field>
+                <Field label="Your role">
+                  <select value={form.poster_role} onChange={set("poster_role")}>
+                    {POSTER_ROLES.map((t) => <option key={t}>{t}</option>)}
+                  </select>
+                </Field>
+              </div>
+              <div className="grid grid-cols-3 gap-3">
+                <Field label="Total bedrooms">
+                  <input type="number" min={0} value={form.total_bedroom_count} onChange={setNum("total_bedroom_count")} />
+                </Field>
+                <Field label="Rooms available">
+                  <input type="number" min={1} value={form.rooms_available} onChange={setNum("rooms_available")} />
+                </Field>
+                <Field label="Bathrooms">
+                  <input type="number" min={1} step={0.5} value={form.bathrooms} onChange={setNum("bathrooms")} />
+                </Field>
+              </div>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <div
+                  onClick={() => setForm((p) => ({ ...p, furnished: !p.furnished }))}
+                  className={`h-6 w-11 rounded-full transition-colors relative ${form.furnished ? "bg-foreground" : "bg-foreground/20"}`}
+                >
+                  <div className={`absolute top-0.5 h-5 w-5 rounded-full bg-background transition-all ${form.furnished ? "left-5" : "left-0.5"}`} />
+                </div>
+                <span className="text-sm text-foreground">Furnished</span>
+              </label>
+            </div>
+          )}
+
+          {/* ── Dates & Price ───────────────────────────────────────────── */}
+          {step === "dates" && (
+            <div className="flex flex-col gap-5">
+              <h2 className="text-xl font-semibold text-foreground">Dates & pricing</h2>
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="Start date">
+                  <input type="date" value={form.start_date} onChange={set("start_date")} />
+                </Field>
+                <Field label="End date">
+                  <input type="date" value={form.end_date} onChange={set("end_date")} />
+                </Field>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="Monthly rent ($)">
+                  <input type="number" placeholder="1200" value={form.monthly_rent} onChange={set("monthly_rent")} />
+                </Field>
+                <Field label="Security deposit ($) — optional">
+                  <input type="number" placeholder="500" value={form.security_deposit} onChange={set("security_deposit")} />
+                </Field>
+              </div>
+            </div>
+          )}
+
+          {/* ── Extras ─────────────────────────────────────────────────── */}
+          {step === "extras" && (
+            <div className="flex flex-col gap-5">
+              <h2 className="text-xl font-semibold text-foreground">Extra info</h2>
+              <Field label="Property website — optional">
+                <input placeholder="https://..." value={form.property_website} onChange={set("property_website")} />
+              </Field>
+              <Field label="Amenities — optional">
+                <textarea rows={3} placeholder="Gym, parking, rooftop, in-unit laundry..." value={form.amenities} onChange={set("amenities")} />
+              </Field>
+              <Field label="House rules — optional">
+                <textarea rows={3} placeholder="No smoking, no pets, quiet hours after 10pm..." value={form.house_rules} onChange={set("house_rules")} />
+              </Field>
+              {error && <p className="text-sm text-red-500">{error}</p>}
+            </div>
+          )}
+
+          {/* ── Navigation ─────────────────────────────────────────────── */}
+          <div className="mt-8 flex justify-between">
+            <button
+              onClick={back}
+              disabled={stepIndex === 0}
+              className="rounded-full border border-foreground/30 px-6 py-2.5 text-sm text-foreground transition-colors hover:bg-foreground/10 disabled:opacity-0"
+            >
+              Back
+            </button>
+
+            {isLast ? (
+              <button
+                onClick={handleComplete}
+                disabled={loading}
+                className="rounded-full bg-foreground px-8 py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-80 disabled:opacity-40"
+              >
+                {loading ? "Publishing…" : "Publish listing"}
+              </button>
+            ) : (
+              <button
+                type="submit"
+                className="rounded-full bg-foreground px-8 py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-80"
+              >
+                Continue
+              </button>
+            )}
+          </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 export interface Listing {
   title: string;
-  price: number;
+  monthly_rent: string;
   address: string;
-  imageUrl: string;
+  photos: { photo_url: string; order: number }[];
 }

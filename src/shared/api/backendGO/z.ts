@@ -133,7 +133,14 @@ export const photoSchema = z.object({
   id: z.number(),
   post_id: z.number().nullable().optional(),
   photo_url: z.string(),
+  order: z.number(),
 });
+
+export const photoListSchema = z.array(photoSchema);
+
+export const listPhotosByPostSchema = z.object({
+  post_id: z.number(),
+})
 
 // Favorites
 

@@ -66,6 +66,15 @@ export const backendHooks = buildHooks(
       }),
     }),
 
+    usePhotosByPostID: item({
+      fn: backendApi.getPostPhotos,
+      key: ({ post_id }: { post_id?: number }) => ["usePhotosByPostID", post_id],
+      options: ({ post_id }: { post_id?: number }) => ({
+        enabled: post_id !== undefined,
+        refetchOnMount: "always" as const,
+      }),
+    }),
+
     // Favorites
 
     useFavorites: item({

@@ -1,5 +1,6 @@
 import type { Listing } from "@/shared/types";
 import { MapSection, PropertyList, SearchBar } from "@/widgets/Listings";
+import { useListings } from "@/shared/hooks";
 
 function FilterButtons() {
   const filters = ["Price", "Bedrooms", "Types"];
@@ -20,26 +21,26 @@ function FilterButtons() {
 const DUMMY_PROPERTIES: Listing[] = [
   {
     title: "Property #1",
-    price: 12345,
+    monthly_rent: "12345",
     address: "339 West Gorham Street, Madison Wisconsin",
-    imageUrl: "https://images.pexels.com/photos/35282517/pexels-photo-35282517.jpeg",
+    photos: [{ order: 0, photo_url: "https://images.pexels.com/photos/35282517/pexels-photo-35282517.jpeg" }],
   },
   {
     title: "Property #2",
-    price: 12345,
+    monthly_rent: "12345",
     address: "339 West Gorham Street, Madison Wisconsin",
-    imageUrl: "https://images.pexels.com/photos/36176552/pexels-photo-36176552.jpeg",
+    photos: [{ order: 0, photo_url: "https://images.pexels.com/photos/36176552/pexels-photo-36176552.jpeg" }],
   },
   {
     title: "Property #3",
-    price: 12345,
+    monthly_rent: "12345",
     address: "339 West Gorham Street, Madison Wisconsin",
-    imageUrl: "https://images.pexels.com/photos/36333018/pexels-photo-36333018.jpeg",
+    photos: [{ order: 0, photo_url: "https://images.pexels.com/photos/36333018/pexels-photo-36333018.jpeg" }],
   },
 ];
 
-export function Listings({ listings = [] }: { listings?: Listing[] }) {
-  const shownListings = listings.length ? listings : DUMMY_PROPERTIES;
+export function Listings() {
+  const fetchedListings = useListings();
 
   return (
     <div className="bg-background">
@@ -48,8 +49,8 @@ export function Listings({ listings = [] }: { listings?: Listing[] }) {
 
       <div className="flex flex-col md:flex-row gap-4">
         <div className="flex-1">
-          <FilterButtons />  
-          <PropertyList listings={shownListings} />
+          <FilterButtons />
+          <PropertyList listings={fetchedListings} />
         </div>
         <div className="flex-1">
           <MapSection lat={43.07305} lng={-89.40325} />

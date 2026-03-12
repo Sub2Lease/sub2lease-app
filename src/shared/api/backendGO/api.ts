@@ -18,7 +18,8 @@ import {
   listPostsByUserInputSchema,
   favoriteInputSchema,
   listFavoritesInputSchema,
-//   addPhotoInputSchema,
+  photoListSchema,
+  listPhotosByPostSchema,
 } from "./z";
 
 const isClient = typeof window !== "undefined";
@@ -110,6 +111,12 @@ export const backendApi = buildApi(
         `/posts/${id}/details`,
       result: postSchema,
       options: [methodOptions.patch, simpleJson],
+    }),
+    
+    getPostPhotos: item({
+      input: listPhotosByPostSchema,
+      result: photoListSchema,
+      key: ({ post_id }: { post_id: number }) => `/posts/${post_id}/photos`,
     }),
 
     // Photos
