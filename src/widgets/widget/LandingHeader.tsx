@@ -8,7 +8,7 @@ export function LandingHeader() {
 
   const handleLogout = () => {
     clearToken();
-    navigate("/login");
+    navigate("/");
   };
 
   return (
