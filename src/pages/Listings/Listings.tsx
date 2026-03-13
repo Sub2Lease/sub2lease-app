@@ -47,9 +47,6 @@ export function Listings() {
 
   return (
     <div className="bg-background">
-
-      <SearchBar />
-
       <div className="flex flex-col md:flex-row gap-4">
         <div className="flex-1">
           <FilterButtons />
