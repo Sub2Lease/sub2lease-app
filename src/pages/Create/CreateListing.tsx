@@ -12,8 +12,9 @@ const STEPS: { id: Step; label: string }[] = [
 ];
 
 const PROPERTY_TYPES = ["Apartment", "House", "Condo", "Studio", "Townhouse", "Dorm"];
-const LISTING_TYPES = ["Sublease", "Roommate", "Short-term"];
+const LISTING_TYPES = ["Sublease", "Lease", "Roommate"];
 const POSTER_ROLES = ["Tenant", "Landlord", "Property Manager"];
+const US_STATES = ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"];
 
 interface FormState {
   title: string;
@@ -51,9 +52,9 @@ const initial: FormState = {
   listing_type: "Sublease",
   poster_role: "Tenant",
   furnished: false,
-  total_bedroom_count: 1,
-  rooms_available: 1,
-  bathrooms: 1,
+  total_bedroom_count: 0,
+  rooms_available: 0,
+  bathrooms: 0,
   monthly_rent: "",
   security_deposit: "",
   start_date: "",
@@ -70,7 +71,7 @@ export function CreateListing() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const   set = (field: keyof FormState) =>
+  const set = (field: keyof FormState) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
       const value = e.target.type === "checkbox"
         ? (e.target as HTMLInputElement).checked
@@ -85,11 +86,12 @@ export function CreateListing() {
   const stepIndex = STEPS.findIndex((s) => s.id === step);
   const isLast = stepIndex === STEPS.length - 1;
 
-  const back = () => stepIndex > 0 && setStep(STEPS[stepIndex - 1].id);
-  // Validate US zipcode: must be 5 digits, all numbers
-  const isValidZipcode = (zip: string) => /^\d{5}$/.test(zip);
+  const back = () => {
+    setError(null);
+    if (stepIndex > 0) setStep(STEPS[stepIndex - 1].id);
+  };
 
-  const US_STATES = ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"];
+  const isValidZipcode = (zip: string) => /^\d{5}$/.test(zip);
 
   const validateBasics = () => {
     if (!form.title.trim()) return "Listing title is required.";
@@ -103,18 +105,16 @@ export function CreateListing() {
     if (!form.description.trim()) return "Description is required.";
     return null;
   };
-  const next = () => {
-    setError(null);
-    if (step === "basics") {
-      const err = validateBasics();
-      if (err) { setError(err); return; }
-    }
-    if (step === "dates") {
-      const err = validateDates();
-      if (err) { setError(err); return; }
-    }
-    if (!isLast) setStep(STEPS[stepIndex + 1].id);
-  };
+
+  const validateDetails = () => {
+  if (!form.property_type) return "Property type is required.";
+  if (!form.listing_type) return "Listing type is required.";
+  if (!form.poster_role) return "Your role is required.";
+  if (!form.total_bedroom_count || form.total_bedroom_count < 1) return "Total bedroom count is required.";
+  if (!form.rooms_available || form.rooms_available < 1) return "Rooms available is required.";
+  if (!form.bathrooms || form.bathrooms < 1) return "Bathrooms is required.";
+  return null;
+};
 
   const validateDates = () => {
     if (!form.start_date) return "Start date is required.";
@@ -122,6 +122,23 @@ export function CreateListing() {
     if (form.end_date <= form.start_date) return "End date must be after start date.";
     if (!form.monthly_rent) return "Monthly rent is required.";
     return null;
+  };
+
+  const next = () => {
+    setError(null);
+    if (step === "basics") {
+      const err = validateBasics();
+      if (err) { setError(err); return; }
+    }
+    if (step === "details") {
+      const err = validateDetails();
+      if (err) { setError(err); return; }
+    }
+    if (step === "dates") {
+      const err = validateDates();
+      if (err) { setError(err); return; }
+    }
+    if (!isLast) setStep(STEPS[stepIndex + 1].id);
   };
 
   const handleComplete = async () => {
@@ -152,6 +169,7 @@ export function CreateListing() {
         {STEPS.map((s, i) => (
           <div key={s.id} className="flex items-center gap-2">
             <button
+              type="button"
               onClick={() => i < stepIndex && setStep(s.id)}
               className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold transition-colors ${
                 s.id === step
@@ -172,10 +190,7 @@ export function CreateListing() {
       </div>
 
       {/* Card */}
-      <form onSubmit={(e) => {
-        e.preventDefault();
-        next();
-      }}>
+      <form onSubmit={(e) => { e.preventDefault(); next(); }}>
         <div className="rounded-2xl border border-foreground/10 bg-foreground/5 backdrop-blur-sm p-8">
 
           {/* ── Basics ─────────────────────────────────────────────────── */}
@@ -220,31 +235,74 @@ export function CreateListing() {
             <div className="flex flex-col gap-5">
               <h2 className="text-xl font-semibold text-foreground">Property details</h2>
               <div className="grid grid-cols-3 gap-3">
-                <Field label="Property type">
-                  <select value={form.property_type} onChange={set("property_type")}>
+
+                {/* Property type with tooltip */}
+                <div className="flex flex-col gap-1.5">
+                  <div className="flex items-center gap-1.5">
+                    <label className="text-xs font-medium uppercase tracking-wide text-foreground/50">Property type</label>
+                    <div className="group relative">
+                      <span className="flex h-4 w-4 cursor-default items-center justify-center rounded-full border border-foreground/30 text-[10px] text-foreground/50">?</span>
+                      <div className="absolute bottom-full left-1/2 z-10 mb-2 hidden w-60 -translate-x-1/2 rounded-xl border border-foreground/10 bg-background p-3 text-xs text-foreground/70 shadow-lg group-hover:block">
+                        <p className="mb-1"><span className="font-semibold text-foreground">Apartment</span> — unit in a multi-unit building</p>
+                        <p className="mb-1"><span className="font-semibold text-foreground">House</span> — standalone residential home</p>
+                        <p className="mb-1"><span className="font-semibold text-foreground">Condo</span> — privately owned unit in a shared building</p>
+                        <p className="mb-1"><span className="font-semibold text-foreground">Studio</span> — open-plan single room with no separate bedroom</p>
+                        <p className="mb-1"><span className="font-semibold text-foreground">Townhouse</span> — multi-floor home sharing walls with neighbors</p>
+                        <p><span className="font-semibold text-foreground">Dorm</span> — university or college housing</p>
+                      </div>
+                    </div>
+                  </div>
+                  <select value={form.property_type} onChange={set("property_type")} className="w-full rounded-xl border border-foreground/15 bg-background px-4 py-2.5 text-sm text-foreground outline-none focus:border-foreground/40">
                     {PROPERTY_TYPES.map((t) => <option key={t}>{t}</option>)}
                   </select>
-                </Field>
-                <Field label="Listing type">
-                  <select value={form.listing_type} onChange={set("listing_type")}>
+                </div>
+
+                {/* Listing type with tooltip */}
+                <div className="flex flex-col gap-1.5">
+                  <div className="flex items-center gap-1.5">
+                    <label className="text-xs font-medium uppercase tracking-wide text-foreground/50">Listing type</label>
+                    <div className="group relative">
+                      <span className="flex h-4 w-4 cursor-default items-center justify-center rounded-full border border-foreground/30 text-[10px] text-foreground/50">?</span>
+                      <div className="absolute bottom-full left-1/2 z-10 mb-2 hidden w-60 -translate-x-1/2 rounded-xl border border-foreground/10 bg-background p-3 text-xs text-foreground/70 shadow-lg group-hover:block">
+                        <p className="mb-1.5"><span className="font-semibold text-foreground">Sublease</span> — renting out your place while you're away; you stay on the original lease</p>
+                        <p className="mb-1.5"><span className="font-semibold text-foreground">Lease</span> — a standard rental where the new tenant signs directly</p>
+                        <p><span className="font-semibold text-foreground">Roommate</span> — looking for someone to share the space with you</p>
+                      </div>
+                    </div>
+                  </div>
+                  <select value={form.listing_type} onChange={set("listing_type")} className="w-full rounded-xl border border-foreground/15 bg-background px-4 py-2.5 text-sm text-foreground outline-none focus:border-foreground/40">
                     {LISTING_TYPES.map((t) => <option key={t}>{t}</option>)}
                   </select>
-                </Field>
-                <Field label="Your role">
-                  <select value={form.poster_role} onChange={set("poster_role")}>
+                </div>
+
+                {/* Your role with tooltip */}
+                <div className="flex flex-col gap-1.5">
+                  <div className="flex items-center gap-1.5">
+                    <label className="text-xs font-medium uppercase tracking-wide text-foreground/50">Your role</label>
+                    <div className="group relative">
+                      <span className="flex h-4 w-4 cursor-default items-center justify-center rounded-full border border-foreground/30 text-[10px] text-foreground/50">?</span>
+                      <div className="absolute bottom-full left-1/2 z-10 mb-2 hidden w-60 -translate-x-1/2 rounded-xl border border-foreground/10 bg-background p-3 text-xs text-foreground/70 shadow-lg group-hover:block">
+                        <p className="mb-1"><span className="font-semibold text-foreground">Tenant</span> — you currently rent this space and are subletting or finding a roommate</p>
+                        <p className="mb-1"><span className="font-semibold text-foreground">Landlord</span> — you own the property and are renting it out</p>
+                        <p><span className="font-semibold text-foreground">Property Manager</span> — you manage the property on behalf of the owner</p>
+                      </div>
+                    </div>
+                  </div>
+                  <select value={form.poster_role} onChange={set("poster_role")} className="w-full rounded-xl border border-foreground/15 bg-background px-4 py-2.5 text-sm text-foreground outline-none focus:border-foreground/40">
                     {POSTER_ROLES.map((t) => <option key={t}>{t}</option>)}
                   </select>
-                </Field>
+                </div>
+
               </div>
               <div className="grid grid-cols-3 gap-3">
                 <Field label="Total bedrooms">
-                  <input type="number" min={0} value={form.total_bedroom_count} onChange={setNum("total_bedroom_count")} />
+                  <input type="number" min={0} placeholder="0" value={form.total_bedroom_count || ""} onChange={setNum("total_bedroom_count")} />
                 </Field>
                 <Field label="Rooms available">
-                  <input type="number" min={1} value={form.rooms_available} onChange={setNum("rooms_available")} />
+                  <input type="number" min={1} placeholder="1" value={form.rooms_available || ""} onChange={setNum("rooms_available")} />
                 </Field>
                 <Field label="Bathrooms">
-                  <input type="number" min={1} step={0.5} value={form.bathrooms} onChange={setNum("bathrooms")} />
+                  <input type="number" min={1} step={0.5} placeholder="1" value={form.bathrooms || ""} onChange={setNum("bathrooms")} />
                 </Field>
               </div>
               <label className="flex items-center gap-3 cursor-pointer">
@@ -308,6 +366,7 @@ export function CreateListing() {
           {/* ── Navigation ─────────────────────────────────────────────── */}
           <div className="mt-8 flex justify-between">
             <button
+              type="button"
               onClick={back}
               disabled={stepIndex === 0}
               className="rounded-full border border-foreground/30 px-6 py-2.5 text-sm text-foreground transition-colors hover:bg-foreground/10 disabled:opacity-0"
@@ -317,6 +376,7 @@ export function CreateListing() {
 
             {isLast ? (
               <button
+                type="button"
                 onClick={handleComplete}
                 disabled={loading}
                 className="rounded-full bg-foreground px-8 py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-80 disabled:opacity-40"
