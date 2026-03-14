@@ -1,5 +1,5 @@
 import type { Listing } from "@/shared/types";
-import { MapSection, PropertyList, SearchBar } from "@/widgets/Listings";
+import { MapSection, PropertyList } from "@/widgets/Listings";
 import { useListings } from "@/shared/hooks";
 
 function FilterButtons() {
