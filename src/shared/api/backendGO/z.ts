@@ -43,7 +43,6 @@ export const updateUserProfileInputSchema = z.object({
 
 export const postSchema = z.object({
   id: z.number(),
-  user_id: z.number().nullable().optional(),
   title: z.string(),
   address: z.string(),
   city: z.string(),
@@ -59,12 +58,12 @@ export const postSchema = z.object({
   rooms_available: z.number(),
   bathrooms: z.number(),
   monthly_rent: z.string(),
-  security_deposit: z.string().nullable().optional(),
+  security_deposit: z.any(),
   start_date: z.string(),
   end_date: z.string(),
-  property_website: z.string().nullable().optional(),
-  amenities: z.string().nullable().optional(),
-  house_rules: z.string().nullable().optional(),
+  property_website: z.any(),
+  amenities: z.any(),
+  house_rules: z.any(),
   status: z.string(),
 });
 
@@ -86,12 +85,12 @@ export const createPostInputSchema = z.object({
   rooms_available: z.number(),
   bathrooms: z.number(),
   monthly_rent: z.string(),
-  security_deposit: z.number().optional(),
-  start_date: z.string(), // YYYY-MM-DD
-  end_date: z.string(),   // YYYY-MM-DD
-  property_website: z.string().optional(),
-  amenities: z.string().optional(),
-  house_rules: z.string().optional(),
+  security_deposit: z.number().nullable().optional(),
+  start_date: z.string(),
+  end_date: z.string(),
+  property_website: z.string().nullable().optional(),
+  amenities: z.string().nullable().optional(),
+  house_rules: z.string().nullable().optional(),
   status: z.string(),
 });
 

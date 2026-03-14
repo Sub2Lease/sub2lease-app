@@ -1,7 +1,9 @@
 import { createUser } from "@/shared/api/backendGO/endpoints";
 import { SignupForm } from "../../widgets/widget/SignupForm";
+import { useNavigate } from "react-router-dom";
 
 export function Signup() {
+  const navigate = useNavigate();
   const handleSignup = async (data: {
     first_name: string;
     last_name: string;
@@ -10,6 +12,7 @@ export function Signup() {
     password: string;
   }) => {
     await createUser(data);
+    navigate("/login");
     // Signup doesn't return a token — navigate to login after
   };
   

@@ -1,35 +1,15 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router";
-import { Button } from "@/shared/ui/Button";
+import { Link } from "react-router-dom";
 
 export const ErrorPage = () => {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      window.location.reload();
-    }, 5000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  const handleNavigateHome = () => {
-    navigate("/");
-  };
-
-  const handleReload = () => window.location.reload();
-
   return (
-    <div className="full-height-minus-header-and-footer flex flex-col items-center justify-center gap-5 text-center">
-      <div>
-        <p>Something went wrong...</p>
-        <p className="text-sm text-wise-white/50">Page will automatically reload in 5 seconds</p>
-      </div>
-      <div className="flex gap-5">
-        <Button onClick={handleReload}>Reload now</Button>
-        <Button variant="reversed" onClick={handleNavigateHome}>
-          Go Home
-        </Button>
+    <div>
+      <div className="w-full px-6 text-center">
+        <h1 className="mb-5 text-3xl lg:text-[40px] lg:leading-[40px]">
+          Oops! <br /> Something went <br className="sm:hidden" /> wrong...
+        </h1>
+        <Link className="mt-8 inline-block bg-white p-4 rounded-lg" to="/">
+          Go back home
+        </Link>
       </div>
     </div>
   );

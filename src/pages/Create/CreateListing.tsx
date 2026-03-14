@@ -146,12 +146,28 @@ export function CreateListing() {
     setLoading(true);
     try {
       await createPost({
-        ...form,
-        security_deposit: form.security_deposit ? Number(form.security_deposit) : undefined,
-        property_website: form.property_website || undefined,
-        amenities: form.amenities || undefined,
-        house_rules: form.house_rules || undefined,
+        title: form.title,
+        address: form.address,
+        city: form.city,
+        state: form.state,
+        country: form.country,
+        zipcode: form.zipcode,
+        description: form.description,
+        property_type: form.property_type,
+        listing_type: form.listing_type,
+        poster_role: form.poster_role,
+        furnished: form.furnished,
+        total_bedroom_count: form.total_bedroom_count,
+        rooms_available: form.rooms_available,
+        bathrooms: form.bathrooms,
+        monthly_rent: form.monthly_rent,
+        start_date: form.start_date,
+        end_date: form.end_date,
         status: "active",
+        security_deposit: form.security_deposit ? Number(form.security_deposit) : null,
+        property_website: form.property_website || null,
+        amenities: form.amenities || null,
+        house_rules: form.house_rules || null,
       });
       navigate("/listings");
     } catch (err) {
