@@ -85,8 +85,44 @@ export function CreateListing() {
   const stepIndex = STEPS.findIndex((s) => s.id === step);
   const isLast = stepIndex === STEPS.length - 1;
 
-  const next = () => !isLast && setStep(STEPS[stepIndex + 1].id);
   const back = () => stepIndex > 0 && setStep(STEPS[stepIndex - 1].id);
+  // Validate US zipcode: must be 5 digits, all numbers
+  const isValidZipcode = (zip: string) => /^\d{5}$/.test(zip);
+
+  const US_STATES = ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"];
+
+  const validateBasics = () => {
+    if (!form.title.trim()) return "Listing title is required.";
+    if (!form.address.trim()) return "Address is required.";
+    if (!form.city.trim()) return "City is required.";
+    if (!form.state.trim()) return "State is required.";
+    if (!US_STATES.includes(form.state.trim().toUpperCase())) return "Please enter a valid 2-letter US state (e.g. WI).";
+    if (!form.zipcode.trim()) return "Zipcode is required.";
+    if (!isValidZipcode(form.zipcode.trim())) return "Zipcode must be a 5-digit number.";
+    if (!form.country.trim()) return "Country is required.";
+    if (!form.description.trim()) return "Description is required.";
+    return null;
+  };
+  const next = () => {
+    setError(null);
+    if (step === "basics") {
+      const err = validateBasics();
+      if (err) { setError(err); return; }
+    }
+    if (step === "dates") {
+      const err = validateDates();
+      if (err) { setError(err); return; }
+    }
+    if (!isLast) setStep(STEPS[stepIndex + 1].id);
+  };
+
+  const validateDates = () => {
+    if (!form.start_date) return "Start date is required.";
+    if (!form.end_date) return "End date is required.";
+    if (form.end_date <= form.start_date) return "End date must be after start date.";
+    if (!form.monthly_rent) return "Monthly rent is required.";
+    return null;
+  };
 
   const handleComplete = async () => {
     setError(null);
@@ -259,7 +295,13 @@ export function CreateListing() {
               <Field label="House rules — optional">
                 <textarea rows={3} placeholder="No smoking, no pets, quiet hours after 10pm..." value={form.house_rules} onChange={set("house_rules")} />
               </Field>
-              {error && <p className="text-sm text-red-500">{error}</p>}
+            </div>
+          )}
+
+          {/* ── Error ──────────────────────────────────────────────────── */}
+          {error && (
+            <div className="mt-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+              {error}
             </div>
           )}
 
