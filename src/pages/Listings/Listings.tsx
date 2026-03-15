@@ -46,7 +46,6 @@ export function Listings() {
   const usedListings = fetchedListings.length ? fetchedListings : DUMMY_PROPERTIES;
 
   return (
-    <div className="bg-background">
       <div className="flex flex-col md:flex-row gap-4">
         <div className="flex-1">
           <FilterButtons />
@@ -56,6 +55,5 @@ export function Listings() {
           <MapSection lat={43.07305} lng={-89.40325} />
         </div>
       </div>
-    </div>
   );
 }
