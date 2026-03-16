@@ -27,14 +27,20 @@ export function Listings() {
   return (
     <div className="flex flex-col md:flex-row gap-4 h-screen overflow-hidden">
       <div className="flex-1 flex flex-col min-h-0">
-        <div className="mb-4 gap-2 flex shrink-0">
+        <div className="mb-4 gap-2 flex shrink-0 px-1 py-1">
           <PriceFilterButton
             minPrice={minPrice}
             maxPrice={maxPrice}
             setMinPrice={setMinPrice}
             setMaxPrice={setMaxPrice}
           />
-          <SelectFilterButton filter="Bedrooms" options={BEDROOM_OPTIONS} selected={bedroomFilter} setter={setBedroomFilter} />
+          <SelectFilterButton
+            filter="Bedrooms"
+            options={BEDROOM_OPTIONS}
+            selected={bedroomFilter}
+            setter={setBedroomFilter}
+            formatSelected={(val) => val === "5+" ? "5+ bedrooms" : `${val} bedroom${val === "1" ? "" : "s"}`}
+          />
           <SelectFilterButton filter="Type" options={LISTING_TYPES} selected={typeFilter} setter={setTypeFilter} />
         </div>
         <div className="flex-1 overflow-y-auto flex flex-col gap-4 pr-1 min-h-0">

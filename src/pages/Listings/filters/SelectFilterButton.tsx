@@ -5,14 +5,16 @@ interface Props {
   options: string[];
   selected: string;
   setter: React.Dispatch<React.SetStateAction<string>>;
+  formatSelected?: (val: string) => string;
 }
 
-export function SelectFilterButton({ filter, options, selected, setter }: Props) {
+export function SelectFilterButton({ filter, options, selected, setter, formatSelected }: Props) {
+  const label = selected !== "any" ? (formatSelected ? formatSelected(selected) : selected) : filter;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button className={`flex gap-2 px-6 py-2 bg-white rounded-full shadow hover:bg-gray-100 transition ${selected !== "any" ? "ring-2 ring-foreground/30" : ""}`}>
-          {selected !== "any" ? selected : filter}
+          {label}
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">
