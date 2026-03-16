@@ -2,10 +2,9 @@ import type { Listing } from "@/shared/types";
 
 export function PropertyCard({ property }: { property: Listing }) {
   const photo = property.photos?.[0] || null;
-
   return (
-    <div className="shrink-0 box-border flex bg-white rounded-xl overflow-hidden shadow mb-4 h-28 md:h-32 lg:h-36">
-      <div className="flex-1 bg-gray-100">
+    <div className="shrink-0 box-border flex bg-white rounded-xl overflow-hidden shadow md:mb-1 lg:mb-2 xl:mb-4">
+      <div className="aspect-[4/3] w-1/2 shrink-0 bg-gray-100">
         {photo ? (
           <img
             src={photo}
