@@ -4,15 +4,7 @@ import { useLocation, matchPath } from "react-router";
 import hero from "@/assets/video/Hero.mp4";
 import { SideMenu } from "./SideMenu";
 import { LandingHeader } from "../../widget/LandingHeader";
-import { Logo } from "@/widgets/widget/Logo";
-
-function Header() {
-  return <div className="flex">
-    <div className="mr-auto"><Logo /></div>
-    <button className="p-2 rounded-full">☰</button>
-    <button className="p-2 rounded-full bg-white shadow">👤</button>
-  </div>
-}
+import { Header } from "../../widget/Header";
 
 export function Layout({ children }: PropsWithChildren) {
   const [isOpen, setIsOpen] = useState(false);
