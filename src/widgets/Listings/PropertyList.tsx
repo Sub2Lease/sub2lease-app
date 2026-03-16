@@ -10,12 +10,10 @@ interface Props {
 
 export function PropertyList({ listings }: Props) {
   return (
-    <div className="max-h-[600px]">
-      <div className="flex flex-col w-full scroll-container">
-        {listings.map((listing, index) => (
-          <PropertyCard key={index} property={listing} />
-        ))}
-      </div>
+    <div className="flex flex-col w-full gap-4">
+      {listings.map((listing, index) => (
+        <PropertyCard key={index} property={listing} />
+      ))}
     </div>
   );
 }

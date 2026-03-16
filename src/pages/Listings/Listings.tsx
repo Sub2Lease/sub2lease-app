@@ -25,9 +25,9 @@ export function Listings() {
   }), [fetchedListings, minPrice, maxPrice, typeFilter, bedroomFilter]);
 
   return (
-    <div className="flex flex-col md:flex-row gap-4">
-      <div className="flex-1">
-        <div className="mb-4 gap-2 flex">
+    <div className="flex flex-col md:flex-row gap-4 h-[calc(100vh-120px)]">
+      <div className="flex-1 flex flex-col min-h-0">
+        <div className="mb-4 gap-2 flex shrink-0">
           <PriceFilterButton
             minPrice={minPrice}
             maxPrice={maxPrice}
@@ -37,9 +37,11 @@ export function Listings() {
           <SelectFilterButton filter="Bedrooms" options={BEDROOM_OPTIONS} selected={bedroomFilter} setter={setBedroomFilter} />
           <SelectFilterButton filter="Type" options={LISTING_TYPES} selected={typeFilter} setter={setTypeFilter} />
         </div>
-        <PropertyList listings={filteredListings} />
+        <div className="flex-1 overflow-y-auto flex flex-col gap-4 pr-1">
+          <PropertyList listings={filteredListings} />
+        </div>
       </div>
-      <div className="flex-1">
+      <div className="flex-1 shrink-0">
         <MapSection lat={43.07305} lng={-89.40325} />
       </div>
     </div>
