@@ -50,13 +50,15 @@ export function LandingHeader() {
                   </button>
                 </>
               )}
-              <button
-                onClick={() => setMenuOpen(true)}
-                className="flex items-center gap-2 rounded-full border border-wise-white/60 px-4 py-2 text-wise-white transition-colors hover:bg-wise-white/10"
-              >
-                <span className="text-base">☰</span>
-                <span className="text-base">👤</span>
-              </button>
+              {isAuthenticated && (
+                <button
+                  onClick={() => setMenuOpen(true)}
+                  className="flex items-center gap-2 rounded-full border border-wise-white/60 px-4 py-2 text-wise-white transition-colors hover:bg-wise-white/10"
+                >
+                  <span className="text-base">☰</span>
+                  <span className="text-base">👤</span>
+                </button>
+              )}
             </div>
           </div>
         </header>

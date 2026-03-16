@@ -40,13 +40,15 @@ export function Header() {
                   </button>
                 </>
               )}
-              <button
-                onClick={() => setMenuOpen(true)}
-                className="flex items-center gap-2 rounded-full border border-black/20 bg-white px-4 py-2 text-black transition-colors hover:bg-gray-50 shadow-sm"
-              >
-                <span className="text-base">☰</span>
-                <span className="text-base">👤</span>
-              </button>
+              {isAuthenticated && (
+                <button
+                  onClick={() => setMenuOpen(true)}
+                  className="flex items-center gap-2 rounded-full border border-black/20 bg-white px-4 py-2 text-black transition-colors hover:bg-gray-50 shadow-sm"
+                >
+                  <span className="text-base">☰</span>
+                  <span className="text-base">👤</span>
+                </button>
+              )}
             </div>
           </div>
         </header>
