@@ -2,7 +2,7 @@ export function MapSection({ lat, lng }: { lat: number; lng: number }) {
   const src = `https://www.google.com/maps?q=${lat},${lng}&z=13&output=embed`;
 
   return (
-    <div className="w-full h-[600px] rounded-xl overflow-hidden shadow">
+    <div className="w-full h-full rounded-xl overflow-hidden shadow">
       <iframe
         src={src}
         width="100%"

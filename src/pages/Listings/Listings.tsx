@@ -41,7 +41,7 @@ export function Listings() {
           <PropertyList listings={filteredListings} />
         </div>
       </div>
-      <div className="flex-1 shrink-0">
+      <div className="flex-1 shrink-0 h-full">
         <MapSection lat={43.07305} lng={-89.40325} />
       </div>
     </div>
