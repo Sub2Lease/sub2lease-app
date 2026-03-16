@@ -1,7 +1,14 @@
-import type { Listing } from "@/shared/types";
+import type { z } from "zod";
+import type { postSchema } from "@/shared/api/backendGO/z";
 import { PropertyCard } from "./PropertyCard";
 
-export function PropertyList({ listings }: { listings: Listing[] }) {
+type Listing = z.infer<typeof postSchema> & { photos: string[] };
+
+interface Props {
+  listings: Listing[];
+}
+
+export function PropertyList({ listings }: Props) {
   return (
     <div className="max-h-[600px]">
       <div className="flex flex-col w-full px-4 scroll-container">
