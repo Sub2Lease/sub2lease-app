@@ -25,7 +25,7 @@ export function Listings() {
   }), [fetchedListings, minPrice, maxPrice, typeFilter, bedroomFilter]);
 
   return (
-    <div className="flex flex-col md:flex-row gap-4 h-[calc(100vh-120px)]">
+    <div className="flex flex-col md:flex-row gap-4 h-[calc(100vh-160px)] overflow-hidden">
       <div className="flex-1 flex flex-col min-h-0">
         <div className="mb-4 gap-2 flex shrink-0">
           <PriceFilterButton
