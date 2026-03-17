@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { createPortal } from "react-dom";
 import { Card, EmptyState, RentStatusBadge } from "./Components";
 import { PLACEHOLDER_CURRENT_STAY } from "./Placeholders";
 import { formatDate, daysUntil, statusColor } from "./Utils";
@@ -23,6 +24,48 @@ function Tile({ children }: { children: React.ReactNode }) {
   );
 }
 
+function RemoveWithTooltip() {
+  const [visible, setVisible] = useState(false);
+  const [coords, setCoords] = useState({ top: 0, left: 0 });
+  const ref = useRef<HTMLDivElement>(null);
+
+  return (
+    <div
+      ref={ref}
+      onMouseEnter={() => {
+        if (ref.current) {
+          const rect = ref.current.getBoundingClientRect();
+          setCoords({
+            top: rect.bottom + window.scrollY + 6,
+            left: rect.left + rect.width / 2 + window.scrollX,
+          });
+        }
+        setVisible(true);
+      }}
+      onMouseLeave={() => setVisible(false)}
+    >
+      <button
+        disabled
+        className="rounded-full border border-foreground/10 px-2.5 py-1 text-xs font-medium text-foreground/20 cursor-not-allowed"
+      >
+        Remove
+      </button>
+      {visible && createPortal(
+        <div
+          className="fixed z-50 -translate-x-1/2 w-48 pointer-events-none"
+          style={{ top: coords.top, left: coords.left }}
+        >
+          <div className="rounded-lg bg-foreground px-2.5 py-1.5 text-xs text-background text-center leading-snug shadow-lg">
+            Can't remove while an offer is pending
+            <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-4 border-transparent border-b-foreground" />
+          </div>
+        </div>,
+        document.body
+      )}
+    </div>
+  );
+}
+
 export function ResidentView() {
   const navigate = useNavigate();
   const { posts, isLoading: savedLoading, isError: savedError, toggle } = useFavorites();
@@ -34,6 +77,23 @@ export function ResidentView() {
     title: string;
     monthly_rent: string;
   } | null>(null);
+
+  const [localPendingIds, setLocalPendingIds] = useState<Set<number>>(new Set());
+
+  const serverPendingIds = useMemo(
+    () => new Set(
+      myOffers
+        .filter((o) => o.status === "pending")
+        .map((o) => o.post_id?.Int64)
+        .filter((id): id is number => id !== undefined)
+    ),
+    [myOffers]
+  );
+
+  const pendingOfferIds = useMemo(
+    () => new Set([...serverPendingIds, ...localPendingIds]),
+    [serverPendingIds, localPendingIds]
+  );
 
   return (
     <div className="grid grid-cols-2 gap-4">
@@ -90,26 +150,39 @@ export function ResidentView() {
                     {post.address}, {post.city}, {post.state}
                   </p>
                   <p className="mt-1 text-xs font-semibold text-foreground">
-                    ${post.monthly_rent}
+                    ${Math.round(parseFloat(post.monthly_rent))}
                     <span className="font-normal text-foreground/40">/mo</span>
                   </p>
                 </div>
                 <div className="flex flex-col gap-1.5 shrink-0">
+                  {pendingOfferIds.has(post.id) ? (
+                      <RemoveWithTooltip />
+                    ) : (
+                      <button
+                        onClick={() => toggle(post.id)}
+                        className="rounded-full border border-red-200 px-2.5 py-1 text-xs font-medium text-red-500 hover:bg-red-50 transition-colors"
+                      >
+                        Remove
+                      </button>
+                    )}
                   <button
-                    onClick={() => toggle(post.id)}
-                    className="rounded-full border border-red-200 px-2.5 py-1 text-xs font-medium text-red-500 hover:bg-red-50 transition-colors"
+                    onClick={() => {
+                      if (!pendingOfferIds.has(post.id)) {
+                        setOfferPost({
+                          id: post.id,
+                          title: post.title,
+                          monthly_rent: post.monthly_rent,
+                        });
+                      }
+                    }}
+                    disabled={pendingOfferIds.has(post.id)}
+                    className={`rounded-full px-2.5 py-1 text-xs font-medium transition-opacity ${
+                      pendingOfferIds.has(post.id)
+                        ? "bg-amber-50 text-amber-600 border border-amber-200 cursor-default"
+                        : "bg-foreground text-background hover:opacity-80"
+                    }`}
                   >
-                    Remove
-                  </button>
-                  <button
-                    onClick={() => setOfferPost({
-                      id: post.id,
-                      title: post.title,
-                      monthly_rent: post.monthly_rent,
-                    })}
-                    className="rounded-full bg-foreground px-2.5 py-1 text-xs font-medium text-background hover:opacity-80 transition-opacity"
-                  >
-                    Offer
+                    {pendingOfferIds.has(post.id) ? "Pending" : "Offer"}
                   </button>
                 </div>
               </Card>
@@ -143,7 +216,7 @@ export function ResidentView() {
                   </span>
                   {offer.start_date && (
                     <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-foreground/50">
-                      {formatDate(offer.start_date)} → {formatDate(offer.end_date)}
+                      {formatDate(offer.start_date)} → {formatDate(offer.end_date ?? "")}
                     </span>
                   )}
                   {offer.message?.Valid && (
@@ -168,7 +241,10 @@ export function ResidentView() {
           postTitle={offerPost.title}
           monthlyRent={offerPost.monthly_rent}
           onClose={() => setOfferPost(null)}
-          onSuccess={() => setOfferPost(null)}
+          onSuccess={() => {
+            setLocalPendingIds((prev) => new Set([...prev, offerPost.id]));
+            setOfferPost(null);
+          }}
         />
       )}
 
