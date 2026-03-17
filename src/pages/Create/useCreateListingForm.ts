@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { createPost } from "@/shared/api/backendGO/endpoints";
-import { uploadPostPhoto } from "@/shared/supabase/photos";
+import { uploadPostPhoto } from "@/shared/api/backendGO/endpoints";
 import { type Step, type FormState, STEPS, initialFormState } from "./types";
 import { US_STATES } from "./constants";
 

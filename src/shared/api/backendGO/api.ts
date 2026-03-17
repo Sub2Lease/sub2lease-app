@@ -121,15 +121,16 @@ export const backendApi = buildApi(
 
     // Photos
 
-    // uploadPostPhoto: item({
-    //   input: z.object({
-    //     id: z.number(),
-    //     image: z.instanceof(File),
-    //   }),
-    //   key: ({ id }: { id: number; image: File }) => `/posts/${id}/photos`,
-    //   result: photoSchema,
-    //   options: [methodOptions.post],
-    // }),
+    uploadPostPhoto: item({
+      input: z.object({
+        id: z.number(),
+        image: z.instanceof(File),
+        order: z.number().optional(),
+      }),
+      key: ({ id }: { id: number; image: File; order?: number }) => `/posts/${id}/photos`,
+      result: photoSchema,
+      options: [methodOptions.post],
+    }),
 
     addPhotoToPost: item({
       input: z.object({
