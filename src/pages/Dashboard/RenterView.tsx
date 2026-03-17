@@ -15,7 +15,7 @@ function TileHeader({ title }: { title: string }) {
 
 function Tile({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-2xl border border-foreground/10 bg-white p-4 h-72 flex flex-col overflow-hidden">
+    <div className="rounded-2xl border border-foreground/10 bg-white p-4 h-96 flex flex-col overflow-hidden">
       {children}
     </div>
   );
