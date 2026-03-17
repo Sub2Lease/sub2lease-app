@@ -9,7 +9,7 @@ export function CreateListing() {
   const { step, setStep, form, setForm, set, setNum, photos, setPhotos, stepIndex, isLast, back, next, handleComplete, loading, error } = useCreateListingForm();
 
   return (
-    <div className="mx-auto w-full max-w-2xl py-8">
+    <div className="mx-auto w-full max-w-2xl py-8 overflow-y-auto">
       <div className="mb-10 flex items-center gap-2">
         {STEPS.map((s, i) => (
           <div key={s.id} className="flex items-center gap-2">
