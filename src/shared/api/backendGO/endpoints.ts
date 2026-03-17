@@ -72,3 +72,6 @@ export const listFavorites = (input: z.infer<typeof listFavoritesInputSchema>) =
 
 export const createOffer = (input: z.infer<typeof createOfferInputSchema>) =>
   backendApi.createOffer(input);
+
+export const cancelOffer = (id: number) =>
+  backendApi.cancelOffer({ id });

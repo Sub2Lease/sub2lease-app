@@ -200,6 +200,14 @@ export const myOfferSchema = z.object({
 
 export const myOffersListSchema = z.array(myOfferSchema);
 
+export const cancelOfferInputSchema = z.object({
+  id: z.number(),
+});
+
+export const cancelOfferMessageSchema = z.object({
+  message: z.string(),
+});
+
 // Supabase
 
 export const addPhotoInputSchema = z.object({

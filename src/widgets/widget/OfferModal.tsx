@@ -1,15 +1,18 @@
 import { useState } from "react";
 import { createOffer } from "@/shared/api/backendGO/endpoints";
+import { formatDate } from "@/pages/Dashboard/Utils";
 
 interface Props {
   postId: number;
   postTitle: string;
   monthlyRent: string;
+  availableFrom: string;
+  availableTo: string;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (offerId: number) => void;
 }
 
-export function OfferModal({ postId, postTitle, monthlyRent, onClose, onSuccess }: Props) {
+export function OfferModal({ postId, postTitle, monthlyRent, availableFrom, availableTo, onClose, onSuccess }: Props) {
   const originalPrice = parseFloat(monthlyRent);
 
   const [priceType, setPriceType] = useState<"original" | "custom">("original");
@@ -45,14 +48,14 @@ export function OfferModal({ postId, postTitle, monthlyRent, onClose, onSuccess 
     setError(null);
     setIsSubmitting(true);
     try {
-      await createOffer({
+      const result = await createOffer({
         post_id: postId,
         amount,
         start_date: startDate,
         end_date: endDate,
         message,
       });
-      onSuccess();
+      onSuccess(result.id);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to send offer.");
     } finally {
@@ -130,8 +133,11 @@ export function OfferModal({ postId, postTitle, monthlyRent, onClose, onSuccess 
 
         {/* Dates */}
         <div className="mb-4">
-          <p className="text-xs font-semibold text-foreground/50 uppercase tracking-wide mb-2">
+          <p className="text-xs font-semibold text-foreground/50 uppercase tracking-wide mb-1">
             Lease Dates
+          </p>
+          <p className="text-xs text-foreground/30 mb-2">
+            Available {formatDate(availableFrom)} → {formatDate(availableTo)}
           </p>
           <div className="flex gap-2">
             <div className="flex-1">
@@ -140,6 +146,8 @@ export function OfferModal({ postId, postTitle, monthlyRent, onClose, onSuccess 
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
+                min={availableFrom}
+                max={availableTo}
                 className="w-full rounded-xl border border-foreground/15 px-3 py-2 text-sm text-foreground focus:outline-none focus:border-foreground"
               />
             </div>
@@ -149,7 +157,8 @@ export function OfferModal({ postId, postTitle, monthlyRent, onClose, onSuccess 
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                min={startDate}
+                min={startDate || availableFrom}
+                max={availableTo}
                 className="w-full rounded-xl border border-foreground/15 px-3 py-2 text-sm text-foreground focus:outline-none focus:border-foreground"
               />
             </div>

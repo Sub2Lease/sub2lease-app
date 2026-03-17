@@ -23,6 +23,8 @@ import {
   createOfferInputSchema,
   offerSchema,
   myOffersListSchema,
+  cancelOfferInputSchema,
+  cancelOfferMessageSchema,
 } from "./z";
 
 const isClient = typeof window !== "undefined";
@@ -178,6 +180,12 @@ export const backendApi = buildApi(
       input: z.void(),
       key: "/offers/me",
       result: myOffersListSchema,
+    }),
+    cancelOffer: item({
+      input: cancelOfferInputSchema,
+      key: ({ id }: z.infer<typeof cancelOfferInputSchema>) => `/offers/${id}`,
+      result: cancelOfferMessageSchema,
+      options: [methodOptions.delete, simpleJson],
     }),
   },
 );

@@ -1,12 +1,12 @@
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { createPortal } from "react-dom";
 import { Card, EmptyState, RentStatusBadge } from "./Components";
 import { PLACEHOLDER_CURRENT_STAY } from "./Placeholders";
 import { formatDate, daysUntil, statusColor } from "./Utils";
 import { useFavorites } from "@/shared/hooks";
 import { OfferModal } from "@/widgets/widget/OfferModal";
 import { backendHooks } from "@/shared/api/backendGO/hooks";
+import { cancelOffer } from "@/shared/api/backendGO/endpoints";
 
 function TileHeader({ title }: { title: string }) {
   return (
@@ -24,76 +24,60 @@ function Tile({ children }: { children: React.ReactNode }) {
   );
 }
 
-function RemoveWithTooltip() {
-  const [visible, setVisible] = useState(false);
-  const [coords, setCoords] = useState({ top: 0, left: 0 });
-  const ref = useRef<HTMLDivElement>(null);
-
-  return (
-    <div
-      ref={ref}
-      onMouseEnter={() => {
-        if (ref.current) {
-          const rect = ref.current.getBoundingClientRect();
-          setCoords({
-            top: rect.bottom + window.scrollY + 6,
-            left: rect.left + rect.width / 2 + window.scrollX,
-          });
-        }
-        setVisible(true);
-      }}
-      onMouseLeave={() => setVisible(false)}
-    >
-      <button
-        disabled
-        className="rounded-full border border-foreground/10 px-2.5 py-1 text-xs font-medium text-foreground/20 cursor-not-allowed"
-      >
-        Remove
-      </button>
-      {visible && createPortal(
-        <div
-          className="fixed z-50 -translate-x-1/2 w-48 pointer-events-none"
-          style={{ top: coords.top, left: coords.left }}
-        >
-          <div className="rounded-lg bg-foreground px-2.5 py-1.5 text-xs text-background text-center leading-snug shadow-lg">
-            Can't remove while an offer is pending
-            <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-4 border-transparent border-b-foreground" />
-          </div>
-        </div>,
-        document.body
-      )}
-    </div>
-  );
-}
-
 export function ResidentView() {
   const navigate = useNavigate();
   const { posts, isLoading: savedLoading, isError: savedError, toggle } = useFavorites();
-  const { data: myOffers = [], isLoading: offersLoading, isError: offersError } = backendHooks.useMyOffers();
+  const { data: myOffers = [], isLoading: offersLoading, isError: offersError, refetch: refetchOffers } = backendHooks.useMyOffers();
   const stay = PLACEHOLDER_CURRENT_STAY;
 
   const [offerPost, setOfferPost] = useState<{
     id: number;
     title: string;
     monthly_rent: string;
+    start_date: string;
+    end_date: string;
   } | null>(null);
 
-  const [localPendingIds, setLocalPendingIds] = useState<Set<number>>(new Set());
+  // Map of postId -> offerId for locally tracked pending offers
+  const [localPendingIds, setLocalPendingIds] = useState<Map<number, number>>(new Map());
 
   const serverPendingIds = useMemo(
-    () => new Set(
+    () => new Map(
       myOffers
         .filter((o) => o.status === "pending")
-        .map((o) => o.post_id?.Int64)
-        .filter((id): id is number => id !== undefined)
+        .flatMap((o) => {
+          const postId = o.post_id?.Int64;
+          if (postId === undefined) return [];
+          return [[postId, o.id]] as [number, number][];
+        })
     ),
     [myOffers]
   );
 
   const pendingOfferIds = useMemo(
-    () => new Set([...serverPendingIds, ...localPendingIds]),
+    () => new Map([...serverPendingIds, ...localPendingIds]),
     [serverPendingIds, localPendingIds]
   );
+
+  const handleCancelOffer = async (postId: number) => {
+    const offerId = pendingOfferIds.get(postId);
+    if (!offerId) return;
+
+    // Optimistic removal
+    setLocalPendingIds((prev) => {
+      const next = new Map(prev);
+      next.delete(postId);
+      return next;
+    });
+
+    try {
+      await cancelOffer(offerId);
+      refetchOffers();
+    } catch {
+      // Revert on failure
+      setLocalPendingIds((prev) => new Map([...prev, [postId, offerId]]));
+    }
+  };
 
   return (
     <div className="grid grid-cols-2 gap-4">
@@ -156,11 +140,16 @@ export function ResidentView() {
                 </div>
                 <div className="flex flex-col gap-1.5 shrink-0">
                   {pendingOfferIds.has(post.id) ? (
-                    <RemoveWithTooltip />
+                    <button
+                      onClick={() => handleCancelOffer(post.id)}
+                      className="rounded-full border border-red-200 px-2.5 py-1 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors"
+                    >
+                      Cancel Offer
+                    </button>
                   ) : (
                     <button
                       onClick={() => toggle(post.id)}
-                      className="rounded-full border border-red-200 px-2.5 py-1 text-xs font-medium text-red-500 hover:bg-red-50 transition-colors"
+                      className="rounded-full border border-red-200 px-2.5 py-1 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors"
                     >
                       Remove
                     </button>
@@ -172,6 +161,8 @@ export function ResidentView() {
                           id: post.id,
                           title: post.title,
                           monthly_rent: post.monthly_rent,
+                          start_date: post.start_date,
+                          end_date: post.end_date,
                         });
                       }
                     }}
@@ -240,9 +231,11 @@ export function ResidentView() {
           postId={offerPost.id}
           postTitle={offerPost.title}
           monthlyRent={offerPost.monthly_rent}
+          availableFrom={offerPost.start_date}
+          availableTo={offerPost.end_date}
           onClose={() => setOfferPost(null)}
-          onSuccess={() => {
-            setLocalPendingIds((prev) => new Set([...prev, offerPost.id]));
+          onSuccess={(offerId) => {
+            setLocalPendingIds((prev) => new Map([...prev, [offerPost.id, offerId]]));
             setOfferPost(null);
           }}
         />
