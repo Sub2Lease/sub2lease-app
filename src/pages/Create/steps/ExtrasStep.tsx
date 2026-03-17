@@ -21,7 +21,8 @@ export function ExtrasStep({ form, set, photos, setPhotos }: Props) {
         />
         {photos.length > 0 && (
           <p className="mt-1 text-xs text-foreground/50">
-            {photos.length} photo{photos.length > 1 ? "s" : ""} selected (max 5)
+            {photos.length} photo{photos.length > 1 ? "s" : ""} selected
+            {photos.length < 5 && ` — ${5 - photos.length} more needed`}
           </p>
         )}
       </Field>

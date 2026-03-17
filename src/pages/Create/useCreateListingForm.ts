@@ -65,7 +65,7 @@ export function useCreateListingForm() {
   };
 
   const validateExtras = () => {
-    if (photos.length === 0) return "At least one photo is required.";
+    if (photos.length < 5) return "At least 5 photos are required.";
     return null;
   };
 
@@ -107,7 +107,7 @@ export function useCreateListingForm() {
         amenities: form.amenities || null,
         house_rules: form.house_rules || null,
       });
-      for (let i = 0; i < Math.min(photos.length, 5); i++) {
+      for (let i = 0; i < photos.length; i++) {
         await uploadPostPhoto(post.id, photos[i]);
       }
       navigate("/listings");
