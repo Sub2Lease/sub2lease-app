@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { createPost } from "@/shared/api/backendGO/endpoints";
+import { uploadPostPhoto } from "@/shared/supabase/photos";
 import { type Step, type FormState, STEPS, initialFormState } from "./types";
 import { US_STATES } from "./constants";
 
@@ -8,6 +9,7 @@ export function useCreateListingForm() {
   const navigate = useNavigate();
   const [step, setStep] = useState<Step>("basics");
   const [form, setForm] = useState<FormState>(initialFormState);
+  const [photos, setPhotos] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -62,6 +64,11 @@ export function useCreateListingForm() {
     return null;
   };
 
+  const validateExtras = () => {
+    if (photos.length === 0) return "At least one photo is required.";
+    return null;
+  };
+
   const next = () => {
     setError(null);
     if (step === "basics") { const err = validateBasics(); if (err) { setError(err); return; } }
@@ -71,10 +78,12 @@ export function useCreateListingForm() {
   };
 
   const handleComplete = async () => {
+    const err = validateExtras();
+    if (err) { setError(err); return; }
     setError(null);
     setLoading(true);
     try {
-      await createPost({
+      const post = await createPost({
         title: form.title,
         address: form.address,
         city: form.city,
@@ -98,6 +107,9 @@ export function useCreateListingForm() {
         amenities: form.amenities || null,
         house_rules: form.house_rules || null,
       });
+      for (let i = 0; i < Math.min(photos.length, 5); i++) {
+        await uploadPostPhoto(post.id, photos[i]);
+      }
       navigate("/listings");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to create listing");
@@ -106,5 +118,13 @@ export function useCreateListingForm() {
     }
   };
 
-  return { step, setStep, form, setForm, set, setNum, stepIndex, isLast, back, next, handleComplete, loading, error };
+  return {
+    step, setStep,
+    form, setForm,
+    set, setNum,
+    photos, setPhotos,
+    stepIndex, isLast,
+    back, next, handleComplete,
+    loading, error,
+  };
 }

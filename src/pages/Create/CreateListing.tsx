@@ -6,7 +6,7 @@ import { DatesStep } from "./steps/DatesStep";
 import { ExtrasStep } from "./steps/ExtrasStep";
 
 export function CreateListing() {
-  const { step, setStep, form, setForm, set, setNum, stepIndex, isLast, back, next, handleComplete, loading, error } = useCreateListingForm();
+  const { step, setStep, form, setForm, set, setNum, photos, setPhotos, stepIndex, isLast, back, next, handleComplete, loading, error } = useCreateListingForm();
 
   return (
     <div className="mx-auto w-full max-w-2xl py-8">
@@ -39,7 +39,9 @@ export function CreateListing() {
           {step === "basics" && <BasicsStep form={form} set={set} />}
           {step === "details" && <DetailsStep form={form} set={set} setNum={setNum} setForm={setForm} />}
           {step === "dates" && <DatesStep form={form} set={set} />}
-          {step === "extras" && <ExtrasStep form={form} set={set} />}
+          {step === "extras" && (
+            <ExtrasStep form={form} set={set} photos={photos} setPhotos={setPhotos} />
+          )}
 
           {error && (
             <div className="mt-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">

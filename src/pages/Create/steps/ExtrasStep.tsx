@@ -4,12 +4,27 @@ import type { FormState } from "../types";
 interface Props {
   form: FormState;
   set: (field: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+  photos: File[];
+  setPhotos: (photos: File[]) => void;
 }
 
-export function ExtrasStep({ form, set }: Props) {
+export function ExtrasStep({ form, set, photos, setPhotos }: Props) {
   return (
     <div className="flex flex-col gap-5">
       <h2 className="text-xl font-semibold text-foreground">Extra info</h2>
+      <Field label="Photos">
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={(e) => setPhotos(Array.from(e.target.files || []))}
+        />
+        {photos.length > 0 && (
+          <p className="mt-1 text-xs text-foreground/50">
+            {photos.length} photo{photos.length > 1 ? "s" : ""} selected (max 5)
+          </p>
+        )}
+      </Field>
       <Field label="Property website — optional">
         <input placeholder="https://..." value={form.property_website} onChange={set("property_website")} />
       </Field>
