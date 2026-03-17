@@ -75,6 +75,14 @@ export const backendHooks = buildHooks(
       }),
     }),
 
+    useMyOffers: item({
+      fn: backendApi.listMyOffers,
+      key: () => ["useMyOffers"],
+      options: () => ({
+        refetchOnMount: "always" as const,
+      }),
+    }),
+
     // Favorites
 
     useFavorites: item({

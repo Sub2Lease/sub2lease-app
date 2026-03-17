@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, EmptyState, RentStatusBadge } from "./Components";
-import { PLACEHOLDER_CURRENT_STAY, PLACEHOLDER_MY_OFFERS } from "./Placeholders";
+import { PLACEHOLDER_CURRENT_STAY } from "./Placeholders";
 import { formatDate, daysUntil, statusColor } from "./Utils";
 import { useFavorites } from "@/shared/hooks";
 import { OfferModal } from "@/widgets/widget/OfferModal";
+import { backendHooks } from "@/shared/api/backendGO/hooks";
 
 function TileHeader({ title }: { title: string }) {
   return (
@@ -25,6 +26,7 @@ function Tile({ children }: { children: React.ReactNode }) {
 export function ResidentView() {
   const navigate = useNavigate();
   const { posts, isLoading: savedLoading, isError: savedError, toggle } = useFavorites();
+  const { data: myOffers = [], isLoading: offersLoading, isError: offersError } = backendHooks.useMyOffers();
   const stay = PLACEHOLDER_CURRENT_STAY;
 
   const [offerPost, setOfferPost] = useState<{
@@ -119,29 +121,44 @@ export function ResidentView() {
       {/* My Offers */}
       <Tile>
         <TileHeader title="My Offers" />
-        <div className="flex-1 overflow-y-auto flex flex-col gap-2 pr-1">
-          {PLACEHOLDER_MY_OFFERS.length === 0 ? (
-            <EmptyState message="No offers sent yet" />
-          ) : PLACEHOLDER_MY_OFFERS.map((offer) => (
-            <Card key={offer.id} className="p-3">
-              <p className="font-semibold text-xs text-foreground">{offer.listingTitle}</p>
-              <p className="text-xs text-foreground/40 mt-0.5">{offer.listingAddress}</p>
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                {offer.amount && (
+        {offersLoading ? (
+          <div className="flex-1 flex items-center justify-center">
+            <p className="text-xs text-foreground/30">Loading...</p>
+          </div>
+        ) : offersError ? (
+          <EmptyState message="Could not load offers" />
+        ) : myOffers.length === 0 ? (
+          <EmptyState message="No offers sent yet" />
+        ) : (
+          <div className="flex-1 overflow-y-auto flex flex-col gap-2 pr-1">
+            {myOffers.map((offer) => (
+              <Card key={offer.id} className="p-3">
+                <p className="font-semibold text-xs text-foreground">{offer.title}</p>
+                <p className="text-xs text-foreground/40 mt-0.5">
+                  {offer.address}, {offer.city}, {offer.state}
+                </p>
+                <div className="mt-2 flex flex-wrap gap-1.5">
                   <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-foreground/50">
-                    ${offer.amount}/mo
+                    ${Math.round(parseFloat(offer.amount))}/mo
                   </span>
-                )}
-                <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-foreground/50">
-                  {formatDate(offer.offeredAt)}
-                </span>
-                <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusColor(offer.status)}`}>
-                  {offer.status.charAt(0).toUpperCase() + offer.status.slice(1)}
-                </span>
-              </div>
-            </Card>
-          ))}
-        </div>
+                  {offer.start_date && (
+                    <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-foreground/50">
+                      {formatDate(offer.start_date)} → {formatDate(offer.end_date)}
+                    </span>
+                  )}
+                  {offer.message?.Valid && (
+                    <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-foreground/50 truncate max-w-[140px]">
+                      "{offer.message.String}"
+                    </span>
+                  )}
+                  <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusColor(offer.status)}`}>
+                    {offer.status.charAt(0).toUpperCase() + offer.status.slice(1)}
+                  </span>
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
       </Tile>
 
       {/* Offer Modal */}

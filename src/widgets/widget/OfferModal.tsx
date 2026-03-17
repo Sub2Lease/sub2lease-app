@@ -1,4 +1,3 @@
-// src/widgets/OfferModal/OfferModal.tsx
 import { useState } from "react";
 import { createOffer } from "@/shared/api/backendGO/endpoints";
 
@@ -15,21 +14,44 @@ export function OfferModal({ postId, postTitle, monthlyRent, onClose, onSuccess 
 
   const [priceType, setPriceType] = useState<"original" | "custom">("original");
   const [customAmount, setCustomAmount] = useState<string>("");
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const amount = priceType === "original" ? originalPrice : parseFloat(customAmount);
+  const amount = priceType === "original"
+    ? Math.round(originalPrice)
+    : Math.round(parseFloat(customAmount));
 
   const handleSubmit = async () => {
     if (priceType === "custom" && (!customAmount || isNaN(amount) || amount <= 0)) {
       setError("Please enter a valid amount.");
       return;
     }
+    if (!startDate) {
+      setError("Please select a start date.");
+      return;
+    }
+    if (!endDate) {
+      setError("Please select an end date.");
+      return;
+    }
+    if (new Date(endDate) <= new Date(startDate)) {
+      setError("End date must be after start date.");
+      return;
+    }
+
     setError(null);
     setIsSubmitting(true);
     try {
-      await createOffer({ post_id: postId, amount, message });
+      await createOffer({
+        post_id: postId,
+        amount,
+        start_date: startDate,
+        end_date: endDate,
+        message,
+      });
       onSuccess();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to send offer.");
@@ -70,7 +92,7 @@ export function OfferModal({ postId, postTitle, monthlyRent, onClose, onSuccess 
                 />
                 <span className="text-sm font-medium text-foreground">Listed price</span>
               </div>
-              <span className="text-sm font-bold text-foreground">${monthlyRent}/mo</span>
+              <span className="text-sm font-bold text-foreground">${Math.round(originalPrice)}/mo</span>
             </label>
 
             <label className={`flex items-center justify-between rounded-xl border p-3 cursor-pointer transition-colors ${
@@ -103,6 +125,34 @@ export function OfferModal({ postId, postTitle, monthlyRent, onClose, onSuccess 
                 <span className="text-xs text-foreground/30">Enter amount</span>
               )}
             </label>
+          </div>
+        </div>
+
+        {/* Dates */}
+        <div className="mb-4">
+          <p className="text-xs font-semibold text-foreground/50 uppercase tracking-wide mb-2">
+            Lease Dates
+          </p>
+          <div className="flex gap-2">
+            <div className="flex-1">
+              <p className="text-xs text-foreground/40 mb-1">Start date</p>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="w-full rounded-xl border border-foreground/15 px-3 py-2 text-sm text-foreground focus:outline-none focus:border-foreground"
+              />
+            </div>
+            <div className="flex-1">
+              <p className="text-xs text-foreground/40 mb-1">End date</p>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                min={startDate}
+                className="w-full rounded-xl border border-foreground/15 px-3 py-2 text-sm text-foreground focus:outline-none focus:border-foreground"
+              />
+            </div>
           </div>
         </div>
 

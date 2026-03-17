@@ -22,6 +22,7 @@ import {
   listPhotosByPostSchema,
   createOfferInputSchema,
   offerSchema,
+  myOffersListSchema,
 } from "./z";
 
 const isClient = typeof window !== "undefined";
@@ -172,6 +173,11 @@ export const backendApi = buildApi(
       key: ({ post_id }: z.infer<typeof createOfferInputSchema>) => `/posts/${post_id}/offers`,
       result: offerSchema,
       options: [methodOptions.post, simpleJson],
+    }),
+    listMyOffers: item({
+      input: z.void(),
+      key: "/offers/me",
+      result: myOffersListSchema,
     }),
   },
 );

@@ -161,6 +161,8 @@ export const listFavoritesInputSchema = z.object({
 export const createOfferInputSchema = z.object({
   post_id: z.number(),
   amount: z.number(),
+  start_date: z.string(),
+  end_date: z.string(),
   message: z.string().optional(),
 });
 
@@ -176,6 +178,27 @@ export const offerSchema = z.object({
 });
 
 export const offersListSchema = z.array(offerSchema);
+
+export const myOfferSchema = z.object({
+  id: z.number(),
+  post_id: z.object({ Int64: z.number(), Valid: z.boolean() }).nullable().optional(),
+  user_id: z.object({ Int64: z.number(), Valid: z.boolean() }).nullable().optional(),
+  amount: z.string(),
+  start_date: z.string().optional(),
+  end_date: z.string().optional(),
+  message: z.object({ String: z.string(), Valid: z.boolean() }).nullable().optional(),
+  status: z.string(),
+  created_at: z.string().optional(),
+  updated_at: z.string().optional(),
+  // joined from posts
+  title: z.string(),
+  address: z.string(),
+  city: z.string(),
+  state: z.string(),
+  monthly_rent: z.string(),
+});
+
+export const myOffersListSchema = z.array(myOfferSchema);
 
 // Supabase
 
