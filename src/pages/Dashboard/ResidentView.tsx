@@ -55,11 +55,11 @@ export function ResidentView() {
               {/* TODO: verify rentPaid shape matches RentStatusBadge's prop type */}
               <RentStatusBadge paid={stay.rentPaid} />
               {/* TODO: guard against null nextDueDate before calling formatDate */}
-              <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-foreground/50">
+              <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-foreground/50 inline-flex items-center leading-none">
                 Due {formatDate(stay.nextDueDate)}
               </span>
               {/* TODO: guard against null endDate before calling daysUntil */}
-              <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-foreground/50">
+              <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-foreground/50 inline-flex items-center leading-none">
                 {daysUntil(stay.endDate)}d left
               </span>
             </div>
