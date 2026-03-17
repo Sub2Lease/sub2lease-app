@@ -23,12 +23,20 @@ function Tile({ children }: { children: React.ReactNode }) {
 
 export function ResidentView() {
   const navigate = useNavigate();
-  const [saved, setSaved] = useState<SavedListing[]>(PLACEHOLDER_SAVED);
+
+  // TODO: fetch saved listings from GET /favorites, replace placeholder
+  // TODO: add loading and error state for saved listings
+  const [saved, setSaved] = useState<SavedListing[]>(PLACEHOLDER_SAVED); // TODO: seed from GET /favorites
+
+  // TODO: fetch current stay from GET /stays/current, replace placeholder
+  // TODO: add loading and error state for current stay
+  // TODO: handle case where user has no active stay
   const stay = PLACEHOLDER_CURRENT_STAY;
 
   const handleRemoveSaved = (id: number) => {
     setSaved((prev) => prev.filter((s) => s.id !== id));
-    // TODO: DELETE /favorites
+    // TODO: DELETE /favorites/:id
+    // TODO: revert optimistic removal and show error toast if request fails
   };
 
   return (
@@ -37,15 +45,20 @@ export function ResidentView() {
       {/* Current Stay */}
       <Tile>
         <TileHeader title="Current Stay" />
+        {/* TODO: show skeleton loader while stay is fetching */}
+        {/* TODO: show empty state if no active stay */}
         <div className="flex-1 overflow-y-auto pr-1">
           <Card className="p-3">
             <p className="font-semibold text-xs text-foreground">{stay.title}</p>
             <p className="text-xs text-foreground/40 mt-0.5">{stay.address}</p>
             <div className="mt-2 flex flex-wrap gap-1.5">
+              {/* TODO: verify rentPaid shape matches RentStatusBadge's prop type */}
               <RentStatusBadge paid={stay.rentPaid} />
+              {/* TODO: guard against null nextDueDate before calling formatDate */}
               <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-foreground/50">
                 Due {formatDate(stay.nextDueDate)}
               </span>
+              {/* TODO: guard against null endDate before calling daysUntil */}
               <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-foreground/50">
                 {daysUntil(stay.endDate)}d left
               </span>
@@ -57,12 +70,15 @@ export function ResidentView() {
       {/* Messages */}
       <Tile>
         <TileHeader title="Messages" />
+        {/* TODO: fetch messages from GET /messages/inbox, replace placeholder */}
+        {/* TODO: add loading and error state for messages */}
         <div className="flex-1 overflow-y-auto flex flex-col gap-2 pr-1">
           {PLACEHOLDER_MESSAGES.length === 0 ? (
             <EmptyState message="No messages yet" />
           ) : PLACEHOLDER_MESSAGES.map((msg) => (
             <div
               key={msg.id}
+              // TODO: add onClick to navigate to thread or open message modal
               className="flex items-start gap-2 rounded-xl border border-foreground/8 bg-foreground/3 p-3 cursor-pointer hover:bg-foreground/5 transition-colors"
             >
               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-foreground/10 text-xs font-semibold text-foreground">
@@ -86,11 +102,13 @@ export function ResidentView() {
       {/* Saved Listings */}
       <Tile>
         <TileHeader title="Saved Listings" />
+        {/* TODO: show skeleton loader while saved listings are fetching */}
         <div className="flex-1 overflow-y-auto flex flex-col gap-2 pr-1">
           {saved.length === 0 ? (
             <EmptyState message="No saved listings" />
           ) : saved.map((listing) => (
             <Card key={listing.id} className="p-3 flex items-start justify-between gap-2">
+              {/* TODO: confirm /listings/:id route exists in router */}
               <div className="flex-1 cursor-pointer min-w-0" onClick={() => navigate(`/listings/${listing.id}`)}>
                 <p className="font-semibold text-xs text-foreground truncate">{listing.title}</p>
                 <p className="text-xs text-foreground/40 mt-0.5 truncate">{listing.address}</p>
@@ -112,6 +130,8 @@ export function ResidentView() {
       {/* My Offers */}
       <Tile>
         <TileHeader title="My Offers" />
+        {/* TODO: fetch offers from GET /offers?offeredBy=me, replace placeholder */}
+        {/* TODO: add loading and error state for offers */}
         <div className="flex-1 overflow-y-auto flex flex-col gap-2 pr-1">
           {PLACEHOLDER_MY_OFFERS.length === 0 ? (
             <EmptyState message="No offers sent yet" />
@@ -125,6 +145,7 @@ export function ResidentView() {
                     ${offer.amount}/mo
                   </span>
                 )}
+                {/* TODO: guard against null offeredAt before calling formatDate */}
                 <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-foreground/50">
                   {formatDate(offer.offeredAt)}
                 </span>
@@ -132,6 +153,7 @@ export function ResidentView() {
                   {offer.status.charAt(0).toUpperCase() + offer.status.slice(1)}
                 </span>
               </div>
+              {/* TODO: add withdraw/cancel action for pending offers */}
             </Card>
           ))}
         </div>

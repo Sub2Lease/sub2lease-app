@@ -23,13 +23,17 @@ function Tile({ children }: { children: React.ReactNode }) {
 
 export function RenterView() {
   const navigate = useNavigate();
-  const [offers, setOffers] = useState<Offer[]>(PLACEHOLDER_OFFERS_RECEIVED);
-  const subleased = PLACEHOLDER_MY_LISTINGS.filter((l) => l.status === "subleased");
-  const onMarket = PLACEHOLDER_MY_LISTINGS.filter((l) => l.status === "market");
+
+  // TODO: fetch listings from GET /listings?owner=me, replace placeholder
+  // TODO: add loading and error state for listings
+  const [offers, setOffers] = useState<Offer[]>(PLACEHOLDER_OFFERS_RECEIVED); // TODO: seed from GET /offers?listingOwner=me
+  const subleased = PLACEHOLDER_MY_LISTINGS.filter((l) => l.status === "subleased"); // TODO: derive from real listings state
+  const onMarket = PLACEHOLDER_MY_LISTINGS.filter((l) => l.status === "market"); // TODO: derive from real listings state
 
   const handleOffer = (id: number, action: "accepted" | "declined") => {
     setOffers((prev) => prev.map((o) => (o.id === id ? { ...o, status: action } : o)));
-    // TODO: PATCH /offers/:id/status
+    // TODO: PATCH /offers/:id/status — { status: action }
+    // TODO: revert optimistic update and show error toast if request fails
   };
 
   return (
@@ -38,6 +42,8 @@ export function RenterView() {
       {/* My Listings */}
       <Tile>
         <TileHeader title="My Listings" />
+        {/* TODO: show skeleton loader while listings are fetching */}
+        {/* TODO: show error state if listings fetch fails */}
         <div className="flex-1 overflow-y-auto flex flex-col gap-4 pr-1">
           {/* Subleased */}
           <div>
@@ -49,10 +55,13 @@ export function RenterView() {
                 <p className="font-semibold text-xs text-foreground">{l.title}</p>
                 <p className="text-xs text-foreground/40 mt-0.5">{l.address}</p>
                 <div className="mt-2 flex flex-wrap gap-1.5">
+                  {/* TODO: verify rentPaid shape matches RentStatusBadge's prop type */}
                   <RentStatusBadge paid={l.rentPaid!} />
+                  {/* TODO: guard against null nextPayDate before calling formatDate */}
                   <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-foreground/50">
                     {formatDate(l.nextPayDate!)}
                   </span>
+                  {/* TODO: guard against null endDate before calling daysUntil */}
                   <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-foreground/50">
                     {daysUntil(l.endDate!)}d left
                   </span>
@@ -75,6 +84,7 @@ export function RenterView() {
                     <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-foreground/50">👁 {l.clicks}</span>
                   </div>
                 </div>
+                {/* TODO: confirm /listings/:id/edit route exists in router */}
                 <button
                   onClick={() => navigate(`/listings/${l.id}/edit`)}
                   className="rounded-full border border-foreground/20 px-2.5 py-1 text-xs font-medium text-foreground hover:bg-foreground/5 transition-colors shrink-0"
@@ -90,12 +100,15 @@ export function RenterView() {
       {/* Messages */}
       <Tile>
         <TileHeader title="Messages" />
+        {/* TODO: fetch messages from GET /messages/inbox, replace placeholder */}
+        {/* TODO: add loading and error state for messages */}
         <div className="flex-1 overflow-y-auto flex flex-col gap-2 pr-1">
           {PLACEHOLDER_MESSAGES.length === 0 ? (
             <EmptyState message="No messages yet" />
           ) : PLACEHOLDER_MESSAGES.map((msg) => (
             <div
               key={msg.id}
+              // TODO: add onClick to navigate to thread or open message modal
               className="flex items-start gap-2 rounded-xl border border-foreground/8 bg-foreground/3 p-3 cursor-pointer hover:bg-foreground/5 transition-colors"
             >
               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-foreground/10 text-xs font-semibold text-foreground">
@@ -119,6 +132,7 @@ export function RenterView() {
       {/* Open House */}
       <Tile>
         <TileHeader title="Open House" />
+        {/* TODO: design and implement open house feature */}
         <div className="flex-1 flex items-center justify-center">
           <p className="text-xs text-foreground/30">Coming soon</p>
         </div>
@@ -127,6 +141,8 @@ export function RenterView() {
       {/* Offers */}
       <Tile>
         <TileHeader title="Offers Received" />
+        {/* TODO: show skeleton loader while offers are fetching */}
+        {/* TODO: show error state if offers fetch fails */}
         <div className="flex-1 overflow-y-auto flex flex-col gap-2 pr-1">
           {offers.length === 0 ? (
             <EmptyState message="No offers yet" />
