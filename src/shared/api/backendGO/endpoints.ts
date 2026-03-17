@@ -10,6 +10,7 @@ import type {
   listPostsByUserInputSchema,
   favoriteInputSchema,
   listFavoritesInputSchema,
+  createOfferInputSchema,
 } from "./z.ts";
 import type { z } from "zod";
 
@@ -66,3 +67,8 @@ export const removeFavorite = (input: z.infer<typeof favoriteInputSchema>) =>
 
 export const listFavorites = (input: z.infer<typeof listFavoritesInputSchema>) =>
   backendApi.listFavorites(input);
+
+// Offers
+
+export const createOffer = (input: z.infer<typeof createOfferInputSchema>) =>
+  backendApi.createOffer(input);

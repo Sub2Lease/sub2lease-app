@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, EmptyState, RentStatusBadge } from "./Components";
-import { PLACEHOLDER_CURRENT_STAY, PLACEHOLDER_MY_OFFERS, PLACEHOLDER_MESSAGES } from "./Placeholders";
+import { PLACEHOLDER_CURRENT_STAY, PLACEHOLDER_MY_OFFERS } from "./Placeholders";
 import { formatDate, daysUntil, statusColor } from "./Utils";
 import { useFavorites } from "@/shared/hooks";
+import { OfferModal } from "@/widgets/widget/OfferModal";
 
 function TileHeader({ title }: { title: string }) {
   return (
@@ -24,6 +26,12 @@ export function ResidentView() {
   const navigate = useNavigate();
   const { posts, isLoading: savedLoading, isError: savedError, toggle } = useFavorites();
   const stay = PLACEHOLDER_CURRENT_STAY;
+
+  const [offerPost, setOfferPost] = useState<{
+    id: number;
+    title: string;
+    monthly_rent: string;
+  } | null>(null);
 
   return (
     <div className="grid grid-cols-2 gap-4">
@@ -51,29 +59,8 @@ export function ResidentView() {
       {/* Messages */}
       <Tile>
         <TileHeader title="Messages" />
-        <div className="flex-1 overflow-y-auto flex flex-col gap-2 pr-1">
-          {PLACEHOLDER_MESSAGES.length === 0 ? (
-            <EmptyState message="No messages yet" />
-          ) : PLACEHOLDER_MESSAGES.map((msg) => (
-            <div
-              key={msg.id}
-              className="flex items-start gap-2 rounded-xl border border-foreground/8 bg-foreground/3 p-3 cursor-pointer hover:bg-foreground/5 transition-colors"
-            >
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-foreground/10 text-xs font-semibold text-foreground">
-                {msg.from.charAt(0)}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-1">
-                  <p className={`text-xs ${msg.unread ? "font-semibold text-foreground" : "font-medium text-foreground/60"}`}>
-                    {msg.from}
-                  </p>
-                  <span className="text-xs text-foreground/30 shrink-0">{msg.time}</span>
-                </div>
-                <p className="text-xs text-foreground/40 truncate mt-0.5">{msg.preview}</p>
-              </div>
-              {msg.unread && <div className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />}
-            </div>
-          ))}
+        <div className="flex-1 flex items-center justify-center">
+          <p className="text-xs text-foreground/30">Coming soon</p>
         </div>
       </Tile>
 
@@ -105,12 +92,24 @@ export function ResidentView() {
                     <span className="font-normal text-foreground/40">/mo</span>
                   </p>
                 </div>
-                <button
-                  onClick={() => toggle(post.id)}
-                  className="shrink-0 rounded-full border border-red-200 px-2.5 py-1 text-xs font-medium text-red-500 hover:bg-red-50 transition-colors"
-                >
-                  Remove
-                </button>
+                <div className="flex flex-col gap-1.5 shrink-0">
+                  <button
+                    onClick={() => toggle(post.id)}
+                    className="rounded-full border border-red-200 px-2.5 py-1 text-xs font-medium text-red-500 hover:bg-red-50 transition-colors"
+                  >
+                    Remove
+                  </button>
+                  <button
+                    onClick={() => setOfferPost({
+                      id: post.id,
+                      title: post.title,
+                      monthly_rent: post.monthly_rent,
+                    })}
+                    className="rounded-full bg-foreground px-2.5 py-1 text-xs font-medium text-background hover:opacity-80 transition-opacity"
+                  >
+                    Offer
+                  </button>
+                </div>
               </Card>
             ))}
           </div>
@@ -144,6 +143,17 @@ export function ResidentView() {
           ))}
         </div>
       </Tile>
+
+      {/* Offer Modal */}
+      {offerPost && (
+        <OfferModal
+          postId={offerPost.id}
+          postTitle={offerPost.title}
+          monthlyRent={offerPost.monthly_rent}
+          onClose={() => setOfferPost(null)}
+          onSuccess={() => setOfferPost(null)}
+        />
+      )}
 
     </div>
   );

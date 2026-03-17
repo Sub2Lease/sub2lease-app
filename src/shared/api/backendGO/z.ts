@@ -156,6 +156,27 @@ export const listFavoritesInputSchema = z.object({
   page_size: z.number().min(5).max(100),
 });
 
+// Offers
+
+export const createOfferInputSchema = z.object({
+  post_id: z.number(),
+  amount: z.number(),
+  message: z.string().optional(),
+});
+
+export const offerSchema = z.object({
+  id: z.number(),
+  post_id: z.object({ Int64: z.number(), Valid: z.boolean() }).nullable().optional(),
+  user_id: z.object({ Int64: z.number(), Valid: z.boolean() }).nullable().optional(),
+  amount: z.string(),
+  message: z.object({ String: z.string(), Valid: z.boolean() }).nullable().optional(),
+  status: z.string(),
+  created_at: z.string().optional(),
+  updated_at: z.string().optional(),
+});
+
+export const offersListSchema = z.array(offerSchema);
+
 // Supabase
 
 export const addPhotoInputSchema = z.object({

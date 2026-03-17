@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, EmptyState, RentStatusBadge } from "./Components";
-import { PLACEHOLDER_OFFERS_RECEIVED, PLACEHOLDER_MESSAGES } from "./Placeholders";
+import { PLACEHOLDER_OFFERS_RECEIVED } from "./Placeholders";
 import type { MyListing, Offer } from "./Types";
 import { formatDate, daysUntil, statusColor } from "./Utils";
 import { backendHooks } from "@/shared/api/backendGO/hooks";
@@ -143,7 +143,7 @@ export function RenterView() {
       </Tile>
 
       {/* Messages */}
-      <Tile>
+      {/* <Tile>
         <TileHeader title="Messages" />
         <div className="flex-1 overflow-y-auto flex flex-col gap-2 pr-1">
           {PLACEHOLDER_MESSAGES.length === 0 ? (
@@ -169,7 +169,13 @@ export function RenterView() {
             </div>
           ))}
         </div>
-      </Tile>
+      </Tile> */}
+        <Tile>
+        <TileHeader title="Messages" />
+        <div className="flex-1 flex items-center justify-center">
+            <p className="text-xs text-foreground/30">Coming soon</p>
+        </div>
+        </Tile>     
 
       {/* Open House */}
       <Tile>

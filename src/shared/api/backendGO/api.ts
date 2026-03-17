@@ -20,6 +20,8 @@ import {
   listFavoritesInputSchema,
   photoListSchema,
   listPhotosByPostSchema,
+  createOfferInputSchema,
+  offerSchema,
 } from "./z";
 
 const isClient = typeof window !== "undefined";
@@ -163,6 +165,13 @@ export const backendApi = buildApi(
       key: ({ page_id, page_size }: z.infer<typeof listFavoritesInputSchema>) =>
         `/favorites?page_id=${page_id}&page_size=${page_size}`,
       result: postsListSchema,
+    }),
+
+    createOffer: item({
+      input: createOfferInputSchema,
+      key: ({ post_id }: z.infer<typeof createOfferInputSchema>) => `/posts/${post_id}/offers`,
+      result: offerSchema,
+      options: [methodOptions.post, simpleJson],
     }),
   },
 );
