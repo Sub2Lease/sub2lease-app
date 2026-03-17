@@ -1,7 +1,17 @@
-import type { Listing } from "@/shared/types";
+import type { z } from "zod";
+import type { postSchema } from "@/shared/api/backendGO/z";
 
-export function PropertyCard({ property }: { property: Listing }) {
+type Listing = z.infer<typeof postSchema> & { photos: string[] };
+
+interface PropertyCardProps {
+  property: Listing;
+  isFavorited: boolean;
+  onToggleFavorite: (id: number) => void;
+}
+
+export function PropertyCard({ property, isFavorited, onToggleFavorite }: PropertyCardProps) {
   const photo = property.photos?.[0] || null;
+
   return (
     <div className="shrink-0 box-border flex bg-white rounded-xl overflow-hidden shadow md:mb-1 lg:mb-2 xl:mb-4">
       <div className="aspect-[4/3] w-1/2 shrink-0 bg-gray-100">
@@ -21,7 +31,14 @@ export function PropertyCard({ property }: { property: Listing }) {
           <span className="font-semibold">${property.monthly_rent}</span>
           <p className="text-gray-600">{property.address}</p>
         </div>
-        <button className="mr-2 leading-none select-none text-red-500 hover:text-red-700 text-5xl">♥</button>
+        <button
+          onClick={() => onToggleFavorite(property.id)}
+          className={`mr-2 leading-none select-none text-5xl transition-colors ${
+            isFavorited ? "text-red-500 hover:text-red-300" : "text-gray-300 hover:text-red-400"
+          }`}
+        >
+          ♥
+        </button>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import { MapSection, PropertyList } from "@/widgets/Listings";
-import { useListings } from "@/shared/hooks";
+import { useListings, useFavorites } from "@/shared/hooks";
 import { PriceFilterButton, SelectFilterButton } from "./filters";
 import { useMemo, useState } from "react";
 
@@ -8,6 +8,8 @@ const BEDROOM_OPTIONS = ["1", "2", "3", "4", "5+"];
 
 export function Listings() {
   const fetchedListings = useListings();
+  const { favoriteIds, toggle } = useFavorites();
+
   const [typeFilter, setTypeFilter] = useState<string>("any");
   const [minPrice, setMinPrice] = useState<string>("");
   const [maxPrice, setMaxPrice] = useState<string>("");
@@ -19,8 +21,11 @@ export function Listings() {
       (!minPrice || rent >= parseInt(minPrice)) &&
       (!maxPrice || rent <= parseInt(maxPrice));
     const typeMatch = typeFilter === "any" || listing.listing_type === typeFilter;
-    const bedroomMatch = bedroomFilter === "any" ||
-      (bedroomFilter === "5+" ? listing.total_bedroom_count >= 5 : listing.total_bedroom_count === parseInt(bedroomFilter));
+    const bedroomMatch =
+      bedroomFilter === "any" ||
+      (bedroomFilter === "5+"
+        ? listing.total_bedroom_count >= 5
+        : listing.total_bedroom_count === parseInt(bedroomFilter));
     return priceMatch && typeMatch && bedroomMatch;
   }), [fetchedListings, minPrice, maxPrice, typeFilter, bedroomFilter]);
 
@@ -39,12 +44,23 @@ export function Listings() {
             options={BEDROOM_OPTIONS}
             selected={bedroomFilter}
             setter={setBedroomFilter}
-            formatSelected={(val) => val === "5+" ? "5+ bedrooms" : `${val} bedroom${val === "1" ? "" : "s"}`}
+            formatSelected={(val) =>
+              val === "5+" ? "5+ bedrooms" : `${val} bedroom${val === "1" ? "" : "s"}`
+            }
           />
-          <SelectFilterButton filter="Type" options={LISTING_TYPES} selected={typeFilter} setter={setTypeFilter} />
+          <SelectFilterButton
+            filter="Type"
+            options={LISTING_TYPES}
+            selected={typeFilter}
+            setter={setTypeFilter}
+          />
         </div>
         <div className="flex-1 overflow-y-auto flex flex-col gap-4 pr-1 min-h-0">
-          <PropertyList listings={filteredListings} />
+          <PropertyList
+            listings={filteredListings}
+            favoriteIds={favoriteIds}
+            onToggleFavorite={toggle}
+          />
         </div>
       </div>
       <div className="flex-1 shrink-0 h-full">

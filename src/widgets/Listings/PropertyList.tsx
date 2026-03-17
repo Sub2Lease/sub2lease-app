@@ -6,13 +6,20 @@ type Listing = z.infer<typeof postSchema> & { photos: string[] };
 
 interface Props {
   listings: Listing[];
+  favoriteIds: Set<number>;
+  onToggleFavorite: (postId: number) => void;
 }
 
-export function PropertyList({ listings }: Props) {
+export function PropertyList({ listings, favoriteIds, onToggleFavorite }: Props) {
   return (
     <div className="flex flex-col w-full gap-4">
-      {listings.map((listing, index) => (
-        <PropertyCard key={index} property={listing} />
+      {listings.map((listing) => (
+        <PropertyCard
+          key={listing.id}
+          property={listing}
+          isFavorited={favoriteIds.has(listing.id)}
+          onToggleFavorite={onToggleFavorite}
+        />
       ))}
     </div>
   );
