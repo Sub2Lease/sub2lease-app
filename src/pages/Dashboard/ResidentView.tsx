@@ -1,7 +1,6 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, EmptyState, RentStatusBadge } from "./Components";
-import { PLACEHOLDER_CURRENT_STAY } from "./Placeholders";
+import { Card, EmptyState } from "./Components";
 import { formatDate, daysUntil, statusColor } from "./Utils";
 import { useFavorites } from "@/shared/hooks";
 import { OfferModal } from "@/widgets/widget/OfferModal";
@@ -29,7 +28,10 @@ export function ResidentView() {
   const { posts, isLoading: savedLoading, isError: savedError, toggle } = useFavorites();
   const activePosts = posts.filter((p) => p.status !== "subleased");
   const { data: myOffers = [], isLoading: offersLoading, isError: offersError, refetch: refetchOffers } = backendHooks.useMyOffers();
-  const stay = PLACEHOLDER_CURRENT_STAY;
+  const currentStays = useMemo(
+    () => myOffers.filter((o) => o.status === "accepted"),
+    [myOffers]
+  );
 
   const [offerPost, setOfferPost] = useState<{
     id: number;
@@ -86,21 +88,39 @@ export function ResidentView() {
       {/* Current Stay */}
       <Tile>
         <TileHeader title="Current Stay" />
-        <div className="flex-1 overflow-y-auto pr-1">
-          <Card className="p-3">
-            <p className="font-semibold text-xs text-foreground">{stay.title}</p>
-            <p className="text-xs text-foreground/40 mt-0.5">{stay.address}</p>
-            <div className="mt-2 flex flex-wrap gap-1.5">
-              <RentStatusBadge paid={stay.rentPaid} />
-              <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-foreground/50 inline-flex items-center leading-none">
-                Due {formatDate(stay.nextDueDate)}
-              </span>
-              <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-foreground/50 inline-flex items-center leading-none">
-                {daysUntil(stay.endDate)}d left
-              </span>
-            </div>
-          </Card>
-        </div>
+        {offersLoading ? (
+          <div className="flex-1 flex items-center justify-center">
+            <p className="text-xs text-foreground/30">Loading...</p>
+          </div>
+        ) : currentStays.length === 0 ? (
+          <EmptyState message="No active stay" />
+        ) : (
+          <div className="flex-1 overflow-y-auto flex flex-col gap-2 pr-1">
+            {currentStays.map((stay) => (
+              <Card key={stay.id} className="p-3">
+                <p className="font-semibold text-xs text-foreground">{stay.title}</p>
+                <p className="text-xs text-foreground/40 mt-0.5">
+                  {stay.address}, {stay.city}, {stay.state}
+                </p>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-foreground/50">
+                    ${Math.round(parseFloat(stay.amount))}/mo
+                  </span>
+                  {stay.start_date && (
+                    <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-foreground/50">
+                      {formatDate(stay.start_date)} → {formatDate(stay.end_date ?? "")}
+                    </span>
+                  )}
+                  {stay.end_date && (
+                    <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-foreground/50">
+                      {daysUntil(stay.end_date)}d left
+                    </span>
+                  )}
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
       </Tile>
 
       {/* Messages */}
