@@ -156,15 +156,15 @@ export function ResidentView() {
                 </div>
                 <div className="flex flex-col gap-1.5 shrink-0">
                   {pendingOfferIds.has(post.id) ? (
-                      <RemoveWithTooltip />
-                    ) : (
-                      <button
-                        onClick={() => toggle(post.id)}
-                        className="rounded-full border border-red-200 px-2.5 py-1 text-xs font-medium text-red-500 hover:bg-red-50 transition-colors"
-                      >
-                        Remove
-                      </button>
-                    )}
+                    <RemoveWithTooltip />
+                  ) : (
+                    <button
+                      onClick={() => toggle(post.id)}
+                      className="rounded-full border border-red-200 px-2.5 py-1 text-xs font-medium text-red-500 hover:bg-red-50 transition-colors"
+                    >
+                      Remove
+                    </button>
+                  )}
                   <button
                     onClick={() => {
                       if (!pendingOfferIds.has(post.id)) {
@@ -219,15 +219,15 @@ export function ResidentView() {
                       {formatDate(offer.start_date)} → {formatDate(offer.end_date ?? "")}
                     </span>
                   )}
-                  {offer.message?.Valid && (
-                    <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-foreground/50 truncate max-w-[140px]">
-                      "{offer.message.String}"
-                    </span>
-                  )}
                   <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusColor(offer.status)}`}>
                     {offer.status.charAt(0).toUpperCase() + offer.status.slice(1)}
                   </span>
                 </div>
+                {offer.message?.Valid && (
+                  <p className="mt-2 text-xs text-foreground/50 italic border-t border-foreground/8 pt-2">
+                    "{offer.message.String}"
+                  </p>
+                )}
               </Card>
             ))}
           </div>
