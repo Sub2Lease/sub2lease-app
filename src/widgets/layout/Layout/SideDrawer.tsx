@@ -55,10 +55,10 @@ export function SideDrawer({ isOpen, onClose }: Props) {
                 Post a listing
               </button>
               <button
-                onClick={() => handleNavigate("/profile")}
+                onClick={() => handleNavigate("/dashboard")}
                 className="text-left px-4 py-3 rounded-xl text-sm font-medium hover:bg-gray-100 transition"
               >
-                My profile
+                Dashboard
               </button>
               <div className="border-t border-black/10 my-2" />
               <button

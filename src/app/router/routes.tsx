@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Landing } from "@/pages/Landing/Landing"
 import { Listings } from "@/pages/Listings/Listings";
+import { Dashboard } from "@/pages/Dashboard";
 import { Login, Signup } from "@/pages/Auth";
 import { ProtectedRoutes } from "@/app/router/protectedRoutes";
 import { CreateListing } from "@/pages/Create/CreateListing";
@@ -43,6 +44,16 @@ export const routes: AppRoute[] = [
     element: (
       <ProtectedRoutes>
         <CreateListing />
+      </ProtectedRoutes>
+    ),
+  },
+  {
+    name: "Dashboard",
+    path: "/dashboard",
+    authenticatedOnly: true,
+    element: (
+      <ProtectedRoutes>
+        <Dashboard />
       </ProtectedRoutes>
     ),
   },

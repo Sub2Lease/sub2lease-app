@@ -28,10 +28,10 @@ export function LandingHeader() {
             <div className="flex items-center gap-2.5">
               {isAuthenticated && (
                 <button
-                  onClick={() => handleNavigate("/listings/create")}
+                  onClick={() => handleNavigate("/dashboard")}
                   className="rounded-full border border-wise-white/60 px-5 py-2 text-sm font-medium text-wise-white transition-colors hover:bg-wise-white/10"
                 >
-                  Post listing
+                  Dashboard
                 </button>
               )}
               {!isAuthenticated && (
@@ -99,10 +99,10 @@ export function LandingHeader() {
                 Post a listing
               </button>
               <button
-                onClick={() => handleNavigate("/profile")}
+                onClick={() => handleNavigate("/dashboard")}
                 className="text-left px-4 py-3 rounded-xl text-sm font-medium hover:bg-gray-100 transition"
               >
-                My profile
+                Dashboard
               </button>
               <div className="border-t border-black/10 my-2" />
               <button
