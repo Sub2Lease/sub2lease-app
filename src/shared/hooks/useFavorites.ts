@@ -1,11 +1,15 @@
-// src/shared/hooks/useFavorites.ts
 import { useMemo } from "react";
 import { useState } from "react";
 import { backendHooks } from "@/shared/api/backendGO/hooks";
 import { addFavorite, removeFavorite } from "@/shared/api/backendGO/endpoints";
 
 export function useFavorites() {
-  const { data: posts = [], refetch } = backendHooks.useFavorites({
+  const {
+    data: posts = [],
+    isLoading,
+    isError,
+    refetch,
+  } = backendHooks.useFavorites({
     page_id: 1,
     page_size: 100,
   });
@@ -52,5 +56,5 @@ export function useFavorites() {
     }
   };
 
-  return { favoriteIds, toggle };
+  return { posts, favoriteIds, toggle, isLoading, isError };
 }

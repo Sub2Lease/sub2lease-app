@@ -1,9 +1,8 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, EmptyState, RentStatusBadge } from "./Components";
-import { PLACEHOLDER_CURRENT_STAY, PLACEHOLDER_MY_OFFERS, PLACEHOLDER_SAVED, PLACEHOLDER_MESSAGES } from "./Placeholders";
-import type { SavedListing } from "./Types";
+import { PLACEHOLDER_CURRENT_STAY, PLACEHOLDER_MY_OFFERS, PLACEHOLDER_MESSAGES } from "./Placeholders";
 import { formatDate, daysUntil, statusColor } from "./Utils";
+import { useFavorites } from "@/shared/hooks";
 
 function TileHeader({ title }: { title: string }) {
   return (
@@ -23,21 +22,8 @@ function Tile({ children }: { children: React.ReactNode }) {
 
 export function ResidentView() {
   const navigate = useNavigate();
-
-  // TODO: fetch saved listings from GET /favorites, replace placeholder
-  // TODO: add loading and error state for saved listings
-  const [saved, setSaved] = useState<SavedListing[]>(PLACEHOLDER_SAVED); // TODO: seed from GET /favorites
-
-  // TODO: fetch current stay from GET /stays/current, replace placeholder
-  // TODO: add loading and error state for current stay
-  // TODO: handle case where user has no active stay
+  const { posts, isLoading: savedLoading, isError: savedError, toggle } = useFavorites();
   const stay = PLACEHOLDER_CURRENT_STAY;
-
-  const handleRemoveSaved = (id: number) => {
-    setSaved((prev) => prev.filter((s) => s.id !== id));
-    // TODO: DELETE /favorites/:id
-    // TODO: revert optimistic removal and show error toast if request fails
-  };
 
   return (
     <div className="grid grid-cols-2 gap-4">
@@ -45,20 +31,15 @@ export function ResidentView() {
       {/* Current Stay */}
       <Tile>
         <TileHeader title="Current Stay" />
-        {/* TODO: show skeleton loader while stay is fetching */}
-        {/* TODO: show empty state if no active stay */}
         <div className="flex-1 overflow-y-auto pr-1">
           <Card className="p-3">
             <p className="font-semibold text-xs text-foreground">{stay.title}</p>
             <p className="text-xs text-foreground/40 mt-0.5">{stay.address}</p>
             <div className="mt-2 flex flex-wrap gap-1.5">
-              {/* TODO: verify rentPaid shape matches RentStatusBadge's prop type */}
               <RentStatusBadge paid={stay.rentPaid} />
-              {/* TODO: guard against null nextDueDate before calling formatDate */}
               <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-foreground/50 inline-flex items-center leading-none">
                 Due {formatDate(stay.nextDueDate)}
               </span>
-              {/* TODO: guard against null endDate before calling daysUntil */}
               <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-foreground/50 inline-flex items-center leading-none">
                 {daysUntil(stay.endDate)}d left
               </span>
@@ -70,15 +51,12 @@ export function ResidentView() {
       {/* Messages */}
       <Tile>
         <TileHeader title="Messages" />
-        {/* TODO: fetch messages from GET /messages/inbox, replace placeholder */}
-        {/* TODO: add loading and error state for messages */}
         <div className="flex-1 overflow-y-auto flex flex-col gap-2 pr-1">
           {PLACEHOLDER_MESSAGES.length === 0 ? (
             <EmptyState message="No messages yet" />
           ) : PLACEHOLDER_MESSAGES.map((msg) => (
             <div
               key={msg.id}
-              // TODO: add onClick to navigate to thread or open message modal
               className="flex items-start gap-2 rounded-xl border border-foreground/8 bg-foreground/3 p-3 cursor-pointer hover:bg-foreground/5 transition-colors"
             >
               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-foreground/10 text-xs font-semibold text-foreground">
@@ -99,39 +77,49 @@ export function ResidentView() {
         </div>
       </Tile>
 
-      {/* Saved Listings */}
+      {/* Liked Posts */}
       <Tile>
-        <TileHeader title="Saved Listings" />
-        {/* TODO: show skeleton loader while saved listings are fetching */}
-        <div className="flex-1 overflow-y-auto flex flex-col gap-2 pr-1">
-          {saved.length === 0 ? (
-            <EmptyState message="No saved listings" />
-          ) : saved.map((listing) => (
-            <Card key={listing.id} className="p-3 flex items-start justify-between gap-2">
-              {/* TODO: confirm /listings/:id route exists in router */}
-              <div className="flex-1 cursor-pointer min-w-0" onClick={() => navigate(`/listings/${listing.id}`)}>
-                <p className="font-semibold text-xs text-foreground truncate">{listing.title}</p>
-                <p className="text-xs text-foreground/40 mt-0.5 truncate">{listing.address}</p>
-                <p className="mt-1 text-xs font-semibold text-foreground">
-                  ${listing.monthlyRent}<span className="font-normal text-foreground/40">/mo</span>
-                </p>
-              </div>
-              <button
-                onClick={() => handleRemoveSaved(listing.id)}
-                className="shrink-0 rounded-full border border-red-200 px-2.5 py-1 text-xs font-medium text-red-500 hover:bg-red-50 transition-colors"
-              >
-                Remove
-              </button>
-            </Card>
-          ))}
-        </div>
+        <TileHeader title="Liked Posts" />
+        {savedLoading ? (
+          <div className="flex-1 flex items-center justify-center">
+            <p className="text-xs text-foreground/30">Loading...</p>
+          </div>
+        ) : savedError ? (
+          <EmptyState message="Could not load liked posts" />
+        ) : posts.length === 0 ? (
+          <EmptyState message="No liked posts yet" />
+        ) : (
+          <div className="flex-1 overflow-y-auto flex flex-col gap-2 pr-1">
+            {posts.map((post) => (
+              <Card key={post.id} className="p-3 flex items-start justify-between gap-2">
+                <div
+                  className="flex-1 cursor-pointer min-w-0"
+                  onClick={() => navigate(`/listings/${post.id}`)}
+                >
+                  <p className="font-semibold text-xs text-foreground truncate">{post.title}</p>
+                  <p className="text-xs text-foreground/40 mt-0.5 truncate">
+                    {post.address}, {post.city}, {post.state}
+                  </p>
+                  <p className="mt-1 text-xs font-semibold text-foreground">
+                    ${post.monthly_rent}
+                    <span className="font-normal text-foreground/40">/mo</span>
+                  </p>
+                </div>
+                <button
+                  onClick={() => toggle(post.id)}
+                  className="shrink-0 rounded-full border border-red-200 px-2.5 py-1 text-xs font-medium text-red-500 hover:bg-red-50 transition-colors"
+                >
+                  Remove
+                </button>
+              </Card>
+            ))}
+          </div>
+        )}
       </Tile>
 
       {/* My Offers */}
       <Tile>
         <TileHeader title="My Offers" />
-        {/* TODO: fetch offers from GET /offers?offeredBy=me, replace placeholder */}
-        {/* TODO: add loading and error state for offers */}
         <div className="flex-1 overflow-y-auto flex flex-col gap-2 pr-1">
           {PLACEHOLDER_MY_OFFERS.length === 0 ? (
             <EmptyState message="No offers sent yet" />
@@ -145,7 +133,6 @@ export function ResidentView() {
                     ${offer.amount}/mo
                   </span>
                 )}
-                {/* TODO: guard against null offeredAt before calling formatDate */}
                 <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-foreground/50">
                   {formatDate(offer.offeredAt)}
                 </span>
@@ -153,7 +140,6 @@ export function ResidentView() {
                   {offer.status.charAt(0).toUpperCase() + offer.status.slice(1)}
                 </span>
               </div>
-              {/* TODO: add withdraw/cancel action for pending offers */}
             </Card>
           ))}
         </div>
