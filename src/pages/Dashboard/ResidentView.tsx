@@ -27,6 +27,7 @@ function Tile({ children }: { children: React.ReactNode }) {
 export function ResidentView() {
   const navigate = useNavigate();
   const { posts, isLoading: savedLoading, isError: savedError, toggle } = useFavorites();
+  const activePosts = posts.filter((p) => p.status !== "subleased");
   const { data: myOffers = [], isLoading: offersLoading, isError: offersError, refetch: refetchOffers } = backendHooks.useMyOffers();
   const stay = PLACEHOLDER_CURRENT_STAY;
 
@@ -112,18 +113,18 @@ export function ResidentView() {
 
       {/* Liked Posts */}
       <Tile>
-        <TileHeader title="Liked Posts" />
-        {savedLoading ? (
-          <div className="flex-1 flex items-center justify-center">
-            <p className="text-xs text-foreground/30">Loading...</p>
-          </div>
-        ) : savedError ? (
-          <EmptyState message="Could not load liked posts" />
-        ) : posts.length === 0 ? (
-          <EmptyState message="No liked posts yet" />
-        ) : (
-          <div className="flex-1 overflow-y-auto flex flex-col gap-2 pr-1">
-            {posts.map((post) => (
+      <TileHeader title="Liked Posts" />
+      {savedLoading ? (
+        <div className="flex-1 flex items-center justify-center">
+          <p className="text-xs text-foreground/30">Loading...</p>
+        </div>
+      ) : savedError ? (
+        <EmptyState message="Could not load liked posts" />
+      ) : activePosts.length === 0 ? (
+        <EmptyState message="No liked posts yet" />
+      ) : (
+        <div className="flex-1 overflow-y-auto flex flex-col gap-2 pr-1">
+          {activePosts.map((post) => (
               <Card key={post.id} className="p-3 flex items-start justify-between gap-2">
                 <div
                   className="flex-1 cursor-pointer min-w-0"
@@ -237,6 +238,7 @@ export function ResidentView() {
           onSuccess={(offerId) => {
             setLocalPendingIds((prev) => new Map([...prev, [offerPost.id, offerId]]));
             setOfferPost(null);
+            refetchOffers();
           }}
         />
       )}

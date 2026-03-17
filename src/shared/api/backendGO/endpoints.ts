@@ -75,3 +75,6 @@ export const createOffer = (input: z.infer<typeof createOfferInputSchema>) =>
 
 export const cancelOffer = (id: number) =>
   backendApi.cancelOffer({ id });
+
+export const updateOfferStatus = (id: number, status: "accepted" | "declined") =>
+  backendApi.updateOfferStatus({ id, status });

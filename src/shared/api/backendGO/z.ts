@@ -208,6 +208,31 @@ export const cancelOfferMessageSchema = z.object({
   message: z.string(),
 });
 
+export const offerByPostSchema = z.object({
+  id: z.number(),
+  post_id: z.object({ Int64: z.number(), Valid: z.boolean() }).nullable().optional(),
+  user_id: z.object({ Int64: z.number(), Valid: z.boolean() }).nullable().optional(),
+  amount: z.string(),
+  start_date: z.string().optional(),
+  end_date: z.string().optional(),
+  message: z.object({ String: z.string(), Valid: z.boolean() }).nullable().optional(),
+  status: z.string(),
+  created_at: z.string().optional(),
+  updated_at: z.string().optional(),
+  username: z.string().optional(),
+  first_name: z.string().optional(),
+  last_name: z.string().optional(),
+  email: z.string().optional(),
+  profile_photo_url: z.object({ String: z.string(), Valid: z.boolean() }).nullable().optional(),
+});
+
+export const offersByPostSchema = z.array(offerByPostSchema);
+
+export const updateOfferStatusInputSchema = z.object({
+  id: z.number(),
+  status: z.enum(["accepted", "declined"]),
+});
+
 // Supabase
 
 export const addPhotoInputSchema = z.object({

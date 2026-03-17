@@ -83,6 +83,15 @@ export const backendHooks = buildHooks(
       }),
     }),
 
+    useOffersByPost: item({
+      fn: backendApi.listOffersByPost,
+      key: ({ id }: { id: number }) => ["useOffersByPost", id],
+      options: ({ id }: { id: number }) => ({
+        enabled: !!id,
+        refetchOnMount: "always" as const,
+      }),
+    }),
+
     // Favorites
 
     useFavorites: item({

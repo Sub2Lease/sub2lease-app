@@ -25,6 +25,8 @@ import {
   myOffersListSchema,
   cancelOfferInputSchema,
   cancelOfferMessageSchema,
+  offersByPostSchema,
+  updateOfferStatusInputSchema,
 } from "./z";
 
 const isClient = typeof window !== "undefined";
@@ -186,6 +188,18 @@ export const backendApi = buildApi(
       key: ({ id }: z.infer<typeof cancelOfferInputSchema>) => `/offers/${id}`,
       result: cancelOfferMessageSchema,
       options: [methodOptions.delete, simpleJson],
+    }),
+    listOffersByPost: item({
+      input: z.object({ id: z.number() }),
+      key: ({ id }: { id: number }) => `/posts/${id}/offers`,
+      result: offersByPostSchema,
+    }),
+
+    updateOfferStatus: item({
+      input: updateOfferStatusInputSchema,
+      key: ({ id }: z.infer<typeof updateOfferStatusInputSchema>) => `/offers/${id}/status`,
+      result: offerSchema,
+      options: [methodOptions.patch, simpleJson],
     }),
   },
 );
