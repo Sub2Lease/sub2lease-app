@@ -9,7 +9,7 @@ export function Dashboard() {
   const [mode, setMode] = useState<"resident" | "renter">("resident");
 
   return (
-    <div className="w-full flex flex-col" style={{ height: "calc(100vh - 88px)" }}>
+    <div className="w-full flex flex-1 flex-col" style={{ height: "calc(100vh - 88px)" }}>
       {/* Header */}
       <div className="mb-8 flex items-center justify-between">
         <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>

@@ -69,6 +69,9 @@
 }
 
 @layer components {
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
   /* Managed Table */
   .managed-table {
     @apply border-separate border-spacing-0 border-spacing-y-2.5;
@@ -212,9 +215,9 @@
     @apply flex flex-col gap-5 rounded-[20px] bg-transparent p-0 shadow-none sm:p-[25px] sm:shadow-[0px_0px_40px_0px_rgba(0,0,0,0.60)] sm:bg-[rgba(249,249,249,0.03)];
   }
 
-  .full-height-minus-header-and-footer {
+  /* .full-height-minus-header-and-footer {
     @apply min-h-[calc(100vh-160px-60px-42px)];
-  }
+  } */
 
   .timeline-row {
     -ms-overflow-style: none;

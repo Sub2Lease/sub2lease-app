@@ -1,5 +1,6 @@
 import type { z } from "zod";
 import type { postSchema } from "@/shared/api/backendGO/z";
+import { Link } from "react-router-dom";
 
 type Listing = z.infer<typeof postSchema> & { photos: string[] };
 
@@ -13,7 +14,7 @@ export function PropertyCard({ property, isFavorited, onToggleFavorite }: Proper
   const photo = property.photos?.[0] || null;
 
   return (
-    <div className="shrink-0 box-border flex bg-white rounded-xl overflow-hidden shadow md:mb-1 lg:mb-2 xl:mb-4">
+    <Link to={`/listings/${property.id}`} className="shrink-0 box-border flex bg-white rounded-xl overflow-hidden shadow md:mb-1 lg:mb-2 xl:mb-4">
       <div className="aspect-[4/3] w-1/2 shrink-0 bg-gray-100">
         {photo ? (
           <img
@@ -32,7 +33,10 @@ export function PropertyCard({ property, isFavorited, onToggleFavorite }: Proper
           <p className="text-gray-600">{property.address}</p>
         </div>
         <button
-          onClick={() => onToggleFavorite(property.id)}
+          onClick={(e) => {
+            e.preventDefault();
+            onToggleFavorite(property.id);
+          }}
           className={`mr-2 leading-none select-none text-5xl transition-colors ${
             isFavorited ? "text-red-500 hover:text-red-300" : "text-gray-300 hover:text-red-400"
           }`}
@@ -40,6 +44,6 @@ export function PropertyCard({ property, isFavorited, onToggleFavorite }: Proper
           ♥
         </button>
       </div>
-    </div>
+    </Link>
   );
 }

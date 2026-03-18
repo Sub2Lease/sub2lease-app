@@ -7,7 +7,7 @@ const LISTING_TYPES = ["Sublease", "Lease", "Roommate"];
 const BEDROOM_OPTIONS = ["1", "2", "3", "4", "5+"];
 
 export function Listings() {
-  const fetchedListings = useListings();
+  const { listings } = useListings();
   const { favoriteIds, toggle } = useFavorites();
 
   const [typeFilter, setTypeFilter] = useState<string>("any");
@@ -15,7 +15,7 @@ export function Listings() {
   const [maxPrice, setMaxPrice] = useState<string>("");
   const [bedroomFilter, setBedroomFilter] = useState<string>("any");
 
-  const filteredListings = useMemo(() => fetchedListings.filter((listing) => {
+  const filteredListings = useMemo(() => listings.filter((listing) => {
     const rent = parseInt(listing.monthly_rent);
     const priceMatch =
       (!minPrice || rent >= parseInt(minPrice)) &&
@@ -27,11 +27,11 @@ export function Listings() {
         ? listing.total_bedroom_count >= 5
         : listing.total_bedroom_count === parseInt(bedroomFilter));
     return priceMatch && typeMatch && bedroomMatch;
-  }), [fetchedListings, minPrice, maxPrice, typeFilter, bedroomFilter]);
+  }), [listings, minPrice, maxPrice, typeFilter, bedroomFilter]);
 
   return (
-    <div className="flex flex-col md:flex-row gap-4 h-screen overflow-hidden">
-      <div className="flex-1 flex flex-col min-h-0">
+    <div className="flex flex-1 flex-row md:flex-row gap-4 overflow-hidden h-full">
+      <div className="flex-1 flex flex-col min-h-0 size-full">
         <div className="mb-4 gap-2 flex shrink-0 px-1 py-1">
           <PriceFilterButton
             minPrice={minPrice}
@@ -63,8 +63,8 @@ export function Listings() {
           />
         </div>
       </div>
-      <div className="flex-1 shrink-0 h-full">
-        <MapSection lat={43.07305} lng={-89.40325} />
+      <div className="flex-1 h-full">
+        <MapSection />
       </div>
     </div>
   );

@@ -23,7 +23,7 @@ export function LandingHeader() {
     <>
       <div className="sticky top-0 z-50 h-[88px]">
         <header className="bg-transparent">
-          <div className="flex items-center justify-between gap-2 py-5">
+          <div className="flex items-center justify-between gap-2 py-6">
             <Logo isLink={false} color="white" />
             <div className="flex items-center gap-2.5">
               {isAuthenticated && (

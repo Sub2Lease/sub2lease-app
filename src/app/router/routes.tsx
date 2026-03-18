@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Landing } from "@/pages/Landing/Landing"
-import { Listings } from "@/pages/Listings/Listings";
+import { Listings, ListingDetails } from "@/pages/Listings";
 import { Dashboard } from "@/pages/Dashboard";
 import { Login, Signup } from "@/pages/Auth";
 import { ProtectedRoutes } from "@/app/router/protectedRoutes";
@@ -20,6 +20,8 @@ export interface AppRoute {
   label?: string;
   authenticatedOnly?: boolean;
 }
+
+export const LISTING_PARAM = "listingId"
 
 export const routes: AppRoute[] = [
   {
@@ -62,28 +64,9 @@ export const routes: AppRoute[] = [
     path: "/listings",
     element: <Listings />,
   },
-  // {
-  //   name: "Partners",
-  //   path: ROUTES.PARTNERS,
-  //   element: <Partners />,
-  //   children: [
-  //     {
-  //       name: "Partner",
-  //       path: ROUTES.PARTNER,
-  //       element: <Partner />,
-  //       hidden: true,
-  //     },
-  //   ],
-  // },
-  // {
-  //   name: "Account",
-  //   path: ROUTES.ACCOUNT,
-  //   element: (
-  //     <ProtectedRoute>
-  //       <Account />
-  //     </ProtectedRoute>
-  //   ),
-  //   hidden: true,
-  //   authenticatedOnly: true,
-  // },
+  {
+    name: "Listing Details",
+    path: `/listings/:${LISTING_PARAM}`,
+    element: <ListingDetails />,
+  },
 ];
