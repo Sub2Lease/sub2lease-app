@@ -42,7 +42,7 @@ export function SignupForm({ onSubmit }: SignupFormProps) {
     setLoading(true);
     try {
       await onSubmit?.(form);
-      navigate("/listings");
+      navigate("/login");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Signup failed");
     } finally {
