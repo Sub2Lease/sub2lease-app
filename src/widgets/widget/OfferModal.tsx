@@ -72,8 +72,9 @@ export function OfferModal({ postId, postTitle, monthlyRent, availableFrom, avai
 
         {/* Header */}
         <div className="mb-5">
-          <h2 className="text-base font-bold text-foreground">Make an Offer</h2>
-          <p className="text-xs text-foreground/50 mt-0.5 truncate">{postTitle}</p>
+          <h2 className="text-base font-bold text-foreground inline-block">Make an Offer</h2>
+          <span className="text-foreground/50 ml-2 italic">(NOT Binding)</span>
+          <p className="text-lg font-semibold text-foreground/75 mt-0.5 truncate">{postTitle}</p>
         </div>
 
         {/* Price Selection */}
