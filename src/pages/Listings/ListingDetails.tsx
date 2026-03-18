@@ -10,9 +10,6 @@ import {
   Waves, 
   UtensilsCrossed, 
   Microwave, 
-  MapPin,
-  ChevronLeft,
-  ChevronRight
 } from 'lucide-react';
 import { MapSection } from "@/widgets/Listings";
 
@@ -20,9 +17,7 @@ export function ListingDetails() {
   const listingId = useParams()[LISTING_PARAM];
   const { getListingById } = useListings();
 
-  // const listing = getListingById(listingId || "");
-
-  const listing = {
+  const listing = getListingById(listingId || "") ?? {
     id: 79,
     user_id: {"Int64":75,"Valid":true},
     address: "339 West Gorham Street",
@@ -47,38 +42,40 @@ export function ListingDetails() {
     created_at: "2026-03-17T01:58:53.790581Z",
     updated_at: "2026-03-17T21:01:09.124583Z",
     title: "Winter Wonderland",
-    amenities: {"String":"", Valid: false},
+    amenities: {"String":"aircon wifi stove heating gym oven laundry dishwasher microwave", Valid: false},
     house_rules: {"String":"", Valid: false},
-    photos: [{"id":17,"post_id":79,"photo_url":"https://ffeiqqfembwxavvqihpd.supabase.co/storage/v1/object/public/sub2lease_images/posts/79/7911c47c-3f72-4382-b8b2-2ab92092bfc3.jpe","order":1},{"id":18,"post_id":79,"photo_url":"https://ffeiqqfembwxavvqihpd.supabase.co/storage/v1/object/public/sub2lease_images/posts/79/629b2099-a36f-4f2f-98aa-e14571bbea75.jpe","order":1},{"id":19,"post_id":79,"photo_url":"https://ffeiqqfembwxavvqihpd.supabase.co/storage/v1/object/public/sub2lease_images/posts/79/6016d144-8198-453c-bcc9-22cd01eb868e.jpe","order":1},{"id":20,"post_id":79,"photo_url":"https://ffeiqqfembwxavvqihpd.supabase.co/storage/v1/object/public/sub2lease_images/posts/79/efa88e48-523b-41e4-b4ff-48055d732321.jpe","order":1},{"id":21,"post_id":79,"photo_url":"https://ffeiqqfembwxavvqihpd.supabase.co/storage/v1/object/public/sub2lease_images/posts/79/a02c352e-a51e-4a0a-ac51-59339e4faa08.jpe","order":1}]
+    photos: ["https://ffeiqqfembwxavvqihpd.supabase.co/storage/v1/object/public/sub2lease_images/posts/79/7911c47c-3f72-4382-b8b2-2ab92092bfc3.jpe","https://ffeiqqfembwxavvqihpd.supabase.co/storage/v1/object/public/sub2lease_images/posts/79/629b2099-a36f-4f2f-98aa-e14571bbea75.jpe","https://ffeiqqfembwxavvqihpd.supabase.co/storage/v1/object/public/sub2lease_images/posts/79/6016d144-8198-453c-bcc9-22cd01eb868e.jpe","https://ffeiqqfembwxavvqihpd.supabase.co/storage/v1/object/public/sub2lease_images/posts/79/efa88e48-523b-41e4-b4ff-48055d732321.jpe","https://ffeiqqfembwxavvqihpd.supabase.co/storage/v1/object/public/sub2lease_images/posts/79/a02c352e-a51e-4a0a-ac51-59339e4faa08.jpe"]
   };
 
-  // if (!listing) return <ErrorPage/>;
+  if (!listing) return <ErrorPage/>;
 
-  const amenities = [
-    { icon: <Wind size={20} />, label: "Air conditioning" },
-    { icon: <Wifi size={20} />, label: "Wifi" },
-    { icon: <UtensilsCrossed size={20} />, label: "Stove" },
-    { icon: <Flame size={20} />, label: "Heating" },
-    { icon: <Dumbbell size={20} />, label: "Gym" },
-    { icon: <UtensilsCrossed size={20} />, label: "Oven" },
-    { icon: <Waves size={20} />, label: "In-unit laundry" },
-    { icon: <UtensilsCrossed size={20} />, label: "Dishwasher" },
-    { icon: <Microwave size={20} />, label: "Microwave" },
+  const amenityIcons = [
+    { icon: <Wind size={20} />, label: "Air conditioning", value: 'aircon' },
+    { icon: <Wifi size={20} />, label: "Wifi", value: 'wifi' },
+    { icon: <UtensilsCrossed size={20} />, label: "Stove", value: 'stove' },
+    { icon: <Flame size={20} />, label: "Heating", value: 'heating' },
+    { icon: <Dumbbell size={20} />, label: "Gym", value: 'gym' },
+    { icon: <UtensilsCrossed size={20} />, label: "Oven", value: 'oven' },
+    { icon: <Waves size={20} />, label: "In-unit laundry", value: 'laundry' },
+    { icon: <UtensilsCrossed size={20} />, label: "Dishwasher", value: 'dishwasher' },
+    { icon: <Microwave size={20} />, label: "Microwave", value: 'microwave' },
   ];
 
   const start = new Date(listing.start_date);
   const end = new Date(listing.end_date);
+
+  const listingAmenities = listing.amenities.String.split(' ').map((s: string) => s);
 
   return (
     <div className="flex gap-4 font-sans text-slate-800">
       
       {/* Photos */}
       <div className="flex-1 grid grid-cols-2 grid-rows-2 gap-1 h-[80vh]">
-        <img className="size-full object-cover col-span-2 rounded-3xl" src={listing.photos[0]?.photo_url} alt="Listing Photo 1" />
-        <img className="size-full object-cover rounded-3xl" src={listing.photos[1]?.photo_url} alt="Listing Photo 2" />
+        <img className="size-full object-cover col-span-2 rounded-3xl" src={listing.photos[0]} alt="Listing Photo 1" />
+        <img className="size-full object-cover rounded-3xl" src={listing.photos[1]} alt="Listing Photo 2" />
         <div className="grid grid-rows-2 gap-1">
-          <img className="size-full object-cover rounded-3xl" src={listing.photos[2]?.photo_url} alt="Listing Photo 3" />
-          <img className="size-full object-cover rounded-3xl" src={listing.photos[3]?.photo_url} alt="Listing Photo 4" />
+          <img className="size-full object-cover rounded-3xl" src={listing.photos[2]} alt="Listing Photo 3" />
+          <img className="size-full object-cover rounded-3xl" src={listing.photos[3]} alt="Listing Photo 4" />
         </div>
       </div>
 
@@ -102,7 +99,7 @@ export function ListingDetails() {
 
         {/* Amenities Card */}
         <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 grid grid-cols-3 gap-y-4 gap-x-2">
-          {amenities.map((item, idx) => (
+          {amenityIcons.filter((item) => listingAmenities.includes(item.value)).map((item, idx) => (
             <div key={idx} className="flex items-center gap-2 text-sm text-slate-600">
               {item.icon}
               <span>{item.label}</span>
@@ -111,7 +108,7 @@ export function ListingDetails() {
         </div>
 
         {/* Bottom Section: Map & Calendar */}
-        <div className="flex shrink-0 h-[300px]">
+        <div className="flex shrink-0 h-[500px]">
           <MapSection />
 
           {/* Mini Calendar UI */}
@@ -145,7 +142,7 @@ export function ListingDetails() {
         </div>
 
         {/* Footer Pricing & Actions */}
-        <div className="bg-white p-4 rounded-3xl border border-slate-100 flex justify-between items-center">
+        <div className="absolute bottom-8 right-8 bg-white p-4 rounded-3xl border border-slate-100 flex justify-between gap-4 items-center">
           <div>
             <div className="text-2xl font-bold">$1,000/mo</div>
             <div className="text-sm text-slate-500">Open from: Mar 6 ~ May 17</div>
