@@ -92,12 +92,28 @@ export function ListingDetails() {
   return (
     <div className="flex gap-4 font-sans text-slate-800">
       {/* Photos */}
-      <div className="flex-1 grid grid-cols-2 grid-rows-2 gap-1 h-[80vh]">
-        <img className="size-full object-cover col-span-2 rounded-3xl" src={listing.photos[0]} alt="Listing Photo 1" />
-        <img className="size-full object-cover rounded-3xl" src={listing.photos[1]} alt="Listing Photo 2" />
-        <div className="grid grid-rows-2 gap-1">
-          <img className="size-full object-cover rounded-3xl" src={listing.photos[2]} alt="Listing Photo 3" />
-          <img className="size-full object-cover rounded-3xl" src={listing.photos[3]} alt="Listing Photo 4" />
+      <div style={{
+        flexShrink: 0,
+        display: 'grid',
+        gridTemplateColumns: '23vw 23vw',
+        gridTemplateRows: '28vw 14vw 14vw',
+        gap: '8px',
+      }}>
+        {/* Hero: full width, row 1 */}
+        <div className="rounded-3xl overflow-hidden bg-slate-200" style={{ gridColumn: '1/3', gridRow: '1' }}>
+          <img className="size-full object-cover" src={listing.photos[0]} alt="Listing Photo 1" />
+        </div>
+        {/* Bottom-left: spans rows 2-3 */}
+        <div className="rounded-3xl overflow-hidden bg-slate-200" style={{ gridColumn: '1', gridRow: '2/4' }}>
+          <img className="size-full object-cover" src={listing.photos[1]} alt="Listing Photo 2" />
+        </div>
+        {/* Bottom-right top */}
+        <div className="rounded-3xl overflow-hidden bg-slate-200" style={{ gridColumn: '2', gridRow: '2' }}>
+          <img className="size-full object-cover" src={listing.photos[2]} alt="Listing Photo 3" />
+        </div>
+        {/* Bottom-right bottom */}
+        <div className="rounded-3xl overflow-hidden bg-slate-200" style={{ gridColumn: '2', gridRow: '3' }}>
+          <img className="size-full object-cover" src={listing.photos[3]} alt="Listing Photo 4" />
         </div>
       </div>
 
