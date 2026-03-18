@@ -90,7 +90,7 @@ export function ListingDetails() {
   };
 
   return (
-    <div className="flex gap-4 font-sans text-slate-800">
+    <div className="flex gap-4 font-sans text-slate-800 h-screen overflow-hidden">
       {/* Photos */}
       <div style={{
         flexShrink: 0,
@@ -118,10 +118,10 @@ export function ListingDetails() {
       </div>
 
       {/* Info */}
-      <div className="flex-1 flex flex-col items-center">
+      <div className="flex-1 flex flex-col items-center relative h-full overflow-hidden">
         <div
           onScroll={handleScroll}
-          className="w-full flex-1 gap-4 flex flex-col max-h-[70vh] overflow-y-auto scrollbar-none pb-4"
+          className="w-full h-full gap-4 flex flex-col overflow-y-auto scrollbar-none pb-20"
         >
           {/* Header Info Card */}
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
@@ -183,8 +183,8 @@ export function ListingDetails() {
           </div>
         </div>
         { isAtTop && <ChevronsDown size={50} className="-mt-[50px] text-black" /> }
-        {/* Footer Pricing & Actions -- if absolute: absolute bottom-4 right-[35vw] w-[30vw] */}
-        <div className="w-full bg-white p-4 rounded-3xl border border-slate-100 flex justify-between gap-4 items-center">
+        {/* Footer Pricing & Actions - floating */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-[90%] bg-white/80 backdrop-blur-md p-4 rounded-3xl border border-slate-100 shadow-lg flex justify-between gap-4 items-center z-10">
           <div>
             <div className="text-2xl font-bold">${listing.monthly_rent}/mo</div>
             <div className="text-sm text-slate-500">Open From: {availabilityStr}</div>
