@@ -24,6 +24,9 @@ export const createUserInputSchema = z.object({
   phone: z.string().optional(),
   password: z.string().min(8).max(30),
   profile_photo_url: z.string().optional(),
+  // ToS consent fields
+  tos_version: z.string(),
+  tos_user_agent: z.string().optional(),
 });
 
 export const loginUserInputSchema = z.object({

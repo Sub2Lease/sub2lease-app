@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 export function Signup() {
   const navigate = useNavigate();
+
   const handleSignup = async (data: {
     first_name: string;
     last_name: string;
@@ -11,14 +12,18 @@ export function Signup() {
     email: string;
     password: string;
   }) => {
-    await createUser(data);
+    await createUser({
+      ...data,
+      tos_version: "1.0",
+      tos_user_agent: navigator.userAgent,
+    });
+
     navigate("/login");
-    // Signup doesn't return a token — navigate to login after
   };
-  
+
   return (
-      <div className="flex flex-1 items-center justify-center px-4 py-12">
-        <SignupForm onSubmit={handleSignup} />
-      </div>
+    <div className="flex flex-1 items-center justify-center px-4 py-12">
+      <SignupForm onSubmit={handleSignup} />
+    </div>
   );
 }
