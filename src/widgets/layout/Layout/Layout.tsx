@@ -5,8 +5,6 @@ import { SideMenu } from "./SideMenu";
 import { LandingHeader } from "../../widget/LandingHeader";
 import { Header } from "../../widget/Header";
 
-
-
 export function Layout({ children }: PropsWithChildren) {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
