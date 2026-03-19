@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ErrorPage } from "@/app/router/error-page";
 import { useListings } from "@/shared/hooks";
