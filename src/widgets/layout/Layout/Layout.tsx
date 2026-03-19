@@ -1,22 +1,25 @@
 import type { PropsWithChildren } from "react";
 import { useState } from "react";
 import { useLocation, matchPath } from "react-router";
-import hero from "@/assets/video/Hero.mp4";
 import { SideMenu } from "./SideMenu";
 import { LandingHeader } from "../../widget/LandingHeader";
 import { Header } from "../../widget/Header";
+
+
 
 export function Layout({ children }: PropsWithChildren) {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const isLanding = matchPath("/", location.pathname);
+  const madison_video_url = "https://ffeiqqfembwxavvqihpd.supabase.co/storage/v1/object/public/frontend_assets/Hero.mp4";
 
   return (
     <div className={`relative ${isLanding ? "min-h-screen" : "h-screen"}`}>
       {isLanding && (
         <video autoPlay muted loop playsInline
+          preload="auto" 
           className="pointer-events-none fixed inset-0 -z-10 h-full w-full object-cover">
-          <source src={hero} type="video/mp4" />
+          <source src={madison_video_url} type="video/mp4" />
         </video>
       )}
       <div className={`mx-auto ${isLanding ? "" : "h-full"}`}>
