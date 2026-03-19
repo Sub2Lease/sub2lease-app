@@ -28,45 +28,6 @@ const amenityIcons = [
   { icon: <Microwave size={20} />, label: "Microwave", value: "microwave" },
 ];
 
-const dummyListing = {
-  id: 79,
-  user_id: { Int64: 75, Valid: true },
-  address: "339 West Gorham Street",
-  city: "Madison ",
-  state: "Wi",
-  country: "US",
-  zipcode: "53703",
-  description: "Cool Place",
-  property_type: "Apartment",
-  listing_type: "Sublease",
-  poster_role: "Tenant",
-  furnished: true,
-  total_bedroom_count: 4,
-  rooms_available: 1,
-  bathrooms: 2,
-  monthly_rent: "5000",
-  security_deposit: { String: "", Valid: false },
-  start_date: "2026-03-18T00:00:00Z",
-  end_date: "2026-06-26T00:00:00Z",
-  property_website: { String: "", Valid: false },
-  status: "subleased",
-  created_at: "2026-03-17T01:58:53.790581Z",
-  updated_at: "2026-03-17T21:01:09.124583Z",
-  title: "Winter Wonderland",
-  amenities: {
-    String: "aircon wifi stove heating gym oven laundry dishwasher microwave",
-    Valid: false,
-  },
-  house_rules: { String: "", Valid: false },
-  photos: [
-    "https://ffeiqqfembwxavvqihpd.supabase.co/storage/v1/object/public/sub2lease_images/posts/79/7911c47c-3f72-4382-b8b2-2ab92092bfc3.jpe",
-    "https://ffeiqqfembwxavvqihpd.supabase.co/storage/v1/object/public/sub2lease_images/posts/79/629b2099-a36f-4f2f-98aa-e14571bbea75.jpe",
-    "https://ffeiqqfembwxavvqihpd.supabase.co/storage/v1/object/public/sub2lease_images/posts/79/6016d144-8198-453c-bcc9-22cd01eb868e.jpe",
-    "https://ffeiqqfembwxavvqihpd.supabase.co/storage/v1/object/public/sub2lease_images/posts/79/efa88e48-523b-41e4-b4ff-48055d732321.jpe",
-    "https://ffeiqqfembwxavvqihpd.supabase.co/storage/v1/object/public/sub2lease_images/posts/79/a02c352e-a51e-4a0a-ac51-59339e4faa08.jpe",
-  ],
-};
-
 export function ListingDetails() {
   const [isAtTop, setIsAtTop] = useState(true);
   const [offerPost, setOfferPost] = useState<{
@@ -79,7 +40,7 @@ export function ListingDetails() {
 
   const listingId = useParams()[LISTING_PARAM];
   const { getListingById } = useListings();
-  const listing = getListingById(listingId || "") ?? dummyListing;
+  const listing = getListingById(listingId || "");
 
   const photoGridRef = useRef<HTMLDivElement>(null);
   const photoWrapRef = useRef<HTMLDivElement>(null);
