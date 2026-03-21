@@ -14,7 +14,10 @@ export function Listings() {
   const [minPrice, setMinPrice] = useState<string>("");
   const [maxPrice, setMaxPrice] = useState<string>("");
   const [bedroomFilter, setBedroomFilter] = useState<string>("any");
+  const [minDate, setMinDate] = useState<Date | null>(null);
+  const [maxDate, setMaxDate] = useState<Date | null>(null);
 
+  // FUTURE TODO: separate useMemo by filter, if performance lags
   const filteredListings = useMemo(() => listings.filter((listing) => {
     const rent = parseInt(listing.monthly_rent);
     const priceMatch =
@@ -26,8 +29,14 @@ export function Listings() {
       (bedroomFilter === "5+"
         ? listing.total_bedroom_count >= 5
         : listing.total_bedroom_count === parseInt(bedroomFilter));
-    return priceMatch && typeMatch && bedroomMatch;
-  }), [listings, minPrice, maxPrice, typeFilter, bedroomFilter]);
+    
+    const start_date = new Date(listing.start_date);
+    const end_date = new Date(listing.end_date);
+    const availabilityMatch =
+      (!minDate || start_date <= minDate) &&
+      (!maxDate || end_date >= maxDate);
+    return priceMatch && typeMatch && bedroomMatch && availabilityMatch;
+  }), [listings, minPrice, maxPrice, typeFilter, bedroomFilter, minDate, maxDate]);
 
   return (
     <div className="flex flex-1 flex-row md:flex-row gap-4 overflow-hidden h-full">
@@ -45,7 +54,7 @@ export function Listings() {
             selected={bedroomFilter}
             setter={setBedroomFilter}
             formatSelected={(val) =>
-              val === "5+" ? "5+ bedrooms" : `${val} bedroom${val === "1" ? "" : "s"}`
+              `${val} bedroom${val === "1" ? "" : "s"}`
             }
           />
           <SelectFilterButton
