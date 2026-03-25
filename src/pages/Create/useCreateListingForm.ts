@@ -2,8 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { createPost } from "@/shared/api/backendGO/endpoints";
 import { uploadPostPhoto } from "@/shared/api/backendGO/endpoints";
-import { type Step, type FormState, STEPS, initialFormState } from "./types";
-import { US_STATES } from "./constants";
+import { type Step, type FormState, initialFormState, steps } from "@/shared";
+
+const US_STATES = ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"];
 
 export function useCreateListingForm() {
   const navigate = useNavigate();
@@ -25,12 +26,12 @@ export function useCreateListingForm() {
     (e: React.ChangeEvent<HTMLInputElement>) =>
       setForm((prev) => ({ ...prev, [field]: Number(e.target.value) }));
 
-  const stepIndex = STEPS.findIndex((s) => s.id === step);
-  const isLast = stepIndex === STEPS.length - 1;
+  const stepIndex = steps.findIndex((s) => s.id === step);
+  const isLast = stepIndex === steps.length - 1;
 
   const back = () => {
     setError(null);
-    if (stepIndex > 0) setStep(STEPS[stepIndex - 1].id);
+    if (stepIndex > 0) setStep(steps[stepIndex - 1].id);
   };
 
   const validateBasics = () => {
@@ -74,7 +75,7 @@ export function useCreateListingForm() {
     if (step === "basics") { const err = validateBasics(); if (err) { setError(err); return; } }
     if (step === "details") { const err = validateDetails(); if (err) { setError(err); return; } }
     if (step === "dates") { const err = validateDates(); if (err) { setError(err); return; } }
-    if (!isLast) setStep(STEPS[stepIndex + 1].id);
+    if (!isLast) setStep(steps[stepIndex + 1].id);
   };
 
   const handleComplete = async () => {

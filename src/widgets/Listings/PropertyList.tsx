@@ -1,8 +1,5 @@
-import type { z } from "zod";
-import type { postSchema } from "@/shared/api/backendGO/z";
+import type { Listing } from "@/shared/types";
 import { PropertyCard } from "./PropertyCard";
-
-type Listing = z.infer<typeof postSchema> & { photos: string[] };
 
 interface Props {
   listings: Listing[];

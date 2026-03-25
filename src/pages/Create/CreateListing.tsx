@@ -1,4 +1,4 @@
-import { STEPS } from "./types";
+import { steps } from "@/shared";
 import { useCreateListingForm } from "./useCreateListingForm";
 import { BasicsStep } from "./steps/BasicsStep";
 import { DetailsStep } from "./steps/DetailsStep";
@@ -9,9 +9,9 @@ export function CreateListing() {
   const { step, setStep, form, setForm, set, setNum, photos, setPhotos, stepIndex, isLast, back, next, handleComplete, loading, error } = useCreateListingForm();
 
   return (
-    <div className="mx-auto w-full max-w-2xl py-8 overflow-y-auto">
+    <div className="mx-auto w-full max-w-2xl overflow-y-auto">
       <div className="mb-10 flex items-center gap-2">
-        {STEPS.map((s, i) => (
+        {steps.map((s, i) => (
           <div key={s.id} className="flex items-center gap-2">
             <button
               type="button"
@@ -29,7 +29,7 @@ export function CreateListing() {
             <span className={`text-sm ${s.id === step ? "text-foreground" : "text-foreground/40"}`}>
               {s.label}
             </span>
-            {i < STEPS.length - 1 && <div className="mx-2 h-px w-6 bg-foreground/20" />}
+            {i < steps.length - 1 && <div className="mx-2 h-px w-6 bg-foreground/20" />}
           </div>
         ))}
       </div>

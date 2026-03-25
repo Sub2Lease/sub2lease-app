@@ -1,5 +1,5 @@
 import { Field } from "../Field";
-import type { FormState } from "../types";
+import type { FormState } from "@/shared/types";
 
 interface Props {
   form: FormState;

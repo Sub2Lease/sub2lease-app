@@ -23,3 +23,4 @@ export * from "./tanstack-query";
 export * from "./types";
 export * from "./url";
 export * from "./auth";
+export * from "./compression";

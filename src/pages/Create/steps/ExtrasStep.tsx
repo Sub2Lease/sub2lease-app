@@ -1,22 +1,36 @@
 import { Field } from "../Field";
-import { useState } from "react";
-import type { FormState } from "../types";
+import { useState, type Dispatch, type SetStateAction } from "react";
+import type { FormState } from "@/shared/types";
+import { processAndCompressImages } from "@/shared/utils";
 
 interface Props {
   form: FormState;
   set: (field: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
   photos: File[];
-  setPhotos: (photos: File[]) => void;
+  setPhotos: Dispatch<SetStateAction<File[]>>;
 }
+
+const FILE_LIMIT = 10;
 
 export function ExtrasStep({ form, set, photos, setPhotos }: Props) {
   const [dragIndex, setDragIndex] = useState<number | null>(null);
-  const [previews, setPreviews] = useState<string[]>([]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    setPhotos(files);
-    setPreviews(files.map((f) => URL.createObjectURL(f)));
+  const previews = photos.map((f) => URL.createObjectURL(f));
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+
+    const files = await processAndCompressImages(e.target.files);
+
+    const successfulFiles = files.filter((res) => res.status === 'fulfilled').map(({ value }) => value);
+
+    if (successfulFiles.length !== files.length) alert("Some files failed to process and were not added!");
+    if (!successfulFiles.length) return;
+
+    if (successfulFiles.length + photos.length > FILE_LIMIT) {
+      alert(`You can upload a maximum of ${FILE_LIMIT} photos.`);
+    }
+    setPhotos((prev) => [...prev, ...successfulFiles].slice(0, FILE_LIMIT));
   };
 
   const handleDragStart = (i: number) => setDragIndex(i);
@@ -28,15 +42,12 @@ export function ExtrasStep({ form, set, photos, setPhotos }: Props) {
     newPhotos.splice(i, 0, newPhotos.splice(dragIndex, 1)[0]);
     newPreviews.splice(i, 0, newPreviews.splice(dragIndex, 1)[0]);
     setPhotos(newPhotos);
-    setPreviews(newPreviews);
     setDragIndex(null);
   };
 
   const removePhoto = (i: number) => {
     const newPhotos = photos.filter((_, idx) => idx !== i);
-    const newPreviews = previews.filter((_, idx) => idx !== i);
     setPhotos(newPhotos);
-    setPreviews(newPreviews);
   };
 
   return (
@@ -67,18 +78,18 @@ export function ExtrasStep({ form, set, photos, setPhotos }: Props) {
               onDragStart={() => handleDragStart(i)}
               onDragOver={(e) => e.preventDefault()}
               onDrop={() => handleDrop(i)}
-              className={`relative cursor-grab rounded-xl overflow-hidden border-2 transition-colors ${
+              className={`relative cursor-grab rounded-xl bg-background overflow-hidden border-2 transition-colors ${
                 dragIndex === i ? "border-foreground/40 opacity-50" : "border-transparent"
               }`}
             >
               <img src={src} className="w-full aspect-square object-cover" />
-              <div className="absolute top-1 left-2 text-xs font-bold text-white drop-shadow">
+              <div className="absolute top-1 left-2 px-2 text-lg rounded-full font-bold text-foreground/75 bg-background">
                 {i + 1}
               </div>
               <button
                 type="button"
                 onClick={() => removePhoto(i)}
-                className="absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-black/50 text-white text-xs hover:bg-black/80"
+                className="absolute top-1 right-1 flex size-6 items-center justify-center rounded-full bg-foreground/60 text-white text-md font-bold hover:bg-black/80"
               >
                 ✕
               </button>

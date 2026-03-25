@@ -11,8 +11,7 @@ export function Layout({ children }: PropsWithChildren) {
   const isLanding = matchPath("/", location.pathname);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const madison_video_url =
-    "https://ffeiqqfembwxavvqihpd.supabase.co/storage/v1/object/public/frontend_assets/Hero.mp4";
+  const madison_video_url = import.meta.env.VITE_ENV === "prod" ? "https://ffeiqqfembwxavvqihpd.supabase.co/storage/v1/object/public/frontend_assets/Hero.mp4" : "";
 
   useEffect(() => {
     const video = videoRef.current;
@@ -42,7 +41,7 @@ export function Layout({ children }: PropsWithChildren) {
       )}
       <div className={`mx-auto ${isLanding ? "" : "h-full"}`}>
         <div
-          className={`relative flex flex-col gap-5 p-6 lg:p-10 lg:pt-6
+          className={`relative flex flex-col gap-5 px-6 pt-6 lg:px-10 lg:pt-6
           ${isLanding ? "!py-0" : "h-full overflow-hidden"}`}
         >
           {isLanding ? <LandingHeader /> : <Header />}

@@ -3,30 +3,10 @@ import { useParams } from "react-router-dom";
 import { ErrorPage } from "@/app/router/error-page";
 import { useListings } from "@/shared/hooks";
 import { LISTING_PARAM } from "@/app/router";
-import {
-  Wind,
-  Wifi,
-  Flame,
-  Dumbbell,
-  Waves,
-  UtensilsCrossed,
-  Microwave,
-  ChevronsDown,
-} from "lucide-react";
+import { ChevronsDown } from "lucide-react";
 import { MapSection } from "@/widgets/Listings";
 import { OfferModal } from "@/widgets/widget/OfferModal";
-
-const amenityIcons = [
-  { icon: <Wind size={20} />, label: "Air conditioning", value: "aircon" },
-  { icon: <Wifi size={20} />, label: "Wifi", value: "wifi" },
-  { icon: <UtensilsCrossed size={20} />, label: "Stove", value: "stove" },
-  { icon: <Flame size={20} />, label: "Heating", value: "heating" },
-  { icon: <Dumbbell size={20} />, label: "Gym", value: "gym" },
-  { icon: <UtensilsCrossed size={20} />, label: "Oven", value: "oven" },
-  { icon: <Waves size={20} />, label: "In-unit laundry", value: "laundry" },
-  { icon: <UtensilsCrossed size={20} />, label: "Dishwasher", value: "dishwasher" },
-  { icon: <Microwave size={20} />, label: "Microwave", value: "microwave" },
-];
+import { type Amenity, AMENITIES, amenities } from "@/shared";
 
 export function ListingDetails() {
   const [isAtTop, setIsAtTop] = useState(true);
@@ -88,7 +68,7 @@ export function ListingDetails() {
   const availabilityStr =
     start.toLocaleDateString() + "\u2013" + end.toLocaleDateString();
 
-  const listingAmenities = listing.amenities.String.split(" ").map((s: string) => s);
+  const listingAmenities: Amenity[] = listing.amenities.String.split(" ").filter((a: string) => AMENITIES.includes(a.toLowerCase() as Amenity));
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const scrollTop = e.currentTarget.scrollTop;
@@ -197,14 +177,17 @@ export function ListingDetails() {
           </div>
 
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 grid grid-cols-3 gap-y-4 gap-x-2">
-            {amenityIcons
+            {amenities
               .filter((item) => listingAmenities.includes(item.value))
-              .map((item, idx) => (
-                <div key={idx} className="flex items-center gap-2 text-sm text-slate-600">
-                  {item.icon}
-                  <span>{item.label}</span>
-                </div>
-              ))}
+              .map((item, idx) => {
+                const Icon = item.icon;
+                return (
+                  <div key={idx} className="flex items-center gap-2 text-sm text-slate-600">
+                    <Icon size={20} />
+                    <span>{item.label}</span>
+                  </div>
+                );
+              })}
           </div>
 
           <div className="flex shrink-0 h-[500px]">
