@@ -10,9 +10,9 @@ export function ProtectedRoutes({ children }: ProtectedRouteProps) {
   const isAuthenticated = useIsAuthenticated();
   const location = useLocation();
 
-  // if (!isAuthenticated) {
-  //   return <Navigate to="/login" state={{ from: location }} replace />;
-  // }
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
 
   return <>{children}</>;
 }
