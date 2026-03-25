@@ -3,6 +3,7 @@ import { z } from "zod";
 // User
 
 export const userSchema = z.object({
+  id: z.number(),
   first_name: z.string(),
   last_name: z.string(),
   username: z.string(),
@@ -46,6 +47,7 @@ export const updateUserProfileInputSchema = z.object({
 
 export const postSchema = z.object({
   id: z.number(),
+  user_id: z.object({ Int64: z.number(), Valid: z.boolean() }).nullable().optional(),
   title: z.string(),
   address: z.string(),
   city: z.string(),
@@ -142,7 +144,7 @@ export const photoListSchema = z.array(photoSchema);
 
 export const listPhotosByPostSchema = z.object({
   post_id: z.number(),
-})
+});
 
 // Favorites
 
@@ -241,4 +243,24 @@ export const updateOfferStatusInputSchema = z.object({
 export const addPhotoInputSchema = z.object({
     post_id: z.number(),
     photo_url: z.string().url(),
+});
+
+// Messages
+
+export const chatMessageSchema = z.object({
+  id: z.union([z.string(), z.number().transform(String)]),
+  from: z.number(),
+  to: z.number(),
+  body: z.string(),
+  createdAt: z.string(),
+});
+
+export const chatMessageListSchema = z.array(chatMessageSchema);
+
+export const getConversationInputSchema = z.object({
+  user_id: z.number(),
+});
+
+export const getUserByIdInputSchema = z.object({
+  id: z.number(),
 });
