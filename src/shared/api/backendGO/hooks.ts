@@ -102,6 +102,26 @@ export const backendHooks = buildHooks(
         refetchOnMount: "always" as const,
       }),
     }),
+
+    // Messages
+
+    useUserById: item({
+      fn: backendApi.getUserById,
+      key: ({ id }: { id: number }) => ["useUserById", id],
+      options: ({ id }: { id: number }) => ({
+        enabled: !!id,
+        refetchOnMount: "always" as const,
+      }),
+    }),
+
+    useConversation: item({
+      fn: backendApi.getConversation,
+      key: ({ user_id }: { user_id: number }) => ["useConversation", user_id],
+      options: ({ user_id }: { user_id: number }) => ({
+        enabled: !!user_id,
+        refetchOnMount: "always" as const,
+      }),
+    }),
   },
   {
     refetchInterval: ms.mins(5),
