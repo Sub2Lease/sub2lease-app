@@ -5,6 +5,7 @@ import { Dashboard } from "@/pages/Dashboard";
 import { Login, Signup } from "@/pages/Auth";
 import { ProtectedRoutes } from "@/app/router/protectedRoutes";
 import { CreateListing } from "@/pages/Create/CreateListing";
+import { MessagesPage } from "@/pages/Messages/Messages";
 
 export interface AppRoute {
   name: string;
@@ -68,5 +69,26 @@ export const routes: AppRoute[] = [
     name: "Listing Details",
     path: `/listings/:${LISTING_PARAM}`,
     element: <ListingDetails />,
+  },
+  {
+    name: "Messages",
+    path: "/messages",
+    authenticatedOnly: true,
+    element: (
+      <ProtectedRoutes>
+        <MessagesPage />
+      </ProtectedRoutes>
+    ),
+  },
+  {
+    name: "Messages (conversation)",
+    path: "/messages/:userId",
+    authenticatedOnly: true,
+    hidden: true,
+    element: (
+      <ProtectedRoutes>
+        <MessagesPage />
+      </ProtectedRoutes>
+    ),
   },
 ];

@@ -28,6 +28,9 @@ export const getMe = () =>
 export const updateMyProfile = (input: z.infer<typeof updateUserProfileInputSchema>) =>
   backendApi.updateMyProfile(input);
 
+export const getUserById = (id: number) =>
+  backendApi.getUserById({ id });
+
 // Posts
 
 export const listPosts = (input: z.infer<typeof listPostsInputSchema>) =>
@@ -78,3 +81,11 @@ export const cancelOffer = (id: number) =>
 
 export const updateOfferStatus = (id: number, status: "accepted" | "declined") =>
   backendApi.updateOfferStatus({ id, status });
+
+// Messages
+
+export const getConversation = (user_id: number) =>
+  backendApi.getConversation({ user_id });
+
+export const getConversationPartners = () =>
+  backendApi.getConversationPartners();

@@ -14,8 +14,8 @@ export function Listings() {
   const [minPrice, setMinPrice] = useState<string>("");
   const [maxPrice, setMaxPrice] = useState<string>("");
   const [bedroomFilter, setBedroomFilter] = useState<string>("any");
-  const [minDate, setMinDate] = useState<Date | null>(null);
-  const [maxDate, setMaxDate] = useState<Date | null>(null);
+  const [minDate, _setMinDate] = useState<Date | null>(null);
+  const [maxDate, _setMaxDate] = useState<Date | null>(null);
 
   // FUTURE TODO: separate useMemo by filter, if performance lags
   const filteredListings = useMemo(() => listings.filter((listing) => {

@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { ErrorPage } from "@/app/router/error-page";
 import { useListings } from "@/shared/hooks";
 import { LISTING_PARAM } from "@/app/router";
@@ -7,6 +7,9 @@ import { ChevronsDown } from "lucide-react";
 import { MapSection } from "@/widgets/Listings";
 import { OfferModal } from "@/widgets/widget/OfferModal";
 import { type Amenity, AMENITIES, amenities } from "@/shared";
+import { useChatStore } from "@/shared/stores/chatStore";
+import { backendHooks } from "@/shared/api/backendGO/hooks";
+import { getUserById } from "@/shared/api/backendGO/endpoints";
 
 export function ListingDetails() {
   const [isAtTop, setIsAtTop] = useState(true);
@@ -18,9 +21,15 @@ export function ListingDetails() {
     end_date: string;
   } | null>(null);
 
+  const navigate = useNavigate();
   const listingId = useParams()[LISTING_PARAM];
   const { getListingById } = useListings();
   const listing = getListingById(listingId || "");
+
+  const { data: me } = backendHooks.useMe();
+  const myUserId = (me as unknown as { id?: number })?.id;
+
+  const { openConversation } = useChatStore();
 
   const photoGridRef = useRef<HTMLDivElement>(null);
   const photoWrapRef = useRef<HTMLDivElement>(null);
@@ -73,11 +82,27 @@ export function ListingDetails() {
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const scrollTop = e.currentTarget.scrollTop;
     const isCurrentlyAtTop = scrollTop < 200;
-
-    if (isCurrentlyAtTop !== isAtTop) {
-      setIsAtTop(isCurrentlyAtTop);
-    }
+    if (isCurrentlyAtTop !== isAtTop) setIsAtTop(isCurrentlyAtTop);
   };
+
+  const handleMessage = async () => {
+    const posterId = listing.user_id?.Valid ? listing.user_id.Int64 : null;
+    if (!posterId || myUserId == null) return;
+
+    try {
+      const user = await getUserById(posterId);
+      const u = user as unknown as { username?: string; first_name?: string; profile_photo_url?: string | null };
+      const name = u.username ?? u.first_name ?? String(posterId);
+      openConversation(posterId, name, myUserId, u.profile_photo_url ?? null);
+    } catch {
+      openConversation(posterId, String(posterId), myUserId);
+    }
+
+    navigate(`/messages/${posterId}`);
+  };
+
+  const posterUserId = listing.user_id?.Valid ? listing.user_id.Int64 : null;
+  const isOwnListing = myUserId != null && posterUserId === myUserId;
 
   return (
     <div className="flex gap-4 font-sans text-slate-800 h-screen overflow-hidden">
@@ -204,8 +229,9 @@ export function ListingDetails() {
           </div>
           <div className="flex gap-2">
             <button
-              disabled
-              className="bg-orange-200 enabled:hover:bg-orange-400 text-white px-6 py-3 rounded-2xl font-bold transition-colors"
+              onClick={handleMessage}
+              disabled={isOwnListing || !myUserId}
+              className="bg-orange-300 hover:bg-orange-400 disabled:opacity-40 disabled:cursor-not-allowed text-white px-6 py-3 rounded-2xl font-bold transition-colors"
             >
               Message
             </button>

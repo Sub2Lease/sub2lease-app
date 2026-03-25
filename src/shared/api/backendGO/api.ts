@@ -27,6 +27,9 @@ import {
   cancelOfferMessageSchema,
   offersByPostSchema,
   updateOfferStatusInputSchema,
+  getConversationInputSchema,
+  chatMessageListSchema,
+  getUserByIdInputSchema,
 } from "./z";
 
 const isClient = typeof window !== "undefined";
@@ -64,6 +67,12 @@ export const backendApi = buildApi(
       key: "/users/me/profile",
       result: userSchema,
       options: [methodOptions.patch, simpleJson],
+    }),
+
+    getUserById: item({
+      input: getUserByIdInputSchema,
+      key: ({ id }: { id: number }) => `/users/${id}`,
+      result: userSchema,
     }),
 
     // Posts
@@ -119,7 +128,7 @@ export const backendApi = buildApi(
       result: postSchema,
       options: [methodOptions.patch, simpleJson],
     }),
-    
+
     getPostPhotos: item({
       input: listPhotosByPostSchema,
       result: photoListSchema,
@@ -172,6 +181,8 @@ export const backendApi = buildApi(
       result: postsListSchema,
     }),
 
+    // Offers
+
     createOffer: item({
       input: createOfferInputSchema,
       key: ({ post_id }: z.infer<typeof createOfferInputSchema>) => `/posts/${post_id}/offers`,
@@ -200,6 +211,23 @@ export const backendApi = buildApi(
       key: ({ id }: z.infer<typeof updateOfferStatusInputSchema>) => `/offers/${id}/status`,
       result: offerSchema,
       options: [methodOptions.patch, simpleJson],
+    }),
+
+    // Messages
+
+    getConversation: item({
+      input: getConversationInputSchema,
+      key: ({ user_id }: { user_id: number }) => `/messages/conversation/${user_id}`,
+      result: chatMessageListSchema,
+    }),
+
+    getConversationPartners: item({
+      input: z.void(),
+      key: "/messages/partners",
+      result: z.array(z.object({
+        partner_id: z.number(),
+        last_message_at: z.string(),
+      })),
     }),
   },
 );
