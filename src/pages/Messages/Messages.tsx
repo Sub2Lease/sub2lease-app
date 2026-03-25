@@ -154,13 +154,13 @@ function MessageBubble({
         )}
       </div>
       <div
-        className={`max-w-[65%] px-3.5 py-2 rounded-2xl text-sm leading-relaxed ${
+        className={`max-w-[65%] min-w-0 px-3.5 py-2 rounded-2xl text-sm leading-relaxed break-words overflow-hidden ${
           isMine
             ? `bg-orange-400 text-white rounded-br-sm ${isOptimistic ? "opacity-70" : ""}`
             : "bg-white border border-stone-200 text-stone-800 rounded-bl-sm shadow-sm"
         }`}
       >
-        {msg.body}
+        <span className="block whitespace-pre-wrap break-words">{msg.body}</span>
         <span
           className={`block text-[10px] mt-0.5 ${isMine ? "text-orange-100 text-right" : "text-stone-400"}`}
         >
