@@ -4,7 +4,7 @@ import { useLocation, matchPath } from "react-router";
 import { SideMenu } from "./SideMenu";
 import { LandingHeader } from "../../widget/LandingHeader";
 import { Header } from "../../widget/Header";
-import hero from "@/assets/video/Hero_noaudio.mp4";
+import hero from "@/assets/videos/Hero_noaudio.mp4";
 
 
 
