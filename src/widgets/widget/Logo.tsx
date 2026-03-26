@@ -3,11 +3,11 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { Link } from "react-router-dom";
 
 const logoVariants = cva(
-  "text-2xl font-bold tracking-tight",
+  "font-semibold tracking-tight",
   {
     variants: {
       color: {
-        default: "",
+        default: "text-foreground",
         white: "text-wise-white",
       },
       size: {
@@ -29,18 +29,18 @@ interface LogoProps extends VariantProps<typeof logoVariants> {
 }
 
 export function Logo({ isLink = true, color, size }: LogoProps) {
-  const font = { fontFamily: "'Caveat', cursive" };
+  const className = cn(
+    logoVariants({ color, size }),
+    "font-sora"
+  );
 
-  return isLink ? <Link
-    to="/"
-    className={cn(logoVariants({ color, size }))}
-    style={font}
-  >
-    Memento
-  </Link> : <span
-    className={cn(logoVariants({ color, size }))}
-    style={font}
-  >
-    Memento
-  </span>
+  return isLink ? (
+    <Link to="/" className={className}>
+      Sub2Lease
+    </Link>
+  ) : (
+    <span className={className}>
+      Sub2Lease
+    </span>
+  );
 }
