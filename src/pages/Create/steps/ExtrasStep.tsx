@@ -14,8 +14,7 @@ const FILE_LIMIT = 10;
 
 export function ExtrasStep({ form, set, photos, setPhotos }: Props) {
   const [dragIndex, setDragIndex] = useState<number | null>(null);
-
-  const previews = photos.map((f) => URL.createObjectURL(f));
+  const [previews, setPreviews] = useState<string[]>([]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -30,7 +29,9 @@ export function ExtrasStep({ form, set, photos, setPhotos }: Props) {
     if (successfulFiles.length + photos.length > FILE_LIMIT) {
       alert(`You can upload a maximum of ${FILE_LIMIT} photos.`);
     }
+    const newPreviews = successfulFiles.map((f) => URL.createObjectURL(f));
     setPhotos((prev) => [...prev, ...successfulFiles].slice(0, FILE_LIMIT));
+    setPreviews((prev) => [...prev, ...newPreviews].slice(0, FILE_LIMIT));
   };
 
   const handleDragStart = (i: number) => setDragIndex(i);
@@ -42,12 +43,13 @@ export function ExtrasStep({ form, set, photos, setPhotos }: Props) {
     newPhotos.splice(i, 0, newPhotos.splice(dragIndex, 1)[0]);
     newPreviews.splice(i, 0, newPreviews.splice(dragIndex, 1)[0]);
     setPhotos(newPhotos);
+    setPreviews(newPreviews);
     setDragIndex(null);
   };
 
   const removePhoto = (i: number) => {
-    const newPhotos = photos.filter((_, idx) => idx !== i);
-    setPhotos(newPhotos);
+    setPhotos((prev) => prev.filter((_, idx) => idx !== i));
+    setPreviews((prev) => prev.filter((_, idx) => idx !== i));
   };
 
   return (
@@ -97,8 +99,6 @@ export function ExtrasStep({ form, set, photos, setPhotos }: Props) {
           ))}
         </div>
       )}
-
-      //TODO: Prevent reload everytime
 
       <Field label="Property website — optional">
         <input placeholder="https://..." value={form.property_website} onChange={set("property_website")} />
