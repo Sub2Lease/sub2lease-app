@@ -31,19 +31,16 @@ export function Layout({ children }: PropsWithChildren) {
     video.playsInline = true;
 
     // Force browser to begin loading the media
-    video.load();
 
     // If enough data is already ready, try immediately
     if (video.readyState >= 3) {
       tryPlay();
     } else {
       video.addEventListener("canplay", tryPlay, { once: true });
-      video.addEventListener("loadeddata", tryPlay, { once: true });
     }
 
     return () => {
       video.removeEventListener("canplay", tryPlay);
-      video.removeEventListener("loadeddata", tryPlay);
     };
   }, []);
 
@@ -52,6 +49,7 @@ export function Layout({ children }: PropsWithChildren) {
       {isLanding && (
         <video
           ref={videoRef}
+          src={hero}
           muted
           loop
           autoPlay
@@ -59,7 +57,6 @@ export function Layout({ children }: PropsWithChildren) {
           preload="auto"
           className="pointer-events-none fixed inset-0 -z-10 h-full w-full object-cover"
         >
-          <source src={hero} type="video/mp4" />
         </video>
       )}
       <div className={`mx-auto ${isLanding ? "" : "h-full"}`}>
