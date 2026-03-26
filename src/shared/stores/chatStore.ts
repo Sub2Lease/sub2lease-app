@@ -88,7 +88,6 @@ export const useChatStore = create<ChatState>((set, get) => ({
             withUserId,
             withUsername,
             withProfilePhoto: existing?.withProfilePhoto,
-            // merge history with any optimistic messages, deduplicate
             messages: [
               ...msgs,
               ...(existing?.messages ?? []).filter(

@@ -3,18 +3,21 @@ import { routes } from "./routes";
 import { Layout } from "@/widgets/layout/Layout";
 import { EmptyLayout } from "@/widgets/layout/EmptyLayout"
 import { Toaster } from "@/components/ui/sonner";
+import { usePreloadConversations } from "@/shared/hooks/usePreloadConversations";
 
 export function RootRoute() {
-    const location = useLocation();
-    const shouldUseEmptyLayout = routes.some((route) => route.noLayout && matchPath(route.path, location.pathname));
-    const ConditionalLayout = shouldUseEmptyLayout ? EmptyLayout : Layout;
+  const location = useLocation();
+  const shouldUseEmptyLayout = routes.some((route) => route.noLayout && matchPath(route.path, location.pathname));
+  const ConditionalLayout = shouldUseEmptyLayout ? EmptyLayout : Layout;
 
-    return (
-        <>
-        <ConditionalLayout>
-            <Outlet />
-        </ConditionalLayout>
-        <Toaster richColors expand closeButton />
-        </>
-    );
+  usePreloadConversations();
+
+  return (
+    <>
+      <ConditionalLayout>
+        <Outlet />
+      </ConditionalLayout>
+      <Toaster richColors expand closeButton />
+    </>
+  );
 }

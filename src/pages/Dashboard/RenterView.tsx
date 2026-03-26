@@ -6,6 +6,7 @@ import type { MyListing } from "./Types";
 import { formatDate, daysUntil, statusColor } from "./Utils";
 import { backendHooks } from "@/shared/api/backendGO/hooks";
 import { updateOfferStatus } from "@/shared/api/backendGO/endpoints";
+import { MessagesSection } from "./MessagesSection";
 
 function getUserIdFromToken(): number | null {
   try {
@@ -225,9 +226,8 @@ export function RenterView() {
 
       {/* Messages */}
       <Tile>
-        <TileHeader title="Messages" />
-        <div className="flex-1 flex items-center justify-center">
-          <p className="text-xs text-foreground/30">Coming soon</p>
+        <div className="flex-1 overflow-y-auto pr-1">
+          <MessagesSection />
         </div>
       </Tile>
 

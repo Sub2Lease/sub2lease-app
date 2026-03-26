@@ -6,6 +6,7 @@ import { useFavorites } from "@/shared/hooks";
 import { OfferModal } from "@/widgets/widget/OfferModal";
 import { backendHooks } from "@/shared/api/backendGO/hooks";
 import { cancelOffer } from "@/shared/api/backendGO/endpoints";
+import { MessagesSection } from "./MessagesSection";
 
 function TileHeader({ title }: { title: string }) {
   return (
@@ -125,9 +126,8 @@ export function ResidentView() {
 
       {/* Messages */}
       <Tile>
-        <TileHeader title="Messages" />
-        <div className="flex-1 flex items-center justify-center">
-          <p className="text-xs text-foreground/30">Coming soon</p>
+        <div className="flex-1 overflow-y-auto pr-1">
+          <MessagesSection />
         </div>
       </Tile>
 

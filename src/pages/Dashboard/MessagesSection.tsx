@@ -4,7 +4,6 @@ import { useChatStore } from "@/shared/stores/chatStore";
 
 export function MessagesSection() {
   const navigate = useNavigate();
-
   const conversations = useChatStore((s) => s.conversations);
 
   const convList = Object.entries(conversations)
@@ -15,25 +14,20 @@ export function MessagesSection() {
       return bLast.localeCompare(aLast);
     });
 
-  const unreadCount = convList.reduce((n, { conv }) => n + conv.unreadCount, 0);
-
   return (
     <section>
-      <SectionHeader title="Messages" count={unreadCount} />
+      <SectionHeader title="Messages" />
       {convList.length === 0 ? (
         <EmptyState message="No messages yet" />
       ) : (
         <div className="flex flex-col gap-2">
           {convList.slice(0, 5).map(({ conv }) => {
             const lastMsg = conv.messages.at(-1);
-            const hasUnread = conv.unreadCount > 0;
 
             return (
               <Card
                 key={conv.withUserId}
-                className={`cursor-pointer hover:bg-foreground/5 transition-colors ${
-                  hasUnread ? "border-foreground/20" : ""
-                }`}
+                className="cursor-pointer hover:bg-foreground/5 transition-colors"
               >
                 <div
                   className="flex items-start gap-3"
@@ -52,13 +46,7 @@ export function MessagesSection() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
-                      <p
-                        className={`text-sm ${
-                          hasUnread
-                            ? "font-semibold text-foreground"
-                            : "font-medium text-foreground/70"
-                        }`}
-                      >
+                      <p className="text-sm font-medium text-foreground/70 truncate">
                         {conv.withUsername}
                       </p>
                       {lastMsg && (
@@ -74,9 +62,6 @@ export function MessagesSection() {
                       {lastMsg?.body ?? "No messages yet"}
                     </p>
                   </div>
-                  {hasUnread && (
-                    <div className="mt-1 h-2 w-2 shrink-0 rounded-full bg-foreground" />
-                  )}
                 </div>
               </Card>
             );
