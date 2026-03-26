@@ -4,10 +4,13 @@ import { BasicsStep } from "./steps/BasicsStep";
 import { DetailsStep } from "./steps/DetailsStep";
 import { DatesStep } from "./steps/DatesStep";
 import { ExtrasStep } from "./steps/ExtrasStep";
+import { useState } from "react";
+import type { RoommateEntry } from "./steps/DetailsStep";
+import { replaceRoommates } from "@/shared/api/backendGO/endpoints";
 
 export function CreateListing() {
   const { step, setStep, form, setForm, set, setNum, photos, setPhotos, stepIndex, isLast, back, next, handleComplete, loading, error } = useCreateListingForm();
-
+  const [roommates, setRoommates] = useState<RoommateEntry[]>([]);
   return (
     <div className="mx-auto w-full max-w-2xl overflow-y-auto">
       <div className="mb-10 flex items-center gap-2">
@@ -37,7 +40,16 @@ export function CreateListing() {
       <form onSubmit={(e) => { e.preventDefault(); next(); }}>
         <div className="rounded-2xl border border-foreground/10 bg-foreground/5 backdrop-blur-sm p-8">
           {step === "basics" && <BasicsStep form={form} set={set} />}
-          {step === "details" && <DetailsStep form={form} set={set} setNum={setNum} setForm={setForm} />}
+          {step === "details" && (
+            <DetailsStep
+              form={form}
+              set={set}
+              setNum={setNum}
+              setForm={setForm}
+              roommates={roommates}
+              setRoommates={setRoommates}
+            />
+          )}
           {step === "dates" && <DatesStep form={form} set={set} />}
           {step === "extras" && (
             <ExtrasStep form={form} set={set} photos={photos} setPhotos={setPhotos} />
@@ -61,7 +73,25 @@ export function CreateListing() {
             {isLast ? (
               <button
                 type="button"
-                onClick={handleComplete}
+                onClick={() =>
+                  handleComplete({
+                    onSuccess: async (postId) => {
+                      if (roommates.length > 0) {
+                        try {
+                          await replaceRoommates({
+                            post_id: postId,
+                            roommates: roommates.map((r) => ({
+                              age: parseInt(r.age) || 1,
+                              gender: r.gender,
+                            })),
+                          });
+                        } catch {
+                          console.warn("Failed to save roommates — listing was created successfully");
+                        }
+                      }
+                    },
+                  })
+                }
                 disabled={loading}
                 className="rounded-full bg-foreground px-8 py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-80 disabled:opacity-40"
               >
