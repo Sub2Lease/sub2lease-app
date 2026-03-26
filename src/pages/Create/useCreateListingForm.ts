@@ -88,7 +88,7 @@ export function useCreateListingForm() {
         title: form.title,
         address: form.address,
         city: form.city,
-        state: form.state,
+        state: form.state.toUpperCase(),
         country: form.country,
         zipcode: form.zipcode,
         description: form.description,
