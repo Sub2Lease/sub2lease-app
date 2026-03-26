@@ -1,5 +1,6 @@
 import type { Listing } from "@/shared/types";
 import { Link } from "react-router-dom";
+import { backendHooks } from "@/shared/api/backendGO/hooks";
 
 interface PropertyCardProps {
   property: Listing;
@@ -9,6 +10,10 @@ interface PropertyCardProps {
 
 export function PropertyCard({ property, isFavorited, onToggleFavorite }: PropertyCardProps) {
   const photo = property.photos?.[0] || null;
+  const { data: me } = backendHooks.useMe();
+  const myUserId = (me as unknown as { id?: number })?.id;
+  const posterUserId = property.user_id?.Valid ? property.user_id.Int64 : null;
+  const isOwnListing = myUserId != null && posterUserId === myUserId;
 
   return (
     <Link to={`/listings/${property.id}`} className="shrink-0 box-border flex bg-white rounded-xl overflow-hidden shadow md:mb-1 lg:mb-2 xl:mb-4">
@@ -29,17 +34,19 @@ export function PropertyCard({ property, isFavorited, onToggleFavorite }: Proper
           <span className="font-semibold">${property.monthly_rent}</span>
           <p className="text-gray-600">{property.address}</p>
         </div>
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            onToggleFavorite(property.id);
-          }}
-          className={`mr-2 leading-none select-none text-5xl transition-colors ${
-            isFavorited ? "text-red-500 hover:text-red-300" : "text-gray-300 hover:text-red-400"
-          }`}
-        >
-          ♥
-        </button>
+        {!isOwnListing && (
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              onToggleFavorite(property.id);
+            }}
+            className={`mr-2 leading-none select-none text-5xl transition-colors ${
+              isFavorited ? "text-red-500 hover:text-red-300" : "text-gray-300 hover:text-red-400"
+            }`}
+          >
+            ♥
+          </button>
+        )}
       </div>
     </Link>
   );
