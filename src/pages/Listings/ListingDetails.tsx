@@ -245,9 +245,10 @@ export function ListingDetails() {
                   end_date: listing.end_date,
                 });
               }}
-              className="bg-orange-300 hover:bg-orange-400 text-white px-6 py-3 rounded-2xl font-bold transition-colors"
+              disabled={isOwnListing}
+              className="bg-orange-300 hover:bg-orange-400 disabled:opacity-40 disabled:cursor-not-allowed text-white px-6 py-3 rounded-2xl font-bold transition-colors"
             >
-              Reserve
+              Offer
             </button>
           </div>
         </div>

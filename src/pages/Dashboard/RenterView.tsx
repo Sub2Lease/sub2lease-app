@@ -175,14 +175,16 @@ export function RenterView() {
                 <EmptyState message="None" />
               ) : subleased.map((l) => (
                 <Card key={l.id} className="mb-2 p-3">
-                  <p className="font-semibold text-xs text-foreground">{l.title}</p>
-                  <p className="text-xs text-foreground/40 mt-0.5">{l.address}</p>
-                  <div className="mt-2 flex flex-wrap gap-1.5">
-                    {l.endDate && (
-                      <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-foreground/50">
-                        {daysUntil(l.endDate)}d left
-                      </span>
-                    )}
+                  <div onClick={() => navigate(`/listings/${l.id}`)} className="cursor-pointer">
+                    <p className="font-semibold text-xs text-foreground">{l.title}</p>
+                    <p className="text-xs text-foreground/40 mt-0.5">{l.address}</p>
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      {l.endDate && (
+                        <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-foreground/50">
+                          {daysUntil(l.endDate)}d left
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </Card>
               ))}
@@ -193,22 +195,27 @@ export function RenterView() {
               {onMarket.length === 0 ? (
                 <EmptyState message="None" />
               ) : onMarket.map((l) => (
-                <Card key={l.id} className="mb-2 p-3 flex items-start justify-between gap-2">
-                  <div className="flex-1">
-                    <p className="font-semibold text-xs text-foreground">{l.title}</p>
-                    <p className="text-xs text-foreground/40 mt-0.5">{l.address}</p>
-                    {l.endDate && (
-                      <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-foreground/50 mt-2 inline-block">
-                        {formatDate(l.endDate)}
-                      </span>
-                    )}
+                <Card key={l.id} className="mb-2 p-3">
+                  <div onClick={() => navigate(`/listings/${l.id}`)} className="flex items-start justify-between gap-2 cursor-pointer">
+                    <div className="flex-1">
+                      <p className="font-semibold text-xs text-foreground">{l.title}</p>
+                      <p className="text-xs text-foreground/40 mt-0.5">{l.address}</p>
+                      {l.endDate && (
+                        <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-foreground/50 mt-2 inline-block">
+                          {formatDate(l.endDate)}
+                        </span>
+                      )}
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/listings/${l.id}/edit`);
+                      }}
+                      className="rounded-full border border-foreground/20 px-2.5 py-1 text-xs font-medium text-foreground hover:bg-foreground/5 transition-colors shrink-0"
+                    >
+                      Edit
+                    </button>
                   </div>
-                  <button
-                    onClick={() => navigate(`/listings/${l.id}/edit`)}
-                    className="rounded-full border border-foreground/20 px-2.5 py-1 text-xs font-medium text-foreground hover:bg-foreground/5 transition-colors shrink-0"
-                  >
-                    Edit
-                  </button>
                 </Card>
               ))}
             </div>
