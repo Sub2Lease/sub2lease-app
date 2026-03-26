@@ -4,6 +4,9 @@ import { useLocation, matchPath } from "react-router";
 import { SideMenu } from "./SideMenu";
 import { LandingHeader } from "../../widget/LandingHeader";
 import { Header } from "../../widget/Header";
+import hero from "@/assets/video/Hero_noaudio.mp4";
+
+
 
 export function Layout({ children }: PropsWithChildren) {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,7 +14,6 @@ export function Layout({ children }: PropsWithChildren) {
   const isLanding = matchPath("/", location.pathname);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const madison_video_url = import.meta.env.VITE_ENV === "prod" ? "https://ffeiqqfembwxavvqihpd.supabase.co/storage/v1/object/public/frontend_assets/Hero.mp4" : "";
 
   useEffect(() => {
     const video = videoRef.current;
@@ -36,7 +38,7 @@ export function Layout({ children }: PropsWithChildren) {
           preload="metadata"
           className="pointer-events-none fixed inset-0 -z-10 h-full w-full object-cover"
         >
-          <source src={madison_video_url} type="video/mp4" />
+          <source src={hero} type="video/mp4" />
         </video>
       )}
       <div className={`mx-auto ${isLanding ? "" : "h-full"}`}>
