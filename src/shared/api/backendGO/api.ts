@@ -30,6 +30,10 @@ import {
   getConversationInputSchema,
   chatMessageListSchema,
   getUserByIdInputSchema,
+  roommateSchema,
+  roommatesListSchema,
+  addRoommateInputSchema,
+  replaceRoommatesInputSchema,
 } from "./z";
 
 const isClient = typeof window !== "undefined";
@@ -228,6 +232,36 @@ export const backendApi = buildApi(
         partner_id: z.number(),
         last_message_at: z.string(),
       })),
+    }),
+
+    // Roommates
+
+    getRoommates: item({
+      input: z.object({ post_id: z.number() }),
+      key: ({ post_id }: { post_id: number }) => `/posts/${post_id}/roommates`,
+      result: roommatesListSchema,
+    }),
+
+    addRoommate: item({
+      input: addRoommateInputSchema,
+      key: ({ post_id }: z.infer<typeof addRoommateInputSchema>) => `/posts/${post_id}/roommates`,
+      result: roommateSchema,
+      options: [methodOptions.post, simpleJson],
+    }),
+
+    replaceRoommates: item({
+      input: replaceRoommatesInputSchema,
+      key: ({ post_id }: z.infer<typeof replaceRoommatesInputSchema>) => `/posts/${post_id}/roommates`,
+      result: roommatesListSchema,
+      options: [methodOptions.put, simpleJson],
+    }),
+
+    deleteRoommate: item({
+      input: z.object({ post_id: z.number(), roommate_id: z.number() }),
+      key: ({ post_id, roommate_id }: { post_id: number; roommate_id: number }) =>
+        `/posts/${post_id}/roommates/${roommate_id}`,
+      result: z.object({ message: z.string() }),
+      options: [methodOptions.delete],
     }),
   },
 );

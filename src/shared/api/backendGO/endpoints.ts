@@ -11,6 +11,8 @@ import type {
   favoriteInputSchema,
   listFavoritesInputSchema,
   createOfferInputSchema,
+  addRoommateInputSchema,
+  replaceRoommatesInputSchema,
 } from "./z.ts";
 import type { z } from "zod";
 
@@ -89,3 +91,17 @@ export const getConversation = (user_id: number) =>
 
 export const getConversationPartners = () =>
   backendApi.getConversationPartners();
+
+// Roommates
+
+export const getRoommates = (post_id: number) =>
+  backendApi.getRoommates({ post_id });
+
+export const addRoommate = (input: z.infer<typeof addRoommateInputSchema>) =>
+  backendApi.addRoommate(input);
+
+export const replaceRoommates = (input: z.infer<typeof replaceRoommatesInputSchema>) =>
+  backendApi.replaceRoommates(input);
+
+export const deleteRoommate = (post_id: number, roommate_id: number) =>
+  backendApi.deleteRoommate({ post_id, roommate_id });

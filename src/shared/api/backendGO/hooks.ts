@@ -122,6 +122,17 @@ export const backendHooks = buildHooks(
         refetchOnMount: "always" as const,
       }),
     }),
+
+    // Roommates
+
+    useRoommates: item({
+      fn: backendApi.getRoommates,
+      key: ({ post_id }: { post_id: number }) => ["useRoommates", post_id],
+      options: ({ post_id }: { post_id: number }) => ({
+        enabled: !!post_id,
+        refetchOnMount: "always" as const,
+      }),
+    }),
   },
   {
     refetchInterval: ms.mins(5),

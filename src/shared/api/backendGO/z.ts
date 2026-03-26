@@ -70,6 +70,7 @@ export const postSchema = z.object({
   amenities: z.any(),
   house_rules: z.any(),
   status: z.string(),
+  created_at: z.string().optional(),
 });
 
 export const postsListSchema = z.array(postSchema);
@@ -263,4 +264,30 @@ export const getConversationInputSchema = z.object({
 
 export const getUserByIdInputSchema = z.object({
   id: z.number(),
+});
+
+// Roommates
+
+export const roommateSchema = z.object({
+  id: z.number(),
+  post_id: z.number(),
+  age: z.number(),
+  gender: z.string(),
+  created_at: z.string().optional(),
+});
+
+export const roommatesListSchema = z.array(roommateSchema);
+
+export const addRoommateInputSchema = z.object({
+  post_id: z.number(),
+  age: z.number().min(1).max(120),
+  gender: z.string(),
+});
+
+export const replaceRoommatesInputSchema = z.object({
+  post_id: z.number(),
+  roommates: z.array(z.object({
+    age: z.number().min(1).max(120),
+    gender: z.string(),
+  })),
 });
