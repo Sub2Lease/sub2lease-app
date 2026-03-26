@@ -4,10 +4,11 @@ export async function processAndCompressImages(fileList: FileList | null): Promi
   if (!fileList || !fileList.length) return [];
 
   const options = {
-    maxSizeMB: 1,           // Target size under 1MB
-    maxWidthOrHeight: 1920, // Max resolution (1080p equivalent)
+    maxSizeMB: 0.5,           // Target size under 500kb
+    maxWidthOrHeight: 1600, // Resize to max 1600px dimension
     useWebWorker: true,     // Offload to background thread
-    fileType: 'image/jpeg'  // Standardize format
+    fileType: 'image/webp',  // Use webp for smaller files
+    initialQuality: 0.8, 
   };
 
   const files = Array.from(fileList);
@@ -18,7 +19,7 @@ export async function processAndCompressImages(fileList: FileList | null): Promi
       return imageCompression(file, options);
     } catch (err) {
       console.error("Compression failed for:", file.name, err);
-      return file; // Fallback to original if compression fails
+      throw err; // Fallback to original if compression fails
     }
   });
 

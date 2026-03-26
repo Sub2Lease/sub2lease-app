@@ -8,6 +8,7 @@ export async function uploadPostPhoto(postId: number, file: File) {
   // Upload to Supabase Storage
   const { error: uploadError } = await photosBucket.upload(path, file, {
     contentType: file.type,
+    cacheControl: "31536000",
     upsert: false,
   });
 
