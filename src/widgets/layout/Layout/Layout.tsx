@@ -18,33 +18,13 @@ export function Layout({ children }: PropsWithChildren) {
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-
-    const tryPlay = () => {
-      video.play().catch((err) => {
-        console.error("play failed:", err);
-      });
-    };
-
-    // Make sure these are set on the element itself
     video.muted = true;
-    video.defaultMuted = true;
-    video.playsInline = true;
-
-    // Force browser to begin loading the media
-    video.load();
-
-    // If enough data is already ready, try immediately
-    if (video.readyState >= 3) {
-      tryPlay();
-    } else {
-      video.addEventListener("canplay", tryPlay, { once: true });
-      video.addEventListener("loadeddata", tryPlay, { once: true });
-    }
-
-    return () => {
-      video.removeEventListener("canplay", tryPlay);
-      video.removeEventListener("loadeddata", tryPlay);
-    };
+    video.play().catch(() => {
+      const retry = () => {
+        video.play().catch(() => {});
+      };
+      window.addEventListener("pointerdown", retry, { once: true });
+    });
   }, []);
 
   return (
