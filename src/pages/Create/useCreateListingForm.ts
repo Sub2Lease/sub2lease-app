@@ -78,7 +78,7 @@ export function useCreateListingForm() {
     if (!isLast) setStep(steps[stepIndex + 1].id);
   };
 
-  const handleComplete = async () => {
+  const handleComplete = async (opts?: { onSuccess?: (postId: number) => Promise<void> }) => {
     const err = validateExtras();
     if (err) { setError(err); return; }
     setError(null);
@@ -111,6 +111,7 @@ export function useCreateListingForm() {
       for (let i = 0; i < photos.length; i++) {
         await uploadPostPhoto(post.id, photos[i]);
       }
+      await opts?.onSuccess?.(post.id);
       navigate("/listings");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to create listing");
