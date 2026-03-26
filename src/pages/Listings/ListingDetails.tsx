@@ -20,6 +20,8 @@ export function ListingDetails() {
     start_date: string;
     end_date: string;
   } | null>(null);
+  const [photoGalleryOpen, setPhotoGalleryOpen] = useState(false);
+  const [galleryIndex, setGalleryIndex] = useState(0);
 
   const navigate = useNavigate();
   const listingId = useParams()[LISTING_PARAM];
@@ -39,17 +41,11 @@ export function ListingDetails() {
   useLayoutEffect(() => {
     const updatePhotoSize = () => {
       if (!photoGridRef.current) return;
-
       const grid = photoGridRef.current;
-
       const naturalWidth = grid.offsetWidth;
       const naturalHeight = grid.offsetHeight;
-
-      // leave a little breathing room instead of using full viewport height
       const maxHeight = photoWrapRef.current?.parentElement?.clientHeight ?? window.innerHeight;
-
       const scale = Math.min(1, maxHeight / naturalHeight);
-
       setPhotoScale(scale);
       setPhotoBox({
         width: naturalWidth * scale,
@@ -58,12 +54,9 @@ export function ListingDetails() {
     };
 
     updatePhotoSize();
-
     const resizeObserver = new ResizeObserver(updatePhotoSize);
     if (photoGridRef.current) resizeObserver.observe(photoGridRef.current);
-
     window.addEventListener("resize", updatePhotoSize);
-
     return () => {
       resizeObserver.disconnect();
       window.removeEventListener("resize", updatePhotoSize);
@@ -77,7 +70,12 @@ export function ListingDetails() {
   const availabilityStr =
     start.toLocaleDateString() + "\u2013" + end.toLocaleDateString();
 
-  const listingAmenities: Amenity[] = listing.amenities.String.split(" ").filter((a: string) => AMENITIES.includes(a.toLowerCase() as Amenity));
+  const listingAmenities: Amenity[] = (listing.amenities?.String ?? "")
+    .split(" ")
+    .filter((a: string) => a && AMENITIES.includes(a.toLowerCase() as Amenity));
+
+  const validPhotos = listing.photos.filter(Boolean);
+  const extraCount = validPhotos.length - 4;
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const scrollTop = e.currentTarget.scrollTop;
@@ -88,7 +86,6 @@ export function ListingDetails() {
   const handleMessage = async () => {
     const posterId = listing.user_id?.Valid ? listing.user_id.Int64 : null;
     if (!posterId || myUserId == null) return;
-
     try {
       const user = await getUserById(posterId);
       const u = user as unknown as { username?: string; first_name?: string; profile_photo_url?: string | null };
@@ -97,7 +94,6 @@ export function ListingDetails() {
     } catch {
       openConversation(posterId, String(posterId), myUserId);
     }
-
     navigate(`/messages/${posterId}`);
   };
 
@@ -106,6 +102,42 @@ export function ListingDetails() {
 
   return (
     <div className="flex gap-4 font-sans text-slate-800 h-screen overflow-hidden">
+      {/* Photo Gallery Modal */}
+      {photoGalleryOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center"
+          onClick={() => setPhotoGalleryOpen(false)}
+        >
+          <button
+            className="absolute top-4 right-4 text-white text-3xl font-bold hover:opacity-70"
+            onClick={() => setPhotoGalleryOpen(false)}
+          >
+            ✕
+          </button>
+          <button
+            className="absolute left-4 text-white text-4xl hover:opacity-70 px-4 py-2"
+            onClick={(e) => { e.stopPropagation(); setGalleryIndex((i) => Math.max(0, i - 1)); }}
+          >
+            ‹
+          </button>
+          <img
+            src={validPhotos[galleryIndex]}
+            alt={`Photo ${galleryIndex + 1}`}
+            className="max-h-[90vh] max-w-[80vw] object-contain rounded-2xl"
+            onClick={(e) => e.stopPropagation()}
+          />
+          <button
+            className="absolute right-4 text-white text-4xl hover:opacity-70 px-4 py-2"
+            onClick={(e) => { e.stopPropagation(); setGalleryIndex((i) => Math.min(validPhotos.length - 1, i + 1)); }}
+          >
+            ›
+          </button>
+          <div className="absolute bottom-4 text-white text-sm opacity-60">
+            {galleryIndex + 1} / {validPhotos.length}
+          </div>
+        </div>
+      )}
+
       {/* Photos */}
       <div
         ref={photoWrapRef}
@@ -132,44 +164,35 @@ export function ListingDetails() {
             className="rounded-3xl overflow-hidden bg-slate-200"
             style={{ gridColumn: "1/3", gridRow: "1" }}
           >
-            <img
-              className="size-full object-cover"
-              src={listing.photos[0]}
-              alt="Listing Photo 1"
-            />
+            <img className="size-full object-cover" src={validPhotos[0]} alt="Listing Photo 1" />
           </div>
 
           <div
             className="rounded-3xl overflow-hidden bg-slate-200"
             style={{ gridColumn: "1", gridRow: "2/4" }}
           >
-            <img
-              className="size-full object-cover"
-              src={listing.photos[1]}
-              alt="Listing Photo 2"
-            />
+            <img className="size-full object-cover" src={validPhotos[1]} alt="Listing Photo 2" />
           </div>
 
           <div
             className="rounded-3xl overflow-hidden bg-slate-200"
             style={{ gridColumn: "2", gridRow: "2" }}
           >
-            <img
-              className="size-full object-cover"
-              src={listing.photos[2]}
-              alt="Listing Photo 3"
-            />
+            <img className="size-full object-cover" src={validPhotos[2]} alt="Listing Photo 3" />
           </div>
 
+          {/* Bottom right — clickable to open gallery */}
           <div
-            className="rounded-3xl overflow-hidden bg-slate-200"
+            className="rounded-3xl overflow-hidden bg-slate-200 relative cursor-pointer group"
             style={{ gridColumn: "2", gridRow: "3" }}
+            onClick={() => { setGalleryIndex(3); setPhotoGalleryOpen(true); }}
           >
-            <img
-              className="size-full object-cover"
-              src={listing.photos[3]}
-              alt="Listing Photo 4"
-            />
+            <img className="size-full object-cover" src={validPhotos[3]} alt="Listing Photo 4" />
+            {extraCount > 0 && (
+              <div className="absolute inset-0 bg-black/50 flex items-center justify-center group-hover:bg-black/60 transition-colors">
+                <span className="text-white text-xl font-bold">+{extraCount}</span>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -191,7 +214,6 @@ export function ListingDetails() {
               {listing.address}, {listing.city.trim()},
             </span>{" "}
             {listing.state} {listing.zipcode}
-
             <p className="my-2 text-slate-600 font-medium">
               Open From: <span className="text-lg">{availabilityStr}</span>
             </p>
@@ -201,19 +223,21 @@ export function ListingDetails() {
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 grid grid-cols-3 gap-y-4 gap-x-2">
-            {amenities
-              .filter((item) => listingAmenities.includes(item.value))
-              .map((item, idx) => {
-                const Icon = item.icon;
-                return (
-                  <div key={idx} className="flex items-center gap-2 text-sm text-slate-600">
-                    <Icon size={20} />
-                    <span>{item.label}</span>
-                  </div>
-                );
-              })}
-          </div>
+          {listingAmenities.length > 0 && (
+            <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 grid grid-cols-3 gap-y-4 gap-x-2 justify-items-center">
+              {amenities
+                .filter((item) => listingAmenities.includes(item.value))
+                .map((item, idx) => {
+                  const Icon = item.icon;
+                  return (
+                    <div key={idx} className="flex items-center gap-2 text-sm text-slate-600">
+                      <Icon size={20} />
+                      <span>{item.label}</span>
+                    </div>
+                  );
+                })}
+            </div>
+          )}
 
           <div className="flex shrink-0 h-[500px]">
             <MapSection />
