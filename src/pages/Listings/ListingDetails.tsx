@@ -11,6 +11,25 @@ import { useChatStore } from "@/shared/stores/chatStore";
 import { backendHooks } from "@/shared/api/backendGO/hooks";
 import { getUserById } from "@/shared/api/backendGO/endpoints";
 
+function nullFloat(val: unknown): number | null {
+  if (val === null || val === undefined) return null;
+  if (typeof val === "number") return isNaN(val) ? null : val;
+  if (typeof val === "string") {
+    const n = parseFloat(val);
+    return isNaN(n) ? null : n;
+  }
+  if (typeof val === "object" && "Valid" in (val as object)) {
+    const v = val as { String?: string; Float64?: number; Valid: boolean };
+    if (!v.Valid) return null;
+    if (typeof v.Float64 === "number") return v.Float64;
+    if (typeof v.String === "string") {
+      const n = parseFloat(v.String);
+      return isNaN(n) ? null : n;
+    }
+  }
+  return null;
+}
+
 function nullStr(val: unknown): string | null {
   if (!val) return null;
   if (typeof val === "string") return val || null;
@@ -93,7 +112,7 @@ export function ListingDetails() {
     .split(" ")
     .filter((a: string) => a && AMENITIES.includes(a.toLowerCase() as Amenity));
 
-  const validPhotos = listing.photos.filter(Boolean);
+  const validPhotos = listing.photos.filter((p): p is string => typeof p === "string" && p.length > 0);
   const extraCount = validPhotos.length - 4;
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
@@ -204,7 +223,7 @@ export function ListingDetails() {
               Listed by: <span className="text-slate-600 font-medium">{listing.poster_role}</span>
               {listing.created_at && (
                 <span className="ml-3">
-                  · Posted <span className="text-slate-600 font-medium">{new Date(listing.created_at).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}</span>
+                  Posted <span className="text-slate-600 font-medium">{new Date(listing.created_at).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}</span>
                 </span>
               )}
             </p>
@@ -216,7 +235,7 @@ export function ListingDetails() {
 
             {propertyWebsite && (
               <a href={propertyWebsite} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-1.5 text-sm text-orange-400 hover:text-orange-500 font-medium transition-colors">
-                🔗 Property website ↗
+                Property website ↗
               </a>
             )}
           </div>
@@ -261,8 +280,15 @@ export function ListingDetails() {
             </div>
           )}
 
-          <div className="flex shrink-0 h-[500px]">
-            <MapSection />
+          <div className="flex shrink-0 h-[500px] rounded-3xl overflow-hidden">
+            <MapSection
+              loc={
+                nullFloat(listing.lat) !== null && nullFloat(listing.lng) !== null
+                  ? { lat: nullFloat(listing.lat)!, lng: nullFloat(listing.lng)! }
+                  : undefined
+              }
+              zoom={15}
+            />
           </div>
         </div>
 

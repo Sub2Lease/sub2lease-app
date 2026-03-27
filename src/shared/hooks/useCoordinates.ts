@@ -10,13 +10,9 @@ export function useCoordinates() {
     const queryParams = new URLSearchParams({
       q: query,
       api_key: GEOCODIO_API_KEY,
-      format: 'simple'
     });
-
     return fetch(`https://api.geocod.io/v1.11/geocode?${queryParams}`);
   }, []);
 
-  return {
-    getCoordinates
-  };
+  return { getCoordinates };
 }
