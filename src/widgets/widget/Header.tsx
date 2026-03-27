@@ -11,9 +11,9 @@ export function Header() {
 
   return (
     <>
-      <div className="sticky top-0 z-50">
-        <header className="bg-transparent">
-          <div className="flex items-center justify-between gap-2 py-5">
+      <div className="sticky top-0 z-50 h-[88px]">
+        <header className="bg-transparent h-full">
+          <div className="flex items-center justify-between gap-2 h-full px-0">
             <Logo />
             <div className="flex items-center gap-2.5">
               {isAuthenticated && (

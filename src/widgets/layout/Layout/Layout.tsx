@@ -6,15 +6,12 @@ import { LandingHeader } from "../../widget/LandingHeader";
 import { Header } from "../../widget/Header";
 import hero from "@/assets/videos/Hero_noaudio.mp4";
 
-
-
 export function Layout({ children }: PropsWithChildren) {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const isLanding = matchPath("/", location.pathname);
+
   const videoRef = useRef<HTMLVideoElement>(null);
-
-
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -43,13 +40,13 @@ export function Layout({ children }: PropsWithChildren) {
       )}
       <div className={`mx-auto ${isLanding ? "" : "h-full"}`}>
         <div
-          className={`relative flex flex-col gap-5 px-6 pt-6 lg:px-10 lg:pt-6
-          ${isLanding ? "!py-0" : "h-full overflow-hidden"}`}
+          className={`relative flex flex-col gap-5 px-6 lg:px-10
+            ${isLanding ? "" : "h-full overflow-hidden"}`}
         >
           {isLanding ? <LandingHeader /> : <Header />}
           <main
             className={`flex flex-col gap-5
-            ${isLanding ? "full-height-minus-header-and-footer" : "flex-1 min-h-0"}`}
+              ${isLanding ? "full-height-minus-header-and-footer" : "flex-1 min-h-0"}`}
           >
             {children}
           </main>
