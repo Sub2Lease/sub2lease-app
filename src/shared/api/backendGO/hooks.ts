@@ -1,6 +1,7 @@
 import { buildHooks, item } from "../builder/hooks";
 import { backendApi } from "./api";
 import { ms } from "@/shared/utils";
+import { useAuthStore } from "@/app/stores/authStore";
 import type { z } from "zod";
 import type {
   listPostsInputSchema,
@@ -9,18 +10,18 @@ import type {
   listFavoritesInputSchema,
 } from "./z";
 
+const isAuthed = () => !!useAuthStore.getState().token;
+
 export const backendHooks = buildHooks(
   {
     // Users
-
     useMe: item({
       fn: backendApi.getMe,
       key: () => ["useMe"],
-      options: () => ({ refetchOnMount: "always" }),
+      options: () => ({ refetchOnMount: "always", retry: false, enabled: isAuthed() }),
     }),
 
     // Posts
-
     usePosts: item({
       fn: backendApi.listPosts,
       key: (params: z.infer<typeof listPostsInputSchema>) => ["usePosts", params],
@@ -80,6 +81,8 @@ export const backendHooks = buildHooks(
       key: () => ["useMyOffers"],
       options: () => ({
         refetchOnMount: "always" as const,
+        retry: false,
+        enabled: isAuthed(),
       }),
     }),
 
@@ -87,30 +90,31 @@ export const backendHooks = buildHooks(
       fn: backendApi.listOffersByPost,
       key: ({ id }: { id: number }) => ["useOffersByPost", id],
       options: ({ id }: { id: number }) => ({
-        enabled: !!id,
+        enabled: !!id && isAuthed(),
         refetchOnMount: "always" as const,
+        retry: false,
       }),
     }),
 
     // Favorites
-
     useFavorites: item({
       fn: backendApi.listFavorites,
       key: (params: z.infer<typeof listFavoritesInputSchema>) => ["useFavorites", params],
       options: (params: z.infer<typeof listFavoritesInputSchema>) => ({
-        enabled: !!params,
+        enabled: !!params && isAuthed(),
         refetchOnMount: "always" as const,
+        retry: false,
       }),
     }),
 
     // Messages
-
     useUserById: item({
       fn: backendApi.getUserById,
       key: ({ id }: { id: number }) => ["useUserById", id],
       options: ({ id }: { id: number }) => ({
-        enabled: !!id,
+        enabled: !!id && isAuthed(),
         refetchOnMount: "always" as const,
+        retry: false,
       }),
     }),
 
@@ -118,19 +122,20 @@ export const backendHooks = buildHooks(
       fn: backendApi.getConversation,
       key: ({ user_id }: { user_id: number }) => ["useConversation", user_id],
       options: ({ user_id }: { user_id: number }) => ({
-        enabled: !!user_id,
+        enabled: !!user_id && isAuthed(),
         refetchOnMount: "always" as const,
+        retry: false,
       }),
     }),
 
     // Roommates
-
     useRoommates: item({
       fn: backendApi.getRoommates,
       key: ({ post_id }: { post_id: number }) => ["useRoommates", post_id],
       options: ({ post_id }: { post_id: number }) => ({
         enabled: !!post_id,
         refetchOnMount: "always" as const,
+        retry: false,
       }),
     }),
   },
