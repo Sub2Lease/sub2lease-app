@@ -39,7 +39,6 @@ export function Listings() {
     <div className="flex flex-1 flex-row gap-4 overflow-hidden h-full">
       {/* Left column */}
       <div className="flex-1 flex flex-col min-h-0 min-w-0">
-
         {/* Filter row */}
         <div className="mb-4 shrink-0 overflow-x-auto scrollbar-none px-1 py-1">
           <div className="flex gap-2 min-w-max">
@@ -79,12 +78,11 @@ export function Listings() {
             onToggleFavorite={toggle}
           />
         </div>
-
       </div>
 
       {/* Map */}
-      <div className="flex-1 h-full">
-        <MapSection />
+      <div className="flex-1 h-full rounded-3xl overflow-hidden">
+        <MapSection listings={filteredListings} />
       </div>
     </div>
   );

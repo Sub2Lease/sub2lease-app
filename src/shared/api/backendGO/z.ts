@@ -71,6 +71,8 @@ export const postSchema = z.object({
   house_rules: z.any(),
   status: z.string(),
   created_at: z.string().optional(),
+  lat: z.any(),
+  lng: z.any(),
 });
 
 export const postsListSchema = z.array(postSchema);
