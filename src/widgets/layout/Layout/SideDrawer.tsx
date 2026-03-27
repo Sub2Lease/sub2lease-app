@@ -55,6 +55,12 @@ export function SideDrawer({ isOpen, onClose }: Props) {
                 Post a listing
               </button>
               <button
+                onClick={() => handleNavigate("/messages")}
+                className="text-left px-4 py-3 rounded-xl text-sm font-medium hover:bg-gray-100 transition"
+              >
+                Messages
+              </button>
+              <button
                 onClick={() => handleNavigate("/dashboard")}
                 className="text-left px-4 py-3 rounded-xl text-sm font-medium hover:bg-gray-100 transition"
               >
