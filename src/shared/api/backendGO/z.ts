@@ -116,6 +116,28 @@ export const updatePostDetailsInputSchema = z.object({
   house_rules: z.string().optional(),
 });
 
+export const updatePostInputSchema = z.object({
+  address: z.string(),
+  city: z.string(),
+  state: z.string(),
+  country: z.string(),
+  zipcode: z.string(),
+  description: z.string(),
+  property_type: z.string(),
+  listing_type: z.string(),
+  poster_role: z.string(),
+  furnished: z.boolean(),
+  total_bedroom_count: z.number(),
+  rooms_available: z.number(),
+  bathrooms: z.number(),
+  monthly_rent: z.string(),
+  security_deposit: z.string().optional(),
+  start_date: z.string(),
+  end_date: z.string(),
+  property_website: z.string().optional(),
+  status: z.string(),
+});
+
 export const listPostsInputSchema = z.object({
   page_id: z.number().min(1),
   page_size: z.number().min(5).max(100),

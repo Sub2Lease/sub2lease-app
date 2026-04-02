@@ -5,6 +5,7 @@ import { Dashboard } from "@/pages/Dashboard";
 import { Login, Signup } from "@/pages/Auth";
 import { ProtectedRoutes } from "@/app/router/protectedRoutes";
 import { CreateListing } from "@/pages/Create/CreateListing";
+import { EditListing } from "@/pages/Create/EditListing";
 import { MessagesPage } from "@/pages/Messages/Messages";
 
 export interface AppRoute {
@@ -47,6 +48,17 @@ export const routes: AppRoute[] = [
     element: (
       <ProtectedRoutes>
         <CreateListing />
+      </ProtectedRoutes>
+    ),
+  },
+  {
+    name: "Edit Listing",
+    path: `/listings/:listingId/edit`,
+    authenticatedOnly: true,
+    hidden: true,
+    element: (
+      <ProtectedRoutes>
+        <EditListing />
       </ProtectedRoutes>
     ),
   },

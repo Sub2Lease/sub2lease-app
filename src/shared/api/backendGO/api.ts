@@ -13,6 +13,7 @@ import {
   updateUserProfileInputSchema,
   createPostInputSchema,
   updatePostDetailsInputSchema,
+  updatePostInputSchema,
   listPostsInputSchema,
   listPostsByCityInputSchema,
   listPostsByUserInputSchema,
@@ -131,6 +132,17 @@ export const backendApi = buildApi(
         `/posts/${id}/details`,
       result: postSchema,
       options: [methodOptions.patch, simpleJson],
+    }),
+
+    updatePost: item({
+      input: z.object({
+        id: z.number(),
+        body: updatePostInputSchema,
+      }),
+      key: ({ id }: { id: number; body: z.infer<typeof updatePostInputSchema> }) =>
+        `/posts/${id}`,
+      result: postSchema,
+      options: [methodOptions.put, simpleJson],
     }),
 
     getPostPhotos: item({

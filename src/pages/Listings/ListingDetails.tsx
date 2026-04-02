@@ -300,12 +300,23 @@ export function ListingDetails() {
             <div className="text-sm text-slate-500">Open From: {availabilityStr}</div>
           </div>
           <div className="flex gap-2">
-            <button onClick={handleMessage} disabled={isOwnListing || !myUserId} className="bg-orange-300 hover:bg-orange-400 disabled:opacity-40 disabled:cursor-not-allowed text-white px-6 py-3 rounded-2xl font-bold transition-colors">
-              Message
-            </button>
-            <button onClick={() => setOfferPost({ id: listing.id, title: listing.title, monthly_rent: listing.monthly_rent, start_date: listing.start_date, end_date: listing.end_date })} disabled={isOwnListing} className="bg-orange-300 hover:bg-orange-400 disabled:opacity-40 disabled:cursor-not-allowed text-white px-6 py-3 rounded-2xl font-bold transition-colors">
-              Offer
-            </button>
+            {isOwnListing ? (
+              <button
+                onClick={() => navigate(`/listings/${listing.id}/edit`)}
+                className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-6 py-3 rounded-2xl font-bold transition-colors"
+              >
+                Edit
+              </button>
+            ) : (
+              <>
+                <button onClick={handleMessage} disabled={!myUserId} className="bg-orange-300 hover:bg-orange-400 disabled:opacity-40 disabled:cursor-not-allowed text-white px-6 py-3 rounded-2xl font-bold transition-colors">
+                  Message
+                </button>
+                <button onClick={() => setOfferPost({ id: listing.id, title: listing.title, monthly_rent: listing.monthly_rent, start_date: listing.start_date, end_date: listing.end_date })} className="bg-orange-300 hover:bg-orange-400 text-white px-6 py-3 rounded-2xl font-bold transition-colors">
+                  Offer
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>

@@ -5,6 +5,7 @@ import type {
   updateUserProfileInputSchema,
   createPostInputSchema,
   updatePostDetailsInputSchema,
+  updatePostInputSchema,
   listPostsInputSchema,
   listPostsByCityInputSchema,
   listPostsByUserInputSchema,
@@ -55,6 +56,9 @@ export const createPost = (input: z.infer<typeof createPostInputSchema>) =>
 
 export const updatePostDetails = (id: number, body: z.infer<typeof updatePostDetailsInputSchema>) =>
   backendApi.updatePostDetails({ id, body });
+
+export const updatePost = (id: number, body: z.infer<typeof updatePostInputSchema>) =>
+  backendApi.updatePost({ id, body });
 
 export const addPhotoToPost = (post_id: number, photo_url: string) =>
   backendApi.addPhotoToPost({ post_id, photo_url });
