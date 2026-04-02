@@ -2,9 +2,6 @@ import { useState } from "react";
 import { RenterView } from "./RenterView";
 import { ResidentView } from "./ResidentView";
 
-// TODO: Replace hardcoded default mode with user's actual role from auth/profile
-// TODO: Persist selected mode to localStorage or user preferences
-
 export function Dashboard() {
   const [mode, setMode] = useState<"resident" | "renter">("resident");
 
