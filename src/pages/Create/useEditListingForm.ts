@@ -105,7 +105,7 @@ export function useEditListingForm(postId: number) {
       await queryClient.invalidateQueries({ queryKey: ["usePostByID", postId] });
       await queryClient.invalidateQueries({ queryKey: ["useRoommates", postId] });
 
-      navigate("/dashboard");
+      navigate("/listings/" + postId)
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save changes");
     } finally {

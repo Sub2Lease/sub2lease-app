@@ -77,7 +77,7 @@ export function EditListing() {
         <h1 className="text-xl font-bold text-foreground">Edit Listing</h1>
         <button
           type="button"
-          onClick={() => navigate("/dashboard")}
+          onClick={() => navigate("/listings/" + listingId)}
           className="text-sm text-foreground/50 hover:text-foreground transition-colors"
         >
           ✕ Cancel
