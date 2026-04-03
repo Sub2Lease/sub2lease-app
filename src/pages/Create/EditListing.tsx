@@ -9,6 +9,8 @@ import { useListings } from "@/shared/hooks";
 
 export const LISTING_PARAM = "listingId";
 
+const editSteps = steps.filter((s) => s.id !== "extras");
+
 export function EditListing() {
   const { [LISTING_PARAM]: listingId } = useParams();
   const navigate = useNavigate();
@@ -28,7 +30,6 @@ export function EditListing() {
   } = useEditListingForm(postId);
 
   const stableInitForm = useCallback(initForm, []); // eslint-disable-line react-hooks/exhaustive-deps
-
   const hasInitialized = useRef(false);
 
   useEffect(() => {
@@ -67,7 +68,6 @@ export function EditListing() {
     );
   }
 
-  const editSteps = steps.filter((s) => s.id !== "extras");
   const editStepIndex = editSteps.findIndex((s) => s.id === step);
   const isEditLast = editStepIndex === editSteps.length - 1;
 
@@ -84,7 +84,6 @@ export function EditListing() {
         </button>
       </div>
 
-      {/* Step indicators */}
       <div className="mb-10 flex items-center gap-2">
         {editSteps.map((s, i) => (
           <div key={s.id} className="flex items-center gap-2">

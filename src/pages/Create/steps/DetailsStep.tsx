@@ -110,7 +110,12 @@ export function DetailsStep({ form, set, setNum, setForm, roommates, setRoommate
         </Field>
       </div>
 
-      <TagSelector title="Amenities" options={amenities.map(({ value, label }) => ({ id: value, label }))} onChange={(amenities) => setForm((p) => ({ ...p, amenities }))} />
+      <TagSelector
+        title="Amenities"
+        options={amenities.map(({ value, label }) => ({ id: value, label }))}
+        onChange={(amenities) => setForm((p) => ({ ...p, amenities }))}
+        initialValue={form.amenities}
+      />
 
       <label className="flex items-center gap-3 cursor-pointer">
         <div

@@ -9,28 +9,29 @@ interface TagSelectorProps {
   options: Option[];
   title: string;
   onChange: (selected: string) => void;
+  initialValue?: string;
 }
 
-export function TagSelector({ options, title, onChange }: TagSelectorProps) {
+export function TagSelector({ options, title, onChange, initialValue }: TagSelectorProps) {
   const [query, setQuery] = useState("");
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [selectedIds, setSelectedIds] = useState<string[]>(() =>
+    initialValue ? initialValue.split(" ").filter(Boolean) : []
+  );
 
-  // 1. Filter logic
   const filtered = useMemo(() => {
-    return options.filter(opt => 
-      opt.label.toLowerCase().includes(query.toLowerCase()) && 
+    return options.filter(opt =>
+      opt.label.toLowerCase().includes(query.toLowerCase()) &&
       !selectedIds.includes(opt.id)
     );
   }, [query, options, selectedIds]);
 
   const selectedItems = selectedIds.map(id => options.find(opt => opt.id === id)).filter((opt) => !!opt);
 
-  // 2. Toggle logic
   const handleToggle = (id: string) => {
     const nextIds = selectedIds.includes(id)
       ? selectedIds.filter(itemId => itemId !== id)
       : [...selectedIds, id];
-    
+
     setSelectedIds(nextIds);
     onChange(options.map(({ id }) => id).filter(id => nextIds.includes(id)).join(" "));
   };
@@ -42,7 +43,6 @@ export function TagSelector({ options, title, onChange }: TagSelectorProps) {
         <span className="text-xs text-foreground/50">{selectedIds.length} selected</span>
       </div>
 
-      {/* Selected Items Tray */}
       <div className="flex flex-wrap gap-2 min-h-[32px] p-2 rounded-lg bg-background border border-foreground/15">
         {selectedItems.length > 0 ? (
           selectedItems.map(item => (
@@ -59,7 +59,6 @@ export function TagSelector({ options, title, onChange }: TagSelectorProps) {
         )}
       </div>
 
-      {/* Search Input */}
       <input
         type="text"
         placeholder="Type to filter..."
@@ -68,7 +67,6 @@ export function TagSelector({ options, title, onChange }: TagSelectorProps) {
         onChange={(e) => setQuery(e.target.value)}
       />
 
-      {/* Available Results */}
       <div className="flex flex-wrap gap-2">
         {filtered.map(item => (
           <button

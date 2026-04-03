@@ -6,6 +6,8 @@ import { backendHooks } from "@/shared/api/backendGO/hooks";
 import { type Step, type FormState, initialFormState, steps } from "@/shared";
 import type { RoommateEntry } from "./steps/DetailsStep";
 
+const editSteps = steps.filter((s) => s.id !== "extras");
+
 export function useEditListingForm(postId: number) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -45,24 +47,23 @@ export function useEditListingForm(postId: number) {
     (e: React.ChangeEvent<HTMLInputElement>) =>
       setForm((prev) => ({ ...prev, [field]: Number(e.target.value) }));
 
-  const stepIndex = steps.findIndex((s) => s.id === step);
-  const isLast = stepIndex === steps.length - 1;
+  const stepIndex = editSteps.findIndex((s) => s.id === step);
+  const isLast = stepIndex === editSteps.length - 1;
 
   const back = () => {
     setError(null);
-    if (stepIndex > 0) setStep(steps[stepIndex - 1].id);
+    if (stepIndex > 0) setStep(editSteps[stepIndex - 1].id);
   };
 
   const next = () => {
     setError(null);
-    if (!isLast) setStep(steps[stepIndex + 1].id);
+    if (!isLast) setStep(editSteps[stepIndex + 1].id);
   };
 
   const handleSave = async () => {
     setError(null);
     setLoading(true);
-      try {
-        console.log("saving title:", form.title);
+    try {
       await updatePost(postId, {
         address: form.address,
         city: form.city,
@@ -105,7 +106,7 @@ export function useEditListingForm(postId: number) {
       await queryClient.invalidateQueries({ queryKey: ["usePostByID", postId] });
       await queryClient.invalidateQueries({ queryKey: ["useRoommates", postId] });
 
-      navigate("/listings/" + postId)
+      navigate("/listings/" + postId);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save changes");
     } finally {
