@@ -66,6 +66,12 @@ export const addPhotoToPost = (post_id: number, photo_url: string) =>
 export const uploadPostPhoto = (id: number, image: File, order: number = 1) =>
   backendApi.uploadPostPhoto({ id, image, order });
 
+export const deletePostPhoto = (post_id: number, photo_id: number) =>
+  backendApi.deletePostPhoto({ post_id, photo_id });
+
+export const updatePhotoOrder = (post_id: number, photo_id: number, order: number) =>
+  backendApi.updatePhotoOrder({ id: post_id, photo_id, order });
+
 // Favorites
 
 export const addFavorite = (input: z.infer<typeof favoriteInputSchema>) =>

@@ -5,11 +5,13 @@ import { useEditListingForm } from "./useEditListingForm";
 import { BasicsStep } from "./steps/BasicsStep";
 import { DetailsStep } from "./steps/DetailsStep";
 import { DatesStep } from "./steps/DatesStep";
+import { PhotosStep } from "./steps/PhotosStep";
 import { useListings } from "@/shared/hooks";
+import { backendHooks } from "@/shared/api/backendGO/hooks";
 
 export const LISTING_PARAM = "listingId";
 
-const editSteps = steps.filter((s) => s.id !== "extras");
+const editSteps = steps;
 
 export function EditListing() {
   const { [LISTING_PARAM]: listingId } = useParams();
@@ -18,11 +20,15 @@ export function EditListing() {
   const listing = getListingById(listingId || "");
   const postId = listing?.id ?? 0;
 
+  const { data: serverPhotos } = backendHooks.usePhotosByPostID({ post_id: postId });
+  const originalServerPhotoIds = (serverPhotos ?? []).map((p) => p.id);
+
   const {
     step, setStep,
     form, setForm,
     set, setNum,
     roommates, setRoommates,
+    photoSlots, setPhotoSlots,
     back, next,
     handleSave,
     loading, error,
@@ -121,6 +127,13 @@ export function EditListing() {
           />
         )}
         {step === "dates" && <DatesStep form={form} set={set} />}
+        {step === "extras" && (
+          <PhotosStep
+            postId={postId}
+            slots={photoSlots}
+            setSlots={setPhotoSlots}
+          />
+        )}
 
         {error && (
           <div className="mt-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
@@ -140,7 +153,7 @@ export function EditListing() {
           {isEditLast ? (
             <button
               type="button"
-              onClick={handleSave}
+              onClick={() => handleSave(originalServerPhotoIds)}
               disabled={loading}
               className="rounded-full bg-foreground px-8 py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-80 disabled:opacity-40"
             >

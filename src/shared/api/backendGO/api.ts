@@ -174,6 +174,25 @@ export const backendApi = buildApi(
       options: [methodOptions.post, simpleJson],
     }),
 
+    deletePostPhoto: item({
+      input: z.object({
+        post_id: z.number(),
+        photo_id: z.number(),
+      }),
+      key: ({ post_id, photo_id }: { post_id: number; photo_id: number }) =>
+        `/posts/${post_id}/photos/${photo_id}`,
+      result: z.object({ message: z.string() }),
+      options: [methodOptions.delete],
+    }),
+
+    updatePhotoOrder: item({
+      input: z.object({ id: z.number(), photo_id: z.number(), order: z.number() }),
+      key: ({ id, photo_id }: { id: number; photo_id: number; order: number }) =>
+        `/posts/${id}/photos/${photo_id}`,
+      result: photoSchema,
+      options: [methodOptions.patch, simpleJson],
+    }),
+
     // Favorites
 
     addFavorite: item({

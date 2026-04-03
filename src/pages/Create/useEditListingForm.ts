@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { updatePost, updatePostDetails, replaceRoommates } from "@/shared/api/backendGO/endpoints";
+import { updatePost, updatePostDetails, replaceRoommates, uploadPostPhoto, deletePostPhoto, updatePhotoOrder } from "@/shared/api/backendGO/endpoints";
 import { backendHooks } from "@/shared/api/backendGO/hooks";
 import { type Step, type FormState, initialFormState, steps } from "@/shared";
 import type { RoommateEntry } from "./steps/DetailsStep";
+import type { PhotoSlot } from "./steps/PhotosStep";
 
-const editSteps = steps.filter((s) => s.id !== "extras");
+const editSteps = steps;
 
 export function useEditListingForm(postId: number) {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ export function useEditListingForm(postId: number) {
   const [step, setStep] = useState<Step>("basics");
   const [form, setForm] = useState<FormState>(initialFormState);
   const [roommates, setRoommates] = useState<RoommateEntry[]>([]);
+  const [photoSlots, setPhotoSlots] = useState<PhotoSlot[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -60,7 +62,11 @@ export function useEditListingForm(postId: number) {
     if (!isLast) setStep(editSteps[stepIndex + 1].id);
   };
 
-  const handleSave = async () => {
+  const handleSave = async (originalServerPhotoIds: number[]) => {
+    if (photoSlots.length < 5) {
+      setError("At least 5 photos are required.");
+      return;
+    }
     setError(null);
     setLoading(true);
     try {
@@ -100,11 +106,31 @@ export function useEditListingForm(postId: number) {
         })),
       });
 
+      const keptIds = new Set(
+        photoSlots
+          .filter((s): s is Extract<PhotoSlot, { kind: "existing" }> => s.kind === "existing")
+          .map((s) => s.id)
+      );
+      await Promise.all(
+        originalServerPhotoIds.filter((id) => !keptIds.has(id)).map((id) => deletePostPhoto(postId, id))
+      );
+
+      for (let i = 0; i < photoSlots.length; i++) {
+        const slot = photoSlots[i];
+        const order = i + 1;
+        if (slot.kind === "new") {
+          await uploadPostPhoto(postId, slot.file, order);
+        } else {
+          await updatePhotoOrder(postId, slot.id, order);
+        }
+      }
+
       await queryClient.invalidateQueries({ queryKey: ["useActivePosts"] });
       await queryClient.invalidateQueries({ queryKey: ["usePosts"] });
       await queryClient.invalidateQueries({ queryKey: ["usePostsByUser"] });
       await queryClient.invalidateQueries({ queryKey: ["usePostByID", postId] });
       await queryClient.invalidateQueries({ queryKey: ["useRoommates", postId] });
+      await queryClient.invalidateQueries({ queryKey: ["usePhotosByPostID", postId] });
 
       navigate("/listings/" + postId);
     } catch (err) {
@@ -119,6 +145,7 @@ export function useEditListingForm(postId: number) {
     form, setForm,
     set, setNum,
     roommates, setRoommates,
+    photoSlots, setPhotoSlots,
     stepIndex, isLast,
     back, next,
     handleSave,
