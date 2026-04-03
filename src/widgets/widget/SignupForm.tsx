@@ -22,15 +22,15 @@ const PASSWORD_RULES = [
   { id: "special", label: "One special character (!@#$…)", test: (p: string) => /[^A-Za-z0-9]/.test(p) },
 ];
 
-function getStrength(password: string): { score: number; label: string; color: string; barColor: string } {
-  const passed = PASSWORD_RULES.filter((r) => r.test(password)).length;
-  if (password.length === 0) return { score: 0, label: "",           color: "text-gray-400",   barColor: "bg-gray-200" };
-  if (passed <= 1)           return { score: 1, label: "Weak",       color: "text-red-500",    barColor: "bg-red-400" };
-  if (passed === 2)          return { score: 2, label: "Fair",       color: "text-orange-500", barColor: "bg-orange-400" };
-  if (passed === 3)          return { score: 3, label: "Good",       color: "text-yellow-500", barColor: "bg-yellow-400" };
-  if (passed === 4)          return { score: 4, label: "Strong",     color: "text-green-500",  barColor: "bg-green-400" };
-  return                            { score: 5, label: "Very strong", color: "text-green-600",  barColor: "bg-green-500" };
-}
+// function getStrength(password: string): { score: number; label: string; color: string; barColor: string } {
+//   const passed = PASSWORD_RULES.filter((r) => r.test(password)).length;
+//   if (password.length === 0) return { score: 0, label: "",           color: "text-gray-400",   barColor: "bg-gray-200" };
+//   if (passed <= 1)           return { score: 1, label: "Weak",       color: "text-red-500",    barColor: "bg-red-400" };
+//   if (passed === 2)          return { score: 2, label: "Fair",       color: "text-orange-500", barColor: "bg-orange-400" };
+//   if (passed === 3)          return { score: 3, label: "Good",       color: "text-yellow-500", barColor: "bg-yellow-400" };
+//   if (passed === 4)          return { score: 4, label: "Strong",     color: "text-green-500",  barColor: "bg-green-400" };
+//   return                            { score: 5, label: "Very strong", color: "text-green-600",  barColor: "bg-green-500" };
+// }
 // ───────────────────────────────────────────────────────────────
 
 // ── Reusable eye-toggle icon ────────────────────────────────────
@@ -71,7 +71,7 @@ export function SignupForm({ onSubmit }: SignupFormProps) {
   const set = (field: keyof SignupData) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
 
-  const strength     = getStrength(form.password);
+  // const strength     = getStrength(form.password);
   const allRulesMet  = PASSWORD_RULES.every((r) => r.test(form.password));
   const passwordsMatch = form.password === confirmPassword;
 
@@ -172,7 +172,7 @@ export function SignupForm({ onSubmit }: SignupFormProps) {
         {/* ── Strength bar + rule checklist ── */}
         {form.password.length > 0 && (
           <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2">
+            {/* <div className="flex items-center gap-2">
               <div className="flex flex-1 gap-1">
                 {[1, 2, 3, 4, 5].map((i) => (
                   <div
@@ -186,7 +186,7 @@ export function SignupForm({ onSubmit }: SignupFormProps) {
               <span className={`text-xs font-medium w-16 text-right ${strength.color}`}>
                 {strength.label}
               </span>
-            </div>
+            </div> */}
 
             {(passwordFocused || !allRulesMet) && (
               <div className="rounded-lg border border-gray-100 bg-gray-50 px-3 py-2.5 flex flex-col gap-1.5">

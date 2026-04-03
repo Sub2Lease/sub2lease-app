@@ -64,7 +64,15 @@ export function MapSection({ loc, zoom, listings }: Props) {
         mapId="sub2lease-map"
         style={{ width: "100%", height: "100%" }}
         gestureHandling="greedy"
-        disableDefaultUI={false}
+        
+        disableDefaultUI={true}
+
+        // Add back only essentials
+        zoomControl={true}
+        mapTypeControl={true}
+        streetViewControl={true}
+        // Extra polish
+        clickableIcons={false}   // removes POI clutter clicks
       >
         {/* Single listing mode — plain pin */}
         {!isMulti && loc && (
