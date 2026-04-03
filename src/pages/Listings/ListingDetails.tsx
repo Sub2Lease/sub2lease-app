@@ -294,7 +294,7 @@ export function ListingDetails() {
 
         {isAtTop && <ChevronsDown size={50} className="-mt-[50px] text-black" />}
 
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-[90%] bg-white/80 backdrop-blur-md p-4 rounded-3xl border border-slate-100 shadow-lg flex justify-between gap-4 items-center z-10">
+        <div className="absolute bottom-4 left-0 right-0 bg-white/80 backdrop-blur-md p-4 rounded-3xl border border-slate-100 shadow-lg flex justify-between gap-4 items-center z-10">
           <div>
             <div className="text-2xl font-bold">${listing.monthly_rent}/mo</div>
             <div className="text-sm text-slate-500">Open From: {availabilityStr}</div>
